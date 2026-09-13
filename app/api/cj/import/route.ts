@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCjProductDetail } from "@/lib/cj-client";
-import { prisma } from "@/lib/prisma";
+import { ensureSchema, prisma } from "@/lib/prisma";
 
 // Default markup applied to CJ's supply price to get our sale price.
 // Tune this per your margin target — it's intentionally simple for the MVP.
@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    await ensureSchema();
     const detail = await getCjProductDetail(pid);
     const firstVariant = detail.variants[0];
     const cjPrice = Number(detail.sellPrice ?? firstVariant?.variantSellPrice ?? 0);

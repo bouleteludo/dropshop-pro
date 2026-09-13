@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { getCjProductDetail, getCjVariantStock } from "@/lib/cj-client";
-import { prisma } from "@/lib/prisma";
+import { ensureSchema, prisma } from "@/lib/prisma";
 
 // Refreshes price and stock for every product that was imported from CJ.
 // Intended to be called on a schedule (cron) once deployed.
 export async function POST() {
+  await ensureSchema();
   const products = await prisma.product.findMany({ where: { cjProductId: { not: null } } });
 
   const results: { sku: string; ok: boolean; error?: string }[] = [];
