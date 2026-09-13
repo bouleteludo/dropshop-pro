@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// A product imported from CJ Dropshipping (or added manually) and sold on the storefront.
+model Product {
+  id            String   @id @default(cuid())
+  cjProductId   String?  @unique
+  sku           String   @unique
+  name          String
+  description   String
+  images        String // JSON-encoded array of image URLs
+  price         Float // sale price shown to customers (in shop currency)
+  cjPrice       Float? // last known CJ supply price, used to track margin
+  stock         Int      @default(0)
+  category      String?
+  sourceUrl     String? // link to the product on CJ, for reference
+  active        Boolean  @default(true)
+  lastSyncedAt  DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orderItems OrderItem[]
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  customerName  String
+  customerEmail String
+  address       String
+  // One of: PENDING, PAID, SENT_TO_CJ, FULFILLED, CANCELLED (SQLite has no enum type)
+  status        String  @default("PENDING")
+  cjOrderId     String? // order id returned by CJ once the fulfillment order is placed
+  total         Float
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Float
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
