@@ -1,0 +1,44 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [claude/boutique-informations-ofi25z]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          CJ_API_KEY: ${{ secrets.CJ_API_KEY }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::Missing VERCEL_TOKEN repository secret. Add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+          url=$(vercel deploy \
+            --token="$VERCEL_TOKEN" \
+            --prod \
+            --yes \
+            --build-env DATABASE_URL=file:/tmp/dev.db \
+            --env DATABASE_URL=file:/tmp/dev.db \
+            --env CJ_API_KEY="$CJ_API_KEY")
+
+          echo "Deployed to: $url"
+          {
+            echo "### 🎃 Boo Shop deployed"
+            echo ""
+            echo "$url"
+          } >> "$GITHUB_STEP_SUMMARY"
