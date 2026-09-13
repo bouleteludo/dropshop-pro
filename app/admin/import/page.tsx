@@ -48,35 +48,39 @@ export default function ImportPage() {
 
   return (
     <main className="max-w-4xl mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-4">Importer des produits depuis CJ Dropshipping</h1>
+      <h1 className="font-spooky text-3xl text-pumpkin-500 mb-6">Importer des produits depuis CJ Dropshipping</h1>
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-6">
         <input
-          className="border rounded px-3 py-2 flex-1"
-          placeholder="Mot-clé (ex: sac à dos)"
+          className="bg-night-900 border border-pumpkin-500/20 rounded px-3 py-2 flex-1 text-orange-50 placeholder:text-orange-200/40 focus:outline-none focus:border-pumpkin-500"
+          placeholder="Mot-clé (ex: déco squelette)"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
-        <button type="submit" disabled={loading} className="bg-black text-white px-4 py-2 rounded disabled:opacity-50">
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-pumpkin-500 text-night-950 font-semibold px-4 py-2 rounded disabled:opacity-50 hover:bg-pumpkin-400 transition"
+        >
           {loading ? "Recherche..." : "Rechercher"}
         </button>
       </form>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && <p className="text-red-400 mb-4">{error}</p>}
 
       <ul className="grid grid-cols-2 gap-4">
         {results.map((product) => (
-          <li key={product.pid} className="border rounded p-4 flex flex-col gap-2">
+          <li key={product.pid} className="bg-night-900 border border-pumpkin-500/20 rounded-xl p-4 flex flex-col gap-2">
             {product.productImage && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={product.productImage} alt={product.productNameEn ?? product.productName} className="h-32 object-contain" />
             )}
-            <p className="font-medium">{product.productNameEn ?? product.productName}</p>
-            <p className="text-sm text-gray-500">{product.sellPrice} $</p>
+            <p className="font-medium text-orange-50">{product.productNameEn ?? product.productName}</p>
+            <p className="text-sm text-orange-200/60">{product.sellPrice} $</p>
             <button
               onClick={() => handleImport(product.pid)}
               disabled={importingPid === product.pid || importedPids.has(product.pid)}
-              className="bg-blue-600 text-white px-3 py-1.5 rounded text-sm disabled:opacity-50"
+              className="bg-slime-500 text-night-950 font-semibold px-3 py-1.5 rounded text-sm disabled:opacity-50 hover:bg-slime-400 transition"
             >
               {importedPids.has(product.pid) ? "Importé ✓" : importingPid === product.pid ? "Import..." : "Importer"}
             </button>

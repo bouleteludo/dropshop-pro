@@ -11,12 +11,17 @@ export default async function HomePage() {
 
   return (
     <main className="max-w-5xl mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-6">Nos produits</h1>
+      <div className="text-center mb-10">
+        <h1 className="font-spooky text-5xl text-pumpkin-500 mb-2 drop-shadow-[0_0_12px_rgba(255,117,24,0.5)]">
+          Nos trouvailles d&apos;Halloween
+        </h1>
+        <p className="text-orange-200/60">Stock limité, ça s&apos;évapore avec la brume 🌫️</p>
+      </div>
 
       {products.length === 0 ? (
-        <p className="text-gray-500">
+        <p className="text-orange-200/60 text-center">
           Aucun produit pour l&apos;instant.{" "}
-          <Link href="/admin/import" className="underline">
+          <Link href="/admin/import" className="underline text-pumpkin-400 hover:text-pumpkin-300">
             Importe tes premiers produits depuis CJ Dropshipping
           </Link>
           .
@@ -27,13 +32,16 @@ export default async function HomePage() {
             const images = JSON.parse(product.images) as string[];
             return (
               <li key={product.id}>
-                <Link href={`/products/${product.id}`} className="block border rounded p-4 hover:shadow-md transition">
+                <Link
+                  href={`/products/${product.id}`}
+                  className="block bg-night-900 border border-pumpkin-500/20 rounded-xl p-4 hover:border-pumpkin-500/60 hover:shadow-[0_0_20px_rgba(255,117,24,0.25)] transition"
+                >
                   {images[0] && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={images[0]} alt={product.name} className="h-40 w-full object-contain mb-3" />
                   )}
-                  <p className="font-medium">{product.name}</p>
-                  <p className="text-gray-600">{product.price.toFixed(2)} €</p>
+                  <p className="font-medium text-orange-50">{product.name}</p>
+                  <p className="text-pumpkin-400">{product.price.toFixed(2)} €</p>
                 </Link>
               </li>
             );
