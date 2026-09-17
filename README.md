@@ -7,8 +7,9 @@ leur API officielle v2.
 ## Stack
 
 - **Next.js 16** (App Router, TypeScript) — front + back dans le même projet
-- **Prisma** + **Postgres** (une base de données serverless comme le SQLite
-  fichier ne survit pas au système de fichiers éphémère de Vercel)
+- **Prisma** + **Postgres** (Neon, via l'intégration Vercel Storage — une
+  base de données serverless comme le SQLite fichier ne survit pas au
+  système de fichiers éphémère de Vercel)
 - **Tailwind CSS** pour le style
 
 ## Déploiement
