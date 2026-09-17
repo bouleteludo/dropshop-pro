@@ -18,8 +18,8 @@ dans Vercel (Project Settings → Environment Variables) :
 
 - `DATABASE_URL` = `file:/tmp/dev.db` (le système de fichiers de Vercel est
   en lecture seule hors `/tmp` ; voir `ensureSchema()` dans `lib/prisma.ts`)
-- `CJ_API_KEY` = ta clé CJ Dropshipping (optionnelle, seulement nécessaire
-  pour que `/admin/import` fonctionne)
+- `CJ_API_KEY` = ta clé CJ Dropshipping (nécessaire pour que
+  `/admin/import` fonctionne — configurée en prod)
 
 ## Démarrer en local
 
