@@ -20,6 +20,9 @@ dans Vercel (Project Settings → Environment Variables) :
   en lecture seule hors `/tmp` ; voir `ensureSchema()` dans `lib/prisma.ts`)
 - `CJ_API_KEY` = ta clé CJ Dropshipping (nécessaire pour que
   `/admin/import` fonctionne — configurée en prod)
+- `ADMIN_PASSWORD` = mot de passe qui protège `/admin` (HTTP Basic Auth, voir
+  `middleware.ts`) — n'importe quel identifiant fonctionne, seul le mot de
+  passe est vérifié
 
 ## Démarrer en local
 
@@ -67,8 +70,6 @@ et ajuste les noms de champs dans `lib/cj-client.ts` si un appel échoue.**
   dans le schéma mais rien ne crée de commande côté storefront pour l'instant.
 - Panier persistant — la fiche produit n'a pas encore de bouton "ajouter au
   panier" fonctionnel.
-- Authentification admin — `/admin/import` n'est pas protégée par un login ;
-  à sécuriser avant un déploiement public.
 - Passage de commande vers CJ (`createCjOrder`) une fois un paiement reçu.
 
 ## Structure
