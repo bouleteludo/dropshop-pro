@@ -61,7 +61,19 @@ export default async function ProductPage({ params }: Props) {
       </Link>
 
       <div className="mt-8 grid md:grid-cols-2 gap-10 lg:gap-16">
-        <ProductGallery images={images} alt={product.name} />
+        <div className="flex flex-col gap-4">
+          <ProductGallery images={images} alt={product.name} />
+          {product.video && (
+            <video
+              controls
+              playsInline
+              poster={images[0]}
+              className="w-full rounded-xl border border-white/5 bg-ink-900"
+            >
+              <source src={product.video} />
+            </video>
+          )}
+        </div>
 
         <div className="flex flex-col">
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-bone-50 mb-4 leading-snug">

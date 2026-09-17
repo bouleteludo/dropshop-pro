@@ -15,6 +15,7 @@ model Product {
   name          String
   description   String
   images        String // JSON-encoded array of image URLs
+  video         String? // product video URL from CJ, when available
   price         Float // sale price shown to customers (in shop currency)
   cjPrice       Float? // last known CJ supply price, used to track margin
   stock         Int      @default(0)

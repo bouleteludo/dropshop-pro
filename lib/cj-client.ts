@@ -144,16 +144,32 @@ export type CjProductDetail = {
   sellPrice: string;
   categoryName?: string;
   variants: CjProductVariant[];
+  video?: string;
 };
 
+// CJ's exact field name for the product video has moved between API versions
+// (seen as productVideo, video, and videoUrl in the wild) — try each in turn
+// rather than hard-coding one, since I can't reach CJ's live docs from here
+// to confirm the current name. Missing entirely for most products either way.
+function extractVideoUrl(raw: Record<string, unknown>): string | undefined {
+  for (const key of ["productVideo", "video", "videoUrl", "mainVideo"]) {
+    const value = raw[key];
+    if (typeof value === "string" && value.trim()) return value;
+  }
+  return undefined;
+}
+
 export async function getCjProductDetail(pid: string): Promise<CjProductDetail> {
-  const detail = await cjRequest<CjProductDetail>("/product/query", { query: { pid } });
+  const detail = await cjRequest<CjProductDetail & Record<string, unknown>>("/product/query", {
+    query: { pid },
+  });
 
   return {
     ...detail,
     variants: Array.isArray(detail.variants) ? detail.variants : [],
     productImageSet: Array.isArray(detail.productImageSet) ? detail.productImageSet : [],
     sellPrice: detail.sellPrice ?? "",
+    video: extractVideoUrl(detail),
   };
 }
 

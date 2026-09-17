@@ -3,13 +3,29 @@
 import { useState } from "react";
 import type { CjProductSummary } from "@/lib/cj-client";
 
+const PAGE_SIZE = 24;
+
 export default function ImportPage() {
   const [keyword, setKeyword] = useState("");
   const [results, setResults] = useState<CjProductSummary[]>([]);
+  const [pageNum, setPageNum] = useState(1);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [importingPid, setImportingPid] = useState<string | null>(null);
   const [importedPids, setImportedPids] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
+
+  async function runSearch(nextPage: number, append: boolean) {
+    const res = await fetch(
+      `/api/cj/search?keyword=${encodeURIComponent(keyword.trim())}&pageNum=${nextPage}&pageSize=${PAGE_SIZE}`,
+    );
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? "Recherche échouée");
+    setResults((prev) => (append ? [...prev, ...(data.list ?? [])] : data.list ?? []));
+    setTotal(data.total ?? 0);
+    setPageNum(nextPage);
+  }
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -17,16 +33,27 @@ export default function ImportPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/cj/search?keyword=${encodeURIComponent(keyword.trim())}&pageSize=24`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Recherche échouée");
-      setResults(data.list ?? []);
+      await runSearch(1, false);
     } catch (err) {
       setError((err as Error).message);
     } finally {
       setLoading(false);
     }
   }
+
+  async function handleLoadMore() {
+    setLoadingMore(true);
+    setError(null);
+    try {
+      await runSearch(pageNum + 1, true);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  const hasMore = results.length < total;
 
   async function handleImport(pid: string) {
     setImportingPid(pid);
@@ -113,6 +140,18 @@ export default function ImportPage() {
             );
           })}
         </ul>
+      )}
+
+      {hasMore && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            className="border border-white/10 hover:border-ember-500/50 text-bone-200 hover:text-ember-300 font-medium px-6 py-2.5 rounded-full disabled:opacity-50 transition-colors"
+          >
+            {loadingMore ? "Chargement…" : `Voir plus (${results.length} / ${total})`}
+          </button>
+        </div>
       )}
     </main>
   );
