@@ -19,13 +19,7 @@ export default async function HomePage() {
       </div>
 
       {products.length === 0 ? (
-        <p className="text-orange-200/60 text-center">
-          Aucun produit pour l&apos;instant.{" "}
-          <Link href="/admin/import" className="underline text-pumpkin-400 hover:text-pumpkin-300">
-            Importe tes premiers produits depuis CJ Dropshipping
-          </Link>
-          .
-        </p>
+        <p className="text-orange-200/60 text-center">Nouveaux frissons bientôt disponibles.</p>
       ) : (
         <ul className="grid grid-cols-2 md:grid-cols-3 gap-6">
           {products.map((product) => {

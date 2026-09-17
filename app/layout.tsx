@@ -22,12 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           🎃 ÉDITION HALLOWEEN — la boutique disparaît le 1er novembre 👻
         </div>
         <header className="border-b border-pumpkin-500/20">
-          <nav className="max-w-5xl mx-auto flex items-center justify-between p-4">
+          <nav className="max-w-5xl mx-auto flex items-center p-4">
             <Link href="/" className="font-spooky text-3xl text-pumpkin-500 tracking-wide drop-shadow-[0_0_8px_rgba(255,117,24,0.6)]">
               Boo Shop 🎃
-            </Link>
-            <Link href="/admin/import" className="text-sm text-orange-200/60 hover:text-pumpkin-400 transition">
-              Admin — Importer des produits
             </Link>
           </nav>
         </header>
