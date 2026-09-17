@@ -13,7 +13,7 @@ leur API officielle v2.
 ## Déploiement
 
 Connecté à Vercel via l'intégration Git native — chaque push sur cette
-branche redéploie automatiquement. Variables d'environnement à configurer
+branche redéploie automatiquement. Variables d'environnement configurées
 dans Vercel (Project Settings → Environment Variables) :
 
 - `DATABASE_URL` = `file:/tmp/dev.db` (le système de fichiers de Vercel est
