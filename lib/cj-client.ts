@@ -147,7 +147,14 @@ export type CjProductDetail = {
 };
 
 export async function getCjProductDetail(pid: string): Promise<CjProductDetail> {
-  return cjRequest<CjProductDetail>("/product/query", { query: { pid } });
+  const detail = await cjRequest<CjProductDetail>("/product/query", { query: { pid } });
+
+  return {
+    ...detail,
+    variants: Array.isArray(detail.variants) ? detail.variants : [],
+    productImageSet: Array.isArray(detail.productImageSet) ? detail.productImageSet : [],
+    sellPrice: detail.sellPrice ?? "",
+  };
 }
 
 export type CjStockEntry = {
@@ -157,7 +164,8 @@ export type CjStockEntry = {
 };
 
 export async function getCjVariantStock(vid: string): Promise<CjStockEntry[]> {
-  return cjRequest<CjStockEntry[]>("/product/stock/queryByVid", { query: { vid } });
+  const entries = await cjRequest<CjStockEntry[]>("/product/stock/queryByVid", { query: { vid } });
+  return Array.isArray(entries) ? entries : [];
 }
 
 export type CjOrderPayload = {

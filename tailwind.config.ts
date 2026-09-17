@@ -3,6 +3,11 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
+    container: {
+      center: true,
+      padding: { DEFAULT: "1.25rem", sm: "2rem" },
+      screens: { "2xl": "1200px" },
+    },
     extend: {
       colors: {
         // Near-black charcoal ground — deliberately desaturated, not purple-cartoon-dark.
@@ -36,6 +41,24 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", "serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+      },
+      boxShadow: {
+        card: "0 1px 0 0 rgba(255,255,255,0.04) inset, 0 20px 40px -20px rgba(0,0,0,0.8)",
+        ember: "0 0 0 1px rgba(193,101,31,0.35), 0 12px 40px -12px rgba(193,101,31,0.55)",
+      },
+      keyframes: {
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(14px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 0.7s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-in": "fade-in 0.9s ease-out both",
       },
     },
   },

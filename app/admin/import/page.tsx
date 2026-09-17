@@ -13,10 +13,11 @@ export default function ImportPage() {
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
+    if (!keyword.trim()) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/cj/search?keyword=${encodeURIComponent(keyword)}`);
+      const res = await fetch(`/api/cj/search?keyword=${encodeURIComponent(keyword.trim())}&pageSize=24`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Recherche échouée");
       setResults(data.list ?? []);
@@ -47,46 +48,72 @@ export default function ImportPage() {
   }
 
   return (
-    <main className="max-w-4xl mx-auto p-8">
-      <h1 className="font-display text-2xl text-bone-50 mb-6">Importer des produits depuis CJ Dropshipping</h1>
+    <main className="container py-10">
+      <h1 className="font-display text-2xl sm:text-3xl text-bone-50 mb-2">
+        Importer depuis CJ Dropshipping
+      </h1>
+      <p className="text-sm text-bone-400 mb-8">
+        Recherchez un produit, importez-le en un clic. Le prix de vente est calculé automatiquement
+        à partir du prix fournisseur.
+      </p>
 
-      <form onSubmit={handleSearch} className="flex gap-2 mb-6">
+      <form onSubmit={handleSearch} className="flex gap-2 mb-8">
         <input
-          className="bg-ink-900 border border-white/10 rounded px-3 py-2 flex-1 text-bone-50 placeholder:text-bone-400 focus:outline-none focus:border-ember-500"
-          placeholder="Mot-clé (ex: déco squelette)"
+          className="bg-ink-900 border border-white/10 rounded-full px-4 py-2.5 flex-1 text-bone-50 placeholder:text-bone-400 focus:outline-none focus:border-ember-500 transition-colors"
+          placeholder="Mot-clé (ex : déco squelette, masque, lanterne…)"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
         <button
           type="submit"
-          disabled={loading}
-          className="bg-ember-500 text-ink-950 font-semibold px-4 py-2 rounded disabled:opacity-50 hover:bg-ember-400 transition"
+          disabled={loading || !keyword.trim()}
+          className="bg-ember-500 text-ink-950 font-semibold px-6 py-2.5 rounded-full disabled:opacity-50 hover:bg-ember-400 transition-colors"
         >
-          {loading ? "Recherche..." : "Rechercher"}
+          {loading ? "Recherche…" : "Rechercher"}
         </button>
       </form>
 
-      {error && <p className="text-red-400 mb-4">{error}</p>}
+      {error && (
+        <p className="text-red-400 mb-6 text-sm rounded-lg border border-red-400/30 bg-red-400/5 px-4 py-3">
+          {error}
+        </p>
+      )}
 
-      <ul className="grid grid-cols-2 gap-4">
-        {results.map((product) => (
-          <li key={product.pid} className="bg-ink-900 border border-white/10 rounded-xl p-4 flex flex-col gap-2">
-            {product.productImage && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={product.productImage} alt={product.productNameEn ?? product.productName} className="h-32 object-contain" />
-            )}
-            <p className="font-medium text-bone-50">{product.productNameEn ?? product.productName}</p>
-            <p className="text-sm text-bone-400">{product.sellPrice} $</p>
-            <button
-              onClick={() => handleImport(product.pid)}
-              disabled={importingPid === product.pid || importedPids.has(product.pid)}
-              className="bg-eclipse-500 text-bone-50 font-semibold px-3 py-1.5 rounded text-sm disabled:opacity-50 hover:bg-eclipse-500/80 transition"
-            >
-              {importedPids.has(product.pid) ? "Importé ✓" : importingPid === product.pid ? "Import..." : "Importer"}
-            </button>
-          </li>
-        ))}
-      </ul>
+      {results.length > 0 && (
+        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {results.map((product) => {
+            const done = importedPids.has(product.pid);
+            return (
+              <li key={product.pid} className="bg-ink-900 border border-white/10 rounded-xl overflow-hidden flex flex-col">
+                <div className="relative aspect-square bg-ink-800">
+                  {product.productImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={product.productImage}
+                      alt={product.productNameEn ?? product.productName}
+                      className="h-full w-full object-contain"
+                      loading="lazy"
+                    />
+                  ) : null}
+                </div>
+                <div className="p-3 flex-1 flex flex-col gap-2">
+                  <p className="text-sm text-bone-50 line-clamp-2 leading-snug">
+                    {product.productNameEn ?? product.productName}
+                  </p>
+                  <p className="text-xs text-bone-400">Fournisseur : {product.sellPrice} $</p>
+                  <button
+                    onClick={() => handleImport(product.pid)}
+                    disabled={importingPid === product.pid || done}
+                    className="mt-auto bg-eclipse-500 hover:bg-eclipse-500/80 text-bone-50 font-semibold px-3 py-2 rounded-lg text-sm disabled:opacity-50 transition-colors"
+                  >
+                    {done ? "Importé ✓" : importingPid === product.pid ? "Import…" : "Importer"}
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </main>
   );
 }

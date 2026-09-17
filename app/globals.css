@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: #08090b;
     background-image:
@@ -11,8 +15,32 @@
     background-attachment: fixed;
     background-repeat: no-repeat;
   }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  ::selection {
+    background: rgba(193, 101, 31, 0.35);
+    color: #f6f1ea;
+  }
+
+  :focus-visible {
+    outline: 2px solid #d98a4f;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
+/* Staggered entrance for the hero — kept as plain CSS since these specific
+   delayed variants aren't part of the Tailwind animation scale above. */
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -24,10 +52,6 @@
   }
 }
 
-.animate-fade-up {
-  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
 .animate-fade-up-delay-1 {
   animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
 }
@@ -37,10 +61,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up,
+  html {
+    scroll-behavior: auto;
+  }
+
   .animate-fade-up-delay-1,
-  .animate-fade-up-delay-2 {
-    animation: none;
+  .animate-fade-up-delay-2,
+  [class*="animate-"] {
+    animation: none !important;
   }
 
   * {
