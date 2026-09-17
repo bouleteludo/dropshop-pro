@@ -4,7 +4,7 @@ export const config = {
   matcher: ["/admin/:path*"],
 };
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const password = process.env.ADMIN_PASSWORD;
   if (!password) {
     return new NextResponse("ADMIN_PASSWORD is not set — /admin is locked until it's configured.", { status: 503 });
