@@ -14,9 +14,10 @@ leur API officielle v2.
 
 ## Déploiement
 
-Connecté à Vercel via l'intégration Git native — chaque push sur cette
-branche redéploie automatiquement. Variables d'environnement configurées
-dans Vercel (Project Settings → Environment Variables) :
+Connecté à Vercel via l'intégration Git native, avec une base Postgres
+Neon — chaque push sur cette branche redéploie automatiquement. Variables
+d'environnement configurées dans Vercel (Project Settings → Environment
+Variables) :
 
 - `DATABASE_URL` = URL de connexion Postgres (créée depuis l'onglet
   **Storage** du projet Vercel → **Create Database** → **Postgres** ; copie
