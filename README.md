@@ -7,7 +7,8 @@ leur API officielle v2.
 ## Stack
 
 - **Next.js 16** (App Router, TypeScript) — front + back dans le même projet
-- **Prisma** + SQLite en dev (facile à basculer sur PostgreSQL en prod)
+- **Prisma** + **Postgres** (une base de données serverless comme le SQLite
+  fichier ne survit pas au système de fichiers éphémère de Vercel)
 - **Tailwind CSS** pour le style
 
 ## Déploiement
@@ -16,20 +17,24 @@ Connecté à Vercel via l'intégration Git native — chaque push sur cette
 branche redéploie automatiquement. Variables d'environnement configurées
 dans Vercel (Project Settings → Environment Variables) :
 
-- `DATABASE_URL` = `file:/tmp/dev.db` (le système de fichiers de Vercel est
-  en lecture seule hors `/tmp` ; voir `ensureSchema()` dans `lib/prisma.ts`)
+- `DATABASE_URL` = URL de connexion Postgres (créée depuis l'onglet
+  **Storage** du projet Vercel → **Create Database** → **Postgres** ; copie
+  la valeur de `POSTGRES_PRISMA_URL` générée dans `DATABASE_URL`)
 - `CJ_API_KEY` = ta clé CJ Dropshipping (nécessaire pour que
   `/admin/import` fonctionne — configurée en prod)
 - `ADMIN_PASSWORD` = mot de passe qui protège `/admin` (HTTP Basic Auth, voir
   `middleware.ts`) — n'importe quel identifiant fonctionne, seul le mot de
   passe est vérifié
 
+À chaque build, `prisma db push` synchronise automatiquement le schéma avec
+la base — pas de fichier de migration à gérer pour ce projet.
+
 ## Démarrer en local
 
 ```bash
 npm install
-cp .env.example .env   # puis renseigne CJ_API_KEY
-npx prisma migrate dev
+cp .env.example .env   # puis renseigne DATABASE_URL et CJ_API_KEY
+npx prisma db push
 npm run dev
 ```
 

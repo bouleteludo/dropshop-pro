@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { ensureSchema, prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  await ensureSchema();
   const products = await prisma.product.findMany({
     where: { active: true },
     orderBy: { createdAt: "desc" },
