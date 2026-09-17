@@ -10,6 +10,17 @@ leur API officielle v2.
 - **Prisma** + SQLite en dev (facile à basculer sur PostgreSQL en prod)
 - **Tailwind CSS** pour le style
 
+## Déploiement
+
+Connecté à Vercel via l'intégration Git native — chaque push sur cette
+branche redéploie automatiquement. Variables d'environnement à configurer
+dans Vercel (Project Settings → Environment Variables) :
+
+- `DATABASE_URL` = `file:/tmp/dev.db` (le système de fichiers de Vercel est
+  en lecture seule hors `/tmp` ; voir `ensureSchema()` dans `lib/prisma.ts`)
+- `CJ_API_KEY` = ta clé CJ Dropshipping (optionnelle, seulement nécessaire
+  pour que `/admin/import` fonctionne)
+
 ## Démarrer en local
 
 ```bash
