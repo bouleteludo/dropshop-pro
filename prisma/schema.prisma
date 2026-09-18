@@ -41,6 +41,7 @@ model Order {
   // One of: PENDING, PAID, SENT_TO_CJ, FULFILLED, CANCELLED
   status        String  @default("PENDING")
   cjOrderId     String? // order id returned by CJ once the fulfillment order is placed
+  stripeSessionId String? @unique // Stripe Checkout session id, for webhook idempotency
   total         Float
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
