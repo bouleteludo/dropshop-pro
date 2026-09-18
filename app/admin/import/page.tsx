@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { CjProductSummary } from "@/lib/cj-client";
 
 const PAGE_SIZE = 24;
@@ -79,10 +80,14 @@ export default function ImportPage() {
       <h1 className="font-display text-2xl sm:text-3xl text-bone-50 mb-2">
         Importer depuis CJ Dropshipping
       </h1>
-      <p className="text-sm text-bone-400 mb-8">
+      <p className="text-sm text-bone-400 mb-2">
         Recherchez un produit, importez-le en un clic. Le prix de vente est calculé automatiquement
         à partir du prix fournisseur.
       </p>
+      <Link href="/admin/add" className="text-sm text-ember-400 hover:text-ember-300 transition-colors">
+        Ajouter un produit d&apos;une autre source (AliExpress, Alibaba…) →
+      </Link>
+      <div className="mb-6" />
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-8">
         <input
