@@ -11,14 +11,70 @@ export default function AddProductPage() {
   const [category, setCategory] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
   const [imagesText, setImagesText] = useState("");
+  const [video, setVideo] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const [fetchUrl, setFetchUrl] = useState("");
+  const [fetching, setFetching] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [fetchNote, setFetchNote] = useState<string | null>(null);
 
   const imagePreview = imagesText
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
+
+  async function handleFetch(e: React.FormEvent) {
+    e.preventDefault();
+    if (!fetchUrl.trim()) return;
+    setFetching(true);
+    setFetchError(null);
+    setFetchNote(null);
+    try {
+      const res = await fetch("/api/products/fetch-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: fetchUrl.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Récupération échouée");
+
+      const filled: string[] = [];
+      if (data.name) {
+        setName(data.name);
+        filled.push("nom");
+      }
+      if (data.description) {
+        setDescription(data.description);
+        filled.push("description");
+      }
+      if (typeof data.price === "number") {
+        setPrice(String(data.price));
+        filled.push("prix (à vérifier/convertir en €)");
+      }
+      if (data.images?.length) {
+        setImagesText(data.images.join("\n"));
+        filled.push(`${data.images.length} image(s)`);
+      }
+      if (data.video) {
+        setVideo(data.video);
+        filled.push("vidéo");
+      }
+      if (data.sourceUrl) setSourceUrl(data.sourceUrl);
+
+      setFetchNote(
+        filled.length > 0
+          ? `Récupéré : ${filled.join(", ")}. Vérifie et complète avant d'ajouter.`
+          : "Rien d'exploitable trouvé sur cette page — remplis les champs à la main.",
+      );
+    } catch (err) {
+      setFetchError((err as Error).message);
+    } finally {
+      setFetching(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +93,7 @@ export default function AddProductPage() {
           category: category || undefined,
           sourceUrl: sourceUrl || undefined,
           images: imagePreview,
+          video: video || undefined,
         }),
       });
       const data = await res.json();
@@ -49,6 +106,9 @@ export default function AddProductPage() {
       setCategory("");
       setSourceUrl("");
       setImagesText("");
+      setVideo("");
+      setFetchUrl("");
+      setFetchNote(null);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -74,7 +134,33 @@ export default function AddProductPage() {
         </Link>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+      <div className="mt-8 p-5 rounded-xl border border-ember-500/25 bg-ember-500/5">
+        <p className="text-sm text-bone-50 font-medium mb-1">Remplissage automatique</p>
+        <p className="text-xs text-bone-400 mb-3">
+          Colle le lien d&apos;un produit (AliExpress, Alibaba…) — on essaie de récupérer nom,
+          description, images, vidéo et prix à ta place. Ça ne marche pas sur tous les sites : vérifie
+          toujours le résultat avant d&apos;ajouter.
+        </p>
+        <form onSubmit={handleFetch} className="flex gap-2">
+          <input
+            value={fetchUrl}
+            onChange={(e) => setFetchUrl(e.target.value)}
+            className="flex-1 bg-ink-900 border border-white/10 rounded-lg px-4 py-2.5 text-bone-50 placeholder:text-bone-400 focus:outline-none focus:border-ember-500 transition-colors text-sm"
+            placeholder="https://aliexpress.com/item/..."
+          />
+          <button
+            type="submit"
+            disabled={fetching || !fetchUrl.trim()}
+            className="bg-eclipse-500 hover:bg-eclipse-500/80 text-bone-50 font-semibold px-4 py-2.5 rounded-lg text-sm disabled:opacity-50 transition-colors shrink-0"
+          >
+            {fetching ? "Récupération…" : "Récupérer"}
+          </button>
+        </form>
+        {fetchError && <p className="text-red-400 text-xs mt-2">{fetchError}</p>}
+        {fetchNote && <p className="text-ember-300 text-xs mt-2">{fetchNote}</p>}
+      </div>
+
+      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
         <div>
           <label className="block text-sm text-bone-200 mb-1.5">Nom du produit *</label>
           <input
@@ -169,6 +255,16 @@ export default function AddProductPage() {
               ))}
             </div>
           )}
+        </div>
+
+        <div>
+          <label className="block text-sm text-bone-200 mb-1.5">Vidéo (optionnel)</label>
+          <input
+            value={video}
+            onChange={(e) => setVideo(e.target.value)}
+            className="w-full bg-ink-900 border border-white/10 rounded-lg px-4 py-2.5 text-bone-50 placeholder:text-bone-400 focus:outline-none focus:border-ember-500 transition-colors"
+            placeholder="https://exemple.com/video.mp4"
+          />
         </div>
 
         {error && (

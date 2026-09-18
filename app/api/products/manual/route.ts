@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     category?: string;
     sourceUrl?: string;
     images?: string[];
+    video?: string;
   };
 
   if (!body.name?.trim()) {
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest) {
         stock: body.stock && body.stock > 0 ? Math.round(body.stock) : 0,
         category: body.category?.trim() || undefined,
         sourceUrl: body.sourceUrl?.trim() || undefined,
+        video: body.video?.trim() || undefined,
       },
     });
 
