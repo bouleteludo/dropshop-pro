@@ -10,6 +10,10 @@ datasource db {
 // A product imported from CJ Dropshipping (or added manually) and sold on the storefront.
 model Product {
   id            String   @id @default(cuid())
+  // SEO-friendly URL segment, derived from name (e.g. "masque-squelette-lumineux-a1b2").
+  // Optional (not backfilled) so adding this column doesn't break products that already
+  // existed before it — the product page and links fall back to `id` when it's null.
+  slug          String?  @unique
   cjProductId   String?  @unique
   sku           String   @unique
   name          String

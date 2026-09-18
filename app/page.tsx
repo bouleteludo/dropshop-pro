@@ -73,7 +73,7 @@ export default async function HomePage() {
             {products.map((product) => (
               <li key={product.id}>
                 <ProductCard
-                  id={product.id}
+                  slug={product.slug ?? product.id}
                   name={product.name}
                   price={product.price}
                   images={JSON.parse(product.images) as string[]}

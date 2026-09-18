@@ -2,20 +2,20 @@ import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
-  id: string;
+  slug: string;
   name: string;
   price: number;
   images: string[];
   stock: number;
 };
 
-export function ProductCard({ id, name, price, images, stock }: Props) {
+export function ProductCard({ slug, name, price, images, stock }: Props) {
   const cover = images[0];
   const inStock = stock > 0;
 
   return (
     <Link
-      href={`/products/${id}`}
+      href={`/products/${slug}`}
       className="group block rounded-xl overflow-hidden bg-ink-900 border border-white/5 hover:border-ember-500/40 hover:shadow-card transition-all duration-300"
     >
       <div className="relative aspect-square bg-ink-800 overflow-hidden">

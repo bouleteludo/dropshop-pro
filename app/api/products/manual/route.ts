@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { makeSlug } from "@/lib/slug";
 
 function slugify(name: string) {
   return name
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
     const product = await prisma.product.create({
       data: {
         sku,
+        slug: makeSlug(body.name),
         name: body.name.trim(),
         description: body.description?.trim() ?? "",
         images: JSON.stringify(images),

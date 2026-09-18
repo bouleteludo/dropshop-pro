@@ -7,11 +7,18 @@ import { ProductGallery } from "@/components/ProductGallery";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ slug: string }> };
+
+// Products created before the slug field existed have slug: null and are still
+// only reachable by id — accept either so old links (already shared/indexed)
+// keep working alongside the new SEO-friendly URLs.
+async function findProduct(param: string) {
+  return prisma.product.findFirst({ where: { OR: [{ slug: param }, { id: param }] } });
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const product = await prisma.product.findUnique({ where: { id } });
+  const { slug } = await params;
+  const product = await findProduct(slug);
   if (!product) return {};
 
   const images = JSON.parse(product.images) as string[];
@@ -28,8 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const { id } = await params;
-  const product = await prisma.product.findUnique({ where: { id } });
+  const { slug } = await params;
+  const product = await findProduct(slug);
   if (!product) notFound();
 
   const images = JSON.parse(product.images) as string[];
@@ -44,7 +51,7 @@ export default async function ProductPage({ params }: Props) {
     image: images,
     offers: {
       "@type": "Offer",
-      url: `${siteUrl}/products/${product.id}`,
+      url: `${siteUrl}/products/${product.slug ?? product.id}`,
       priceCurrency: "EUR",
       price: product.price.toFixed(2),
       availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
