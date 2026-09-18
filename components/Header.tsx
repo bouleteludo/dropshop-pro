@@ -6,6 +6,8 @@ import { CartBadge } from "@/components/CartBadge";
 
 const NAV = [
   { href: "/#collection", label: "Collection" },
+  { href: "/categorie/masques", label: "Masques" },
+  { href: "/categorie/decoration", label: "Décoration" },
   { href: "/#livraison", label: "Livraison" },
   { href: "/#contact", label: "Contact" },
 ];

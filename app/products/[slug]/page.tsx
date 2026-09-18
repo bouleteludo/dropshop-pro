@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductGallery } from "@/components/ProductGallery";
+import { ProductCard } from "@/components/ProductCard";
+import { CATEGORIES, matchesCategory } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +44,13 @@ export default async function ProductPage({ params }: Props) {
   const images = JSON.parse(product.images) as string[];
   const inStock = product.stock > 0;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://boo-shop.vercel.app";
+
+  const productCategory = CATEGORIES.find((c) => matchesCategory(product, c));
+  const similar = productCategory
+    ? (await prisma.product.findMany({ where: { active: true, id: { not: product.id } } }))
+        .filter((p) => matchesCategory(p, productCategory))
+        .slice(0, 4)
+    : [];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -126,6 +135,33 @@ export default async function ProductPage({ params }: Props) {
           </dl>
         </div>
       </div>
+
+      {similar.length > 0 && productCategory && (
+        <section className="mt-16 sm:mt-24 pt-10 border-t border-white/5">
+          <div className="flex items-end justify-between mb-6">
+            <h2 className="font-display text-xl sm:text-2xl text-bone-50">Produits similaires</h2>
+            <Link
+              href={`/categorie/${productCategory.slug}`}
+              className="text-sm text-bone-400 hover:text-ember-400 transition-colors"
+            >
+              Voir tout →
+            </Link>
+          </div>
+          <ul className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {similar.map((p) => (
+              <li key={p.id}>
+                <ProductCard
+                  slug={p.slug ?? p.id}
+                  name={p.name}
+                  price={p.price}
+                  images={JSON.parse(p.images) as string[]}
+                  stock={p.stock}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   );
 }
