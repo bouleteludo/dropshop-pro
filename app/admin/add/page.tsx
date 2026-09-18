@@ -65,9 +65,14 @@ export default function AddProductPage() {
         Pour un article trouvé ailleurs que sur CJ (AliExpress, Alibaba, un autre site…) — copie ses
         infos ici, pas besoin d&apos;API.
       </p>
-      <Link href="/admin/import" className="text-sm text-ember-400 hover:text-ember-300 transition-colors">
-        ← Retour à l&apos;import CJ
-      </Link>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <Link href="/admin/import" className="text-ember-400 hover:text-ember-300 transition-colors">
+          ← Retour à l&apos;import CJ
+        </Link>
+        <Link href="/admin/products" className="text-ember-400 hover:text-ember-300 transition-colors">
+          Gérer / supprimer des produits →
+        </Link>
+      </div>
 
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
         <div>
