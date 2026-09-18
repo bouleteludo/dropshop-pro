@@ -50,10 +50,10 @@ export function CartView() {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_360px] gap-10">
-      <ul className="divide-y divide-white/5 border-y border-white/5">
+    <div className="grid lg:grid-cols-[1fr_360px] gap-10 min-w-0">
+      <ul className="divide-y divide-white/5 border-y border-white/5 min-w-0">
         {items.map((item) => (
-          <li key={item.productId} className="py-5 flex gap-4 sm:gap-6">
+          <li key={item.productId} className="py-5 flex gap-4 sm:gap-6 min-w-0">
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-lg overflow-hidden bg-ink-800 border border-white/5">
               {item.image ? (
                 // eslint-disable-next-line @next/next/no-img-element

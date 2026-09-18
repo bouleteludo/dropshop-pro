@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 
+// The raw <title> tag (used only when a page has no og:title) commonly
+// appends the site name after a separator, e.g. "Product name : Amazon.fr:
+// Jeux et Jouets" — strip that and cap the length so it can't produce a
+// product name long enough to break the storefront's layout.
+function cleanFallbackTitle(raw: string): string {
+  const trimmed = raw.trim();
+  const firstSegment = trimmed.split(/\s[:|–—-]\s/)[0].trim();
+  const name = firstSegment.length > 8 ? firstSegment : trimmed;
+  return name.slice(0, 120);
+}
+
 // Best-effort product info extraction from a public product page (AliExpress,
 // Alibaba, or any other store) — reads standard OpenGraph/meta tags and any
 // embedded schema.org Product JSON-LD. Many storefronts block server-side
@@ -49,7 +60,7 @@ export async function POST(req: NextRequest) {
     const meta = (name: string) =>
       $(`meta[property="${name}"]`).attr("content") ?? $(`meta[name="${name}"]`).attr("content");
 
-    let name = meta("og:title") ?? $("title").first().text().trim();
+    let name = meta("og:title") ?? cleanFallbackTitle($("title").first().text());
     let description = meta("og:description") ?? meta("description");
     let video = meta("og:video") ?? meta("og:video:url") ?? meta("og:video:secure_url");
     let price: number | undefined;
@@ -90,7 +101,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      name: name?.trim() || undefined,
+      name: name?.trim().slice(0, 120) || undefined,
       description: description?.trim() || undefined,
       images: Array.from(images).slice(0, 8),
       video: video || undefined,
