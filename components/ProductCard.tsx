@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
@@ -20,12 +19,15 @@ export function ProductCard({ slug, name, price, images, stock }: Props) {
     >
       <div className="relative aspect-square bg-ink-800 overflow-hidden">
         {cover ? (
-          <Image
+          // Product images can come from any source (CJ, AliExpress, Alibaba, a manual
+          // upload…), so we can't rely on next/image's allow-listed domains here —
+          // a plain <img> renders regardless of host.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={cover}
             alt={name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 400px"
-            className="object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out"
           />
         ) : null}
 

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart-store";
@@ -35,7 +34,8 @@ export function CartView() {
           <li key={item.productId} className="py-5 flex gap-4 sm:gap-6">
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-lg overflow-hidden bg-ink-800 border border-white/5">
               {item.image ? (
-                <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover" />
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={item.image} alt={item.name} className="absolute inset-0 h-full w-full object-cover" />
               ) : null}
             </div>
             <div className="flex-1 min-w-0">

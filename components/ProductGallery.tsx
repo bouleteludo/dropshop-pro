@@ -1,8 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
+// Product images can come from any source (CJ, AliExpress, Alibaba, a manual
+// upload…), so we can't rely on next/image's allow-listed domains here — plain
+// <img> elements render regardless of host.
 export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
   const cover = images[active] ?? images[0];
@@ -11,14 +13,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
     <div className="flex flex-col gap-4">
       <div className="relative aspect-square bg-ink-900 border border-white/5 rounded-xl overflow-hidden">
         {cover ? (
-          <Image
-            src={cover}
-            alt={alt}
-            fill
-            sizes="(max-width: 768px) 100vw, 600px"
-            className="object-cover"
-            priority
-          />
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={cover} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
         ) : null}
       </div>
       {images.length > 1 && (
@@ -33,7 +29,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
                 }`}
                 aria-label={`Voir image ${i + 1}`}
               >
-                <Image src={src} alt="" fill sizes="120px" className="object-cover" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
               </button>
             </li>
           ))}
