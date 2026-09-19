@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: product.name,
     description: product.description.slice(0, 155),
+    alternates: { canonical: `/products/${product.slug ?? product.id}` },
     openGraph: {
       title: product.name,
       description: product.description.slice(0, 155),
@@ -58,12 +59,22 @@ export default async function ProductPage({ params }: Props) {
     name: product.name,
     description: product.description,
     image: images,
+    sku: product.sku,
+    brand: { "@type": "Brand", name: "BOO SHOP" },
     offers: {
       "@type": "Offer",
       url: `${siteUrl}/products/${product.slug ?? product.id}`,
       priceCurrency: "EUR",
       price: product.price.toFixed(2),
       availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "FR",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+      },
     },
   };
 
@@ -95,7 +106,12 @@ export default async function ProductPage({ params }: Props) {
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-bone-50 mb-4 leading-snug">
             {product.name}
           </h1>
-          <p className="text-2xl text-ember-400 font-medium mb-5">{product.price.toFixed(2)} €</p>
+          <div className="flex items-end gap-3 mb-5">
+            <p className="text-2xl sm:text-3xl text-ember-400 font-semibold">{product.price.toFixed(2)} €</p>
+            {inStock && product.stock <= 5 && (
+              <span className="text-xs text-ember-300 mb-1">Plus que {product.stock} en stock</span>
+            )}
+          </div>
 
           <span
             className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs mb-6 ${
@@ -119,7 +135,19 @@ export default async function ProductPage({ params }: Props) {
             inStock={inStock}
           />
 
-          <dl className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-bone-400 border-t border-white/5 pt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-6">
+            <div className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-3 text-xs text-bone-200">
+              ⚡ Effet visuel immédiat
+            </div>
+            <div className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-3 text-xs text-bone-200">
+              🎃 Pensé pour Halloween
+            </div>
+            <div className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-3 text-xs text-bone-200">
+              🔒 Paiement Stripe
+            </div>
+          </div>
+
+          <dl className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-bone-400 border-t border-white/5 pt-6">
             <div>
               <dt className="text-bone-50 mb-0.5">Paiement</dt>
               <dd>Sécurisé</dd>

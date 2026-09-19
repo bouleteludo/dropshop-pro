@@ -32,19 +32,19 @@ export default async function HomePage() {
             Collection Halloween — édition limitée
           </p>
           <h1 className="animate-fade-up-delay-1 font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.05] text-bone-50 mb-6 max-w-3xl mx-auto">
-            L&apos;obscurité,
-            <span className="block text-ember-400/90">avec goût.</span>
+            Halloween qui se remarque.
+            <span className="block text-ember-400/90">Sans tomber dans le kitsch.</span>
           </h1>
           <p className="animate-fade-up-delay-2 max-w-xl mx-auto text-bone-200/80 text-base sm:text-lg mb-10 leading-relaxed">
-            Décoration, masques et accessoires sélectionnés pour une saison qui ne dure qu&apos;un
-            temps — jusqu&apos;au 1<sup>er</sup> novembre.
+            Une sélection courte de pièces qui créent immédiatement l&apos;effet « waouh » pour
+            Halloween — faciles à comprendre, faites pour être offertes ou utilisées en soirée.
           </p>
           <div className="animate-fade-up-delay-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="#collection"
+              href={heroProduct ? `/products/${heroProduct.slug ?? heroProduct.id}` : "#collection"}
               className="inline-flex items-center justify-center rounded-full bg-ember-500 hover:bg-ember-400 hover:shadow-ember text-ink-950 font-medium px-8 py-3.5 transition-all w-full sm:w-auto"
             >
-              Découvrir la collection
+              {heroProduct ? "Voir le produit vedette" : "Découvrir la collection"}
             </Link>
             <Link
               href="#livraison"
