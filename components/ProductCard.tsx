@@ -11,6 +11,7 @@ type Props = {
 export function ProductCard({ slug, name, price, images, stock }: Props) {
   const cover = images[0];
   const inStock = stock > 0;
+  const lowStock = inStock && stock <= 5;
 
   return (
     <Link
@@ -40,11 +41,15 @@ export function ProductCard({ slug, name, price, images, stock }: Props) {
 
       <div className="p-4">
         <p className="text-sm text-bone-50 leading-snug line-clamp-2 mb-2 min-h-[2.5em]">{name}</p>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <p className="text-ember-400 font-medium">{price.toFixed(2)} €</p>
-          <span className="text-xs text-bone-400 opacity-0 group-hover:opacity-100 transition-opacity">
-            Voir →
-          </span>
+          {lowStock ? (
+            <span className="text-[11px] text-ember-300">Plus que {stock} en stock</span>
+          ) : (
+            <span className="text-xs text-bone-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              Voir →
+            </span>
+          )}
         </div>
       </div>
     </Link>
