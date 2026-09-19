@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cinzel, Inter } from "next/font/google";
+import Link from "next/link";
 import { Header } from "@/components/Header";
 import "./globals.css";
 
@@ -77,8 +78,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </p>
               </div>
             </div>
-            <div className="border-t border-white/5 py-5 text-center text-xs text-bone-400/70">
-              © {new Date().getFullYear()} Boo Shop. Tous droits réservés.
+            <div className="border-t border-white/5 py-5 flex flex-col items-center gap-3 text-xs text-bone-400/70">
+              <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1.5">
+                <Link href="/mentions-legales" className="hover:text-bone-200 transition-colors">
+                  Mentions légales
+                </Link>
+                <Link href="/cgv" className="hover:text-bone-200 transition-colors">
+                  CGV
+                </Link>
+                <Link href="/retractation" className="hover:text-bone-200 transition-colors">
+                  Rétractation
+                </Link>
+                <Link href="/confidentialite" className="hover:text-bone-200 transition-colors">
+                  Confidentialité
+                </Link>
+              </nav>
+              <p>© {new Date().getFullYear()} Boo Shop. Tous droits réservés.</p>
             </div>
           </footer>
         </div>
