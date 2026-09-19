@@ -20,6 +20,9 @@ export default async function AdminProductsPage() {
         <Link href="/admin/add" className="text-ember-400 hover:text-ember-300 transition-colors">
           Ajouter un produit manuel
         </Link>
+        <Link href="/admin/orders" className="text-ember-400 hover:text-ember-300 transition-colors">
+          Voir les commandes →
+        </Link>
       </div>
 
       {products.length === 0 ? (

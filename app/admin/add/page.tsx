@@ -132,6 +132,9 @@ export default function AddProductPage() {
         <Link href="/admin/products" className="text-ember-400 hover:text-ember-300 transition-colors">
           Gérer / supprimer des produits →
         </Link>
+        <Link href="/admin/orders" className="text-ember-400 hover:text-ember-300 transition-colors">
+          Voir les commandes →
+        </Link>
       </div>
 
       <div className="mt-8 p-5 rounded-xl border border-ember-500/25 bg-ember-500/5">

@@ -54,6 +54,34 @@ export async function POST(req: NextRequest) {
       mode: "payment",
       line_items: lineItems,
       shipping_address_collection: { allowed_countries: ["FR", "BE", "CH", "LU", "MC"] },
+      // Generic tier names on purpose — fulfillment goes through CJ's own carrier
+      // choice (not a contracted French carrier), so naming a specific brand
+      // (Colissimo, Chronopost...) here would be misleading. Estimates reflect
+      // realistic dropshipping lead times, not next-day domestic delivery.
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 490, currency: "eur" },
+            display_name: "Livraison standard",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 9 },
+              maximum: { unit: "business_day", value: 18 },
+            },
+          },
+        },
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: 990, currency: "eur" },
+            display_name: "Livraison express",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 5 },
+              maximum: { unit: "business_day", value: 10 },
+            },
+          },
+        },
+      ],
       success_url: `${siteUrl}/commande/succes?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/cart`,
       metadata: {
