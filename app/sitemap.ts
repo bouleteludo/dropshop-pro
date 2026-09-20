@@ -1,35 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { CATEGORIES } from "@/lib/categories";
-
-export const dynamic = "force-dynamic";
-
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://boo-shop.vercel.app";
-
-  const products = await prisma.product.findMany({
-    where: { active: true },
-    select: { id: true, slug: true, updatedAt: true },
-  });
-
-  return [
-    {
-      url: siteUrl,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1,
-    },
-    ...CATEGORIES.map((c) => ({
-      url: `${siteUrl}/categorie/${c.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    })),
-    ...products.map((p) => ({
-      url: `${siteUrl}/products/${p.slug ?? p.id}`,
-      lastModified: p.updatedAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    })),
-  ];
-}
+import { BOO_CHARACTERS } from "@/lib/boo-characters";
+export const dynamic="force-dynamic";
+export default async function sitemap():Promise<MetadataRoute.Sitemap>{const siteUrl=process.env.NEXT_PUBLIC_SITE_URL??"https://boo-shop.vercel.app";const products=await prisma.product.findMany({where:{active:true},select:{id:true,slug:true,updatedAt:true}});return[{url:siteUrl,lastModified:new Date(),changeFrequency:"daily",priority:1},{url:`${siteUrl}/personnages`,lastModified:new Date(),changeFrequency:"weekly",priority:.9},{url:`${siteUrl}/liste-de-souhaits`,lastModified:new Date(),changeFrequency:"weekly",priority:.4},{url:`${siteUrl}/contact`,lastModified:new Date(),changeFrequency:"monthly",priority:.4},...CATEGORIES.map(c=>({url:`${siteUrl}/categorie/${c.slug}`,lastModified:new Date(),changeFrequency:"weekly" as const,priority:.7})),...BOO_CHARACTERS.map(c=>({url:`${siteUrl}/personnages/${c.id}`,lastModified:new Date(),changeFrequency:"monthly" as const,priority:.45})),...products.map(p=>({url:`${siteUrl}/products/${p.slug??p.id}`,lastModified:p.updatedAt,changeFrequency:"weekly" as const,priority:.7}))]}
