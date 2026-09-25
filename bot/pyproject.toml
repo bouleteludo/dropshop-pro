@@ -1,0 +1,10 @@
+[project]
+name = "tradebot"
+version = "0.1.0"
+description = "Bot de trading : backtest, paper trading, gestion du risque (V1, sans trading réel)"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

@@ -93,3 +93,9 @@ lib/
 prisma/
   schema.prisma           # modèles Product / Order / OrderItem
 ```
+
+## Bot de trading (sous-projet indépendant)
+
+Le dossier [`bot/`](bot/) contient un bot de trading crypto en Python
+(backtest, paper trading, gestion du risque), sans lien avec la boutique et
+sans trading réel. Voir [`bot/README.md`](bot/README.md).
