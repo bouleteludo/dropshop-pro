@@ -9,6 +9,9 @@ import { CATEGORIES, matchesCategory } from "@/lib/categories";
 import { STORE } from "@/lib/store-config";
 import { parseProductImages } from "@/lib/product-images";
 import { getThemeBanner } from "@/lib/theme-banner";
+import { productMatchesSeason, getSeasonBySlug } from "@/lib/seasons";
+import { getActiveThemeId } from "@/lib/site-settings";
+import { THEMES } from "@/lib/theme-config";
 
 export const dynamic = "force-dynamic";
 
@@ -51,10 +54,13 @@ export default async function ProductPage({ params }: Props) {
 
   const bannerSrc = await getThemeBanner("pages/product.png");
 
+  const activeTheme = await getActiveThemeId();
+  const season = await getSeasonBySlug(THEMES[activeTheme].seasonSlug);
+
   const productCategory = CATEGORIES.find((c) => matchesCategory(product, c));
   const similar = productCategory
     ? (await prisma.product.findMany({ where: { active: true, id: { not: product.id } } }))
-        .filter((p) => matchesCategory(p, productCategory))
+        .filter((p) => productMatchesSeason(p, season) && matchesCategory(p, productCategory))
         .slice(0, 4)
     : [];
 

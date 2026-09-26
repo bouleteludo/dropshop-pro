@@ -6,6 +6,9 @@ import { ProductCard } from "@/components/ProductCard";
 import { parseProductImages } from "@/lib/product-images";
 import { CATEGORIES, getCategory, matchesCategory } from "@/lib/categories";
 import { getThemeBanner } from "@/lib/theme-banner";
+import { productMatchesSeason, getSeasonBySlug } from "@/lib/seasons";
+import { getActiveThemeId } from "@/lib/site-settings";
+import { THEMES } from "@/lib/theme-config";
 
 export const dynamic = "force-dynamic";
 
@@ -31,8 +34,13 @@ export default async function CategoryPage({ params }: Props) {
   const category = getCategory(slug);
   if (!category) notFound();
 
-  const products = await prisma.product.findMany({ where: { active: true }, orderBy: { createdAt: "desc" } });
-  const matched = products.filter((p) => matchesCategory(p, category));
+  const [products, activeTheme] = await Promise.all([
+    prisma.product.findMany({ where: { active: true }, orderBy: { createdAt: "desc" } }),
+    getActiveThemeId(),
+  ]);
+  const season = await getSeasonBySlug(THEMES[activeTheme].seasonSlug);
+  const seasonal = products.filter((p) => productMatchesSeason(p, season));
+  const matched = seasonal.filter((p) => matchesCategory(p, category));
 
   // Prefer a banner made for this exact category, fall back to a generic
   // "browsing" banner for the theme, then no image at all.

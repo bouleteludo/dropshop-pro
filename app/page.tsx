@@ -23,8 +23,7 @@ export default async function HomePage() {
 
   const theme = THEMES[activeTheme];
   const season = await getSeasonBySlug(theme.seasonSlug);
-  const seasonal = allProducts.filter((product) => productMatchesSeason(product, season));
-  const products = seasonal.length >= 3 ? seasonal : allProducts;
+  const products = allProducts.filter((product) => productMatchesSeason(product, season));
   const heroProduct = products.find((p) => p.stock > 0) ?? products[0];
   const heroHref = heroProduct ? `/products/${heroProduct.slug ?? heroProduct.id}` : "#collection";
   const heroImages = heroProduct ? parseProductImages(heroProduct.images) : [];
