@@ -8,10 +8,11 @@
   }
 
   body {
-    background-color: #08090b;
+    background-color: var(--season-background, #08090b);
+    color: var(--season-foreground, #f6f1ea);
     background-image:
-      radial-gradient(ellipse 60% 40% at 50% -10%, rgba(193, 101, 31, 0.14), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 90% 10%, rgba(74, 47, 116, 0.12), transparent 60%);
+      radial-gradient(ellipse 60% 40% at 50% -10%, color-mix(in srgb, var(--season-accent, #c1651f) 16%, transparent), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 10%, color-mix(in srgb, var(--season-secondary, #4a2f74) 14%, transparent), transparent 60%);
     background-attachment: fixed;
     background-repeat: no-repeat;
   }
@@ -74,4 +75,518 @@
   * {
     transition-duration: 0.01ms !important;
   }
+}
+
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
+
+@media (max-width: 767px) {
+  body::before { opacity: 0.02; }
+}
+
+
+/* Halloween hero — uses the approved BOO SHOP scene while preserving the original palette. */
+.halloween-scene {
+  transform: scale(1.025);
+  animation: halloween-cinematic-pan 22s ease-in-out infinite alternate;
+}
+.halloween-overlay {
+  background:
+    linear-gradient(90deg, rgba(8,9,11,.78) 0%, rgba(8,9,11,.48) 38%, rgba(8,9,11,.08) 72%, rgba(8,9,11,.18) 100%),
+    linear-gradient(0deg, rgba(8,9,11,.66) 0%, transparent 44%);
+}
+.halloween-copy { box-shadow: 0 28px 80px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.05); }
+@keyframes halloween-cinematic-pan {
+  from { transform: scale(1.025) translate3d(0,0,0); }
+  to { transform: scale(1.075) translate3d(-1%,-.4%,0); }
+}
+@media (max-width:900px) {
+  .halloween-overlay { background: linear-gradient(0deg, rgba(8,9,11,.92) 0%, rgba(8,9,11,.32) 70%, rgba(8,9,11,.10) 100%); }
+  .halloween-copy { max-width:100%; }
+}
+@media (prefers-reduced-motion:reduce) { .halloween-scene { animation:none !important; } }
+
+/* --------------------------------------------------------------------------
+   Seasonal theme layer
+   Halloween has no overrides on purpose: the original design remains intact.
+   -------------------------------------------------------------------------- */
+html[data-theme="christmas"] body {
+  background-color: #021d14;
+  background-image:
+    radial-gradient(ellipse 65% 45% at 50% -8%, rgba(216, 184, 79, 0.16), transparent 62%),
+    radial-gradient(ellipse 45% 34% at 92% 8%, rgba(179, 19, 37, 0.16), transparent 58%),
+    linear-gradient(180deg, #021d14 0%, #04291d 58%, #061f18 100%);
+}
+
+html[data-theme="christmas"] body::before {
+  opacity: 0.025;
+}
+
+html[data-theme="christmas"] ::selection {
+  background: rgba(216, 184, 79, 0.36);
+  color: #fffaf0;
+}
+
+html[data-theme="christmas"] :focus-visible {
+  outline-color: #d8b84f;
+}
+
+/* Re-map the existing design tokens only while Christmas is active. */
+html[data-theme="christmas"] .bg-ink-950 { background-color: #021d14 !important; }
+html[data-theme="christmas"] .bg-ink-900 { background-color: #073421 !important; }
+html[data-theme="christmas"] .bg-ink-900\/40 { background-color: rgba(7, 52, 33, .58) !important; }
+html[data-theme="christmas"] .bg-ink-900\/60 { background-color: rgba(7, 52, 33, .72) !important; }
+html[data-theme="christmas"] .bg-ink-800 { background-color: #0b432b !important; }
+html[data-theme="christmas"] .text-bone-50 { color: #fffaf0 !important; }
+html[data-theme="christmas"] .text-bone-200,
+html[data-theme="christmas"] .text-bone-200\/80 { color: rgba(255, 250, 240, .86) !important; }
+html[data-theme="christmas"] .text-bone-400,
+html[data-theme="christmas"] .text-bone-400\/70 { color: rgba(255, 250, 240, .63) !important; }
+html[data-theme="christmas"] .text-ember-300,
+html[data-theme="christmas"] .text-ember-400,
+html[data-theme="christmas"] .text-ember-400\/90 { color: #f3d47a !important; }
+html[data-theme="christmas"] .text-ember-500 { color: #d8b84f !important; }
+html[data-theme="christmas"] .bg-ember-500 { background-color: #b31325 !important; }
+html[data-theme="christmas"] .bg-ember-400 { background-color: #cf2335 !important; }
+html[data-theme="christmas"] .hover\:bg-ember-400:hover { background-color: #cf2335 !important; }
+html[data-theme="christmas"] .border-ember-500\/20 { border-color: rgba(216,184,79,.25) !important; }
+html[data-theme="christmas"] .border-ember-500\/30 { border-color: rgba(216,184,79,.34) !important; }
+html[data-theme="christmas"] .border-ember-500\/50 { border-color: rgba(216,184,79,.55) !important; }
+html[data-theme="christmas"] .hover\:border-ember-500\/50:hover { border-color: rgba(216,184,79,.6) !important; }
+html[data-theme="christmas"] .bg-ember-500\/10 { background-color: rgba(179,19,37,.14) !important; }
+html[data-theme="christmas"] .bg-ember-500\/\[0\.04\] { background-color: rgba(179,19,37,.07) !important; }
+html[data-theme="christmas"] .bg-ember-500\/\[0\.06\] { background-color: rgba(179,19,37,.09) !important; }
+html[data-theme="christmas"] .bg-ember-500\/\[0\.08\] { background-color: rgba(179,19,37,.12) !important; }
+html[data-theme="christmas"] .text-ink-950 { color: #fff !important; }
+
+html[data-theme="christmas"] .seasonal-banner {
+  background: linear-gradient(90deg, #7d0d1a, #b31325 42%, #7d0d1a) !important;
+  border-color: rgba(216, 184, 79, .55) !important;
+  color: #fff4cf !important;
+}
+
+html[data-theme="christmas"] header {
+  background: rgba(2, 29, 20, .88) !important;
+  border-bottom-color: rgba(216,184,79,.16) !important;
+}
+
+html[data-theme="christmas"] .seasonal-trust {
+  background: linear-gradient(90deg, rgba(125,13,26,.36), rgba(7,52,33,.9), rgba(125,13,26,.36)) !important;
+  border-color: rgba(216,184,79,.16) !important;
+}
+
+html[data-theme="christmas"] .seasonal-featured {
+  border-color: rgba(216,184,79,.28) !important;
+  background: linear-gradient(135deg, rgba(179,19,37,.09), rgba(7,52,33,.74)) !important;
+  box-shadow: 0 24px 70px -40px rgba(216,184,79,.4);
+}
+
+html[data-theme="christmas"] .seasonal-footer {
+  background: linear-gradient(180deg, rgba(3,35,24,.75), #021710) !important;
+  border-color: rgba(216,184,79,.14) !important;
+}
+
+/* Christmas hero: the generated visual becomes part of the actual storefront. */
+.christmas-scene {
+  transform: scale(1.035);
+  animation: christmas-cinematic-pan 18s ease-in-out infinite alternate;
+}
+
+.christmas-overlay {
+  background:
+    linear-gradient(90deg, rgba(2,19,13,.08) 0%, rgba(2,19,13,.02) 42%, rgba(2,19,13,.52) 72%, rgba(2,19,13,.78) 100%),
+    linear-gradient(0deg, rgba(2,19,13,.72) 0%, transparent 40%);
+}
+
+.christmas-copy {
+  box-shadow: 0 28px 80px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.christmas-snow i {
+  position: absolute;
+  border-radius: 999px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 0 8px rgba(255,255,255,.7);
+  animation-name: christmas-snowfall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.christmas-gift {
+  position: absolute;
+  z-index: 9;
+  font-size: clamp(24px, 2.4vw, 42px);
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,.38));
+  pointer-events: none;
+}
+
+.gift-one { left: 12%; top: 68%; animation: christmas-gift-one 9s ease-in-out infinite; }
+.gift-two { left: 42%; top: 73%; animation: christmas-gift-two 11s ease-in-out -3s infinite; }
+.gift-three { left: 71%; top: 58%; animation: christmas-gift-three 10s ease-in-out -6s infinite; }
+
+@keyframes christmas-cinematic-pan {
+  0% { transform: scale(1.035) translate3d(0,0,0); }
+  100% { transform: scale(1.09) translate3d(-1.2%, -.8%, 0); }
+}
+
+@keyframes christmas-snowfall {
+  0% { transform: translate3d(0,0,0) rotate(0deg); opacity: 0; }
+  8% { opacity: .95; }
+  70% { opacity: .85; }
+  100% { transform: translate3d(70px, 820px, 0) rotate(280deg); opacity: 0; }
+}
+
+@keyframes christmas-gift-one {
+  0%,100% { transform: translate3d(0,0,0) rotate(-8deg); }
+  50% { transform: translate3d(110px,-56px,0) rotate(10deg); }
+}
+@keyframes christmas-gift-two {
+  0%,100% { transform: translate3d(0,0,0) rotate(6deg); }
+  50% { transform: translate3d(-95px,-72px,0) rotate(-11deg); }
+}
+@keyframes christmas-gift-three {
+  0%,100% { transform: translate3d(0,0,0) rotate(-5deg); }
+  50% { transform: translate3d(65px,-48px,0) rotate(8deg); }
+}
+
+@media (max-width: 900px) {
+  .christmas-overlay {
+    background: linear-gradient(0deg, rgba(2,19,13,.88) 0%, rgba(2,19,13,.15) 66%, rgba(2,19,13,.08) 100%);
+  }
+  .christmas-copy { max-width: 100%; }
+  .gift-two { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .christmas-scene,
+  .christmas-snow i,
+  .christmas-gift {
+    animation: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Saint-Valentin — rouge profond, prune, rose fané et or rosé
+   -------------------------------------------------------------------------- */
+html[data-theme="valentine"] body {
+  background-color: #21050c;
+  background-image:
+    radial-gradient(ellipse 68% 44% at 50% -8%, rgba(178, 32, 65, .20), transparent 62%),
+    radial-gradient(ellipse 48% 34% at 90% 10%, rgba(105, 25, 66, .22), transparent 58%),
+    linear-gradient(180deg, #21050c 0%, #310812 58%, #180309 100%);
+}
+html[data-theme="valentine"] body::before { opacity: .022; }
+html[data-theme="valentine"] ::selection { background: rgba(216, 148, 137, .38); color: #fff4ef; }
+html[data-theme="valentine"] :focus-visible { outline-color: #dda899; }
+html[data-theme="valentine"] .bg-ink-950 { background-color: #21050c !important; }
+html[data-theme="valentine"] .bg-ink-900 { background-color: #340812 !important; }
+html[data-theme="valentine"] .bg-ink-900\/40 { background-color: rgba(52,8,18,.58) !important; }
+html[data-theme="valentine"] .bg-ink-900\/60 { background-color: rgba(52,8,18,.72) !important; }
+html[data-theme="valentine"] .bg-ink-800 { background-color: #4a0b1b !important; }
+html[data-theme="valentine"] .text-bone-50 { color: #fff4ef !important; }
+html[data-theme="valentine"] .text-bone-200,
+html[data-theme="valentine"] .text-bone-200\/80 { color: rgba(255,244,239,.86) !important; }
+html[data-theme="valentine"] .text-bone-400,
+html[data-theme="valentine"] .text-bone-400\/70 { color: rgba(255,226,221,.64) !important; }
+html[data-theme="valentine"] .text-ember-300,
+html[data-theme="valentine"] .text-ember-400,
+html[data-theme="valentine"] .text-ember-400\/90 { color: #f0b9aa !important; }
+html[data-theme="valentine"] .text-ember-500 { color: #dba692 !important; }
+html[data-theme="valentine"] .bg-ember-500 { background-color: #a30f2d !important; }
+html[data-theme="valentine"] .bg-ember-400,
+html[data-theme="valentine"] .hover\:bg-ember-400:hover { background-color: #c1163a !important; }
+html[data-theme="valentine"] .border-ember-500\/20 { border-color: rgba(219,166,146,.25) !important; }
+html[data-theme="valentine"] .border-ember-500\/30 { border-color: rgba(219,166,146,.34) !important; }
+html[data-theme="valentine"] .border-ember-500\/50,
+html[data-theme="valentine"] .hover\:border-ember-500\/50:hover { border-color: rgba(219,166,146,.58) !important; }
+html[data-theme="valentine"] .bg-ember-500\/10 { background-color: rgba(163,15,45,.15) !important; }
+html[data-theme="valentine"] .bg-ember-500\/\[0\.04\] { background-color: rgba(163,15,45,.07) !important; }
+html[data-theme="valentine"] .bg-ember-500\/\[0\.06\] { background-color: rgba(163,15,45,.09) !important; }
+html[data-theme="valentine"] .bg-ember-500\/\[0\.08\] { background-color: rgba(163,15,45,.12) !important; }
+html[data-theme="valentine"] .text-ink-950 { color: #fff !important; }
+html[data-theme="valentine"] .seasonal-banner {
+  background: linear-gradient(90deg, #5f0a21, #a30f2d 48%, #5f0a21) !important;
+  border-color: rgba(219,166,146,.48) !important;
+  color: #ffe5dc !important;
+}
+html[data-theme="valentine"] header {
+  background: rgba(33,5,12,.9) !important;
+  border-bottom-color: rgba(219,166,146,.15) !important;
+}
+html[data-theme="valentine"] .seasonal-trust {
+  background: linear-gradient(90deg, rgba(95,10,33,.55), rgba(52,8,18,.94), rgba(95,10,33,.55)) !important;
+  border-color: rgba(219,166,146,.15) !important;
+}
+html[data-theme="valentine"] .seasonal-featured {
+  border-color: rgba(219,166,146,.26) !important;
+  background: linear-gradient(135deg, rgba(163,15,45,.11), rgba(52,8,18,.8)) !important;
+  box-shadow: 0 24px 70px -40px rgba(219,166,146,.35);
+}
+html[data-theme="valentine"] .seasonal-footer {
+  background: linear-gradient(180deg, rgba(62,8,22,.76), #170308) !important;
+  border-color: rgba(219,166,146,.13) !important;
+}
+.valentine-scene {
+  transform: scale(1.03);
+  animation: valentine-cinematic-pan 20s ease-in-out infinite alternate;
+}
+.valentine-overlay {
+  background:
+    linear-gradient(90deg, rgba(28,3,9,.76) 0%, rgba(28,3,9,.38) 35%, rgba(28,3,9,.07) 68%, rgba(28,3,9,.22) 100%),
+    linear-gradient(0deg, rgba(28,3,9,.65) 0%, transparent 42%);
+}
+.valentine-copy { box-shadow: 0 28px 80px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06); }
+.valentine-petals i {
+  position:absolute;
+  display:block;
+  border-radius: 70% 15% 70% 15%;
+  background: linear-gradient(145deg, #b8143a, #6e0b25);
+  box-shadow: 0 4px 10px rgba(0,0,0,.22);
+  animation-name: valentine-petal-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes valentine-cinematic-pan {
+  from { transform: scale(1.03) translate3d(0,0,0); }
+  to { transform: scale(1.085) translate3d(-1.1%,-.5%,0); }
+}
+@keyframes valentine-petal-fall {
+  0% { transform: translate3d(0,0,0) rotate(0deg); opacity:0; }
+  10% { opacity:.72; }
+  70% { opacity:.62; }
+  100% { transform: translate3d(65px,820px,0) rotate(320deg); opacity:0; }
+}
+@media (max-width:900px) {
+  .valentine-overlay { background: linear-gradient(0deg, rgba(28,3,9,.91) 0%, rgba(28,3,9,.28) 68%, rgba(28,3,9,.08) 100%); }
+  .valentine-copy { max-width:100%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .valentine-scene,
+  .valentine-petals i { animation:none !important; }
+}
+
+
+/* --------------------------------------------------------------------------
+   Pâques — ivoire, vert mousse et or vieilli
+   -------------------------------------------------------------------------- */
+html[data-theme="easter"] body {
+  background-color: #f3efe4;
+  background-image:
+    radial-gradient(ellipse 65% 42% at 50% -8%, rgba(198, 178, 115, .18), transparent 62%),
+    radial-gradient(ellipse 45% 34% at 92% 12%, rgba(101, 122, 78, .14), transparent 58%),
+    linear-gradient(180deg, #f5f0e4 0%, #e9e3d4 60%, #efe9dd 100%);
+}
+html[data-theme="easter"] body::before { opacity: .012; }
+html[data-theme="easter"] ::selection { background: rgba(102, 122, 79, .30); color: #243126; }
+html[data-theme="easter"] :focus-visible { outline-color: #c8b37a; }
+html[data-theme="easter"] .bg-ink-950 { background-color: #273228 !important; }
+html[data-theme="easter"] .bg-ink-900 { background-color: #344238 !important; }
+html[data-theme="easter"] .bg-ink-900\/40 { background-color: rgba(52,66,56,.56) !important; }
+html[data-theme="easter"] .bg-ink-900\/60 { background-color: rgba(52,66,56,.70) !important; }
+html[data-theme="easter"] .bg-ink-800 { background-color: #455447 !important; }
+html[data-theme="easter"] .text-bone-50 { color: #fffaf0 !important; }
+html[data-theme="easter"] .text-bone-200,
+html[data-theme="easter"] .text-bone-200\/80 { color: rgba(255,250,240,.88) !important; }
+html[data-theme="easter"] .text-bone-400,
+html[data-theme="easter"] .text-bone-400\/70 { color: rgba(244,238,219,.66) !important; }
+html[data-theme="easter"] .text-ember-300,
+html[data-theme="easter"] .text-ember-400,
+html[data-theme="easter"] .text-ember-400\/90 { color: #e8d79d !important; }
+html[data-theme="easter"] .text-ember-500 { color: #c8b37a !important; }
+html[data-theme="easter"] .bg-ember-500 { background-color: #667a4f !important; }
+html[data-theme="easter"] .bg-ember-400,
+html[data-theme="easter"] .hover\:bg-ember-400:hover { background-color: #788d5b !important; }
+html[data-theme="easter"] .border-ember-500\/20 { border-color: rgba(200,179,122,.26) !important; }
+html[data-theme="easter"] .border-ember-500\/30 { border-color: rgba(200,179,122,.35) !important; }
+html[data-theme="easter"] .border-ember-500\/50,
+html[data-theme="easter"] .hover\:border-ember-500\/50:hover { border-color: rgba(200,179,122,.58) !important; }
+html[data-theme="easter"] .bg-ember-500\/10 { background-color: rgba(102,122,79,.15) !important; }
+html[data-theme="easter"] .bg-ember-500\/\[0\.04\] { background-color: rgba(102,122,79,.07) !important; }
+html[data-theme="easter"] .bg-ember-500\/\[0\.06\] { background-color: rgba(102,122,79,.09) !important; }
+html[data-theme="easter"] .bg-ember-500\/\[0\.08\] { background-color: rgba(102,122,79,.12) !important; }
+html[data-theme="easter"] .text-ink-950 { color: #fff !important; }
+html[data-theme="easter"] .seasonal-banner {
+  background: linear-gradient(90deg, #526341, #6f8257 48%, #526341) !important;
+  border-color: rgba(232,215,157,.52) !important;
+  color: #fff7dc !important;
+}
+html[data-theme="easter"] header {
+  background: rgba(39,50,40,.92) !important;
+  border-bottom-color: rgba(232,215,157,.16) !important;
+}
+html[data-theme="easter"] .seasonal-trust {
+  background: linear-gradient(90deg, rgba(82,99,65,.72), rgba(52,66,56,.96), rgba(82,99,65,.72)) !important;
+  border-color: rgba(232,215,157,.16) !important;
+}
+html[data-theme="easter"] .seasonal-featured {
+  border-color: rgba(200,179,122,.30) !important;
+  background: linear-gradient(135deg, rgba(102,122,79,.14), rgba(52,66,56,.82)) !important;
+  box-shadow: 0 24px 70px -40px rgba(200,179,122,.34);
+}
+html[data-theme="easter"] .seasonal-footer {
+  background: linear-gradient(180deg, rgba(52,66,56,.88), #243126) !important;
+  border-color: rgba(232,215,157,.14) !important;
+}
+.easter-scene {
+  transform: scale(1.03);
+  animation: easter-cinematic-pan 20s ease-in-out infinite alternate;
+}
+.easter-overlay {
+  background:
+    linear-gradient(90deg, rgba(36,49,38,.68) 0%, rgba(36,49,38,.28) 38%, rgba(36,49,38,.04) 70%, rgba(36,49,38,.14) 100%),
+    linear-gradient(0deg, rgba(36,49,38,.55) 0%, transparent 42%);
+}
+.easter-copy { box-shadow: 0 28px 80px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.06); }
+.easter-petals i {
+  position:absolute;
+  display:block;
+  border-radius: 70% 15% 70% 15%;
+  background: linear-gradient(145deg, #f7efe0, #d7c89b);
+  box-shadow: 0 4px 10px rgba(0,0,0,.14);
+  animation-name: easter-petal-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes easter-cinematic-pan {
+  from { transform: scale(1.03) translate3d(0,0,0); }
+  to { transform: scale(1.08) translate3d(-1%,-.4%,0); }
+}
+@keyframes easter-petal-fall {
+  0% { transform: translate3d(0,0,0) rotate(0deg); opacity:0; }
+  10% { opacity:.75; }
+  70% { opacity:.62; }
+  100% { transform: translate3d(55px,820px,0) rotate(280deg); opacity:0; }
+}
+@media (max-width:900px) {
+  .easter-overlay { background: linear-gradient(0deg, rgba(36,49,38,.88) 0%, rgba(36,49,38,.22) 68%, rgba(36,49,38,.05) 100%); }
+  .easter-copy { max-width:100%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .easter-scene,
+  .easter-petals i { animation:none !important; }
+}
+
+
+/* --------------------------------------------------------------------------
+   Été — sable chaud, bleu pétrole et lumière dorée
+   -------------------------------------------------------------------------- */
+html[data-theme="summer"] body {
+  background-color: #0a2433;
+  background-image:
+    radial-gradient(ellipse 68% 42% at 50% -8%, rgba(241, 195, 115, .18), transparent 62%),
+    radial-gradient(ellipse 40% 28% at 90% 16%, rgba(61, 123, 152, .18), transparent 58%),
+    linear-gradient(180deg, #082031 0%, #0d3145 58%, #0a1f2d 100%);
+}
+html[data-theme="summer"] body::before { opacity: .016; }
+html[data-theme="summer"] ::selection { background: rgba(216, 145, 55, .30); color: #fff6ea; }
+html[data-theme="summer"] :focus-visible { outline-color: #f1d08b; }
+html[data-theme="summer"] .bg-ink-950 { background-color: #082031 !important; }
+html[data-theme="summer"] .bg-ink-900 { background-color: #103247 !important; }
+html[data-theme="summer"] .bg-ink-900\/40 { background-color: rgba(16,50,71,.58) !important; }
+html[data-theme="summer"] .bg-ink-900\/60 { background-color: rgba(16,50,71,.72) !important; }
+html[data-theme="summer"] .bg-ink-800 { background-color: #16465f !important; }
+html[data-theme="summer"] .text-bone-50 { color: #fff6ea !important; }
+html[data-theme="summer"] .text-bone-200,
+html[data-theme="summer"] .text-bone-200\/80 { color: rgba(255,246,234,.88) !important; }
+html[data-theme="summer"] .text-bone-400,
+html[data-theme="summer"] .text-bone-400\/70 { color: rgba(238,230,214,.66) !important; }
+html[data-theme="summer"] .text-ember-300,
+html[data-theme="summer"] .text-ember-400,
+html[data-theme="summer"] .text-ember-400\/90 { color: #f5d98b !important; }
+html[data-theme="summer"] .text-ember-500 { color: #f1c375 !important; }
+html[data-theme="summer"] .bg-ember-500 { background-color: #d89137 !important; }
+html[data-theme="summer"] .bg-ember-400,
+html[data-theme="summer"] .hover\:bg-ember-400:hover { background-color: #e0a14f !important; }
+html[data-theme="summer"] .border-ember-500\/20 { border-color: rgba(241,195,117,.26) !important; }
+html[data-theme="summer"] .border-ember-500\/30 { border-color: rgba(241,195,117,.36) !important; }
+html[data-theme="summer"] .border-ember-500\/50,
+html[data-theme="summer"] .hover\:border-ember-500\/50:hover { border-color: rgba(241,195,117,.58) !important; }
+html[data-theme="summer"] .bg-ember-500\/10 { background-color: rgba(216,145,55,.14) !important; }
+html[data-theme="summer"] .bg-ember-500\/\[0\.04\] { background-color: rgba(216,145,55,.08) !important; }
+html[data-theme="summer"] .bg-ember-500\/\[0\.06\] { background-color: rgba(216,145,55,.10) !important; }
+html[data-theme="summer"] .bg-ember-500\/\[0\.08\] { background-color: rgba(216,145,55,.14) !important; }
+html[data-theme="summer"] .text-ink-950 { color: #08273a !important; }
+html[data-theme="summer"] .seasonal-banner {
+  background: linear-gradient(90deg, #0c4661, #d89137 52%, #0c4661) !important;
+  border-color: rgba(241,208,139,.48) !important;
+  color: #fff6e3 !important;
+}
+html[data-theme="summer"] header {
+  background: rgba(8,32,49,.90) !important;
+  border-bottom-color: rgba(241,208,139,.15) !important;
+}
+html[data-theme="summer"] .seasonal-trust {
+  background: linear-gradient(90deg, rgba(12,70,97,.68), rgba(16,50,71,.94), rgba(12,70,97,.68)) !important;
+  border-color: rgba(241,208,139,.14) !important;
+}
+html[data-theme="summer"] .seasonal-featured {
+  border-color: rgba(241,195,117,.28) !important;
+  background: linear-gradient(135deg, rgba(216,145,55,.10), rgba(16,50,71,.82)) !important;
+  box-shadow: 0 24px 70px -40px rgba(241,195,117,.34);
+}
+html[data-theme="summer"] .seasonal-footer {
+  background: linear-gradient(180deg, rgba(14,56,78,.72), #071927) !important;
+  border-color: rgba(241,208,139,.13) !important;
+}
+.summer-scene {
+  transform: scale(1.03);
+  animation: summer-cinematic-pan 20s ease-in-out infinite alternate;
+}
+.summer-overlay {
+  background:
+    linear-gradient(90deg, rgba(8,26,40,.94) 0%, rgba(8,26,40,.78) 34%, rgba(8,26,40,.20) 68%, rgba(8,26,40,.18) 100%),
+    linear-gradient(0deg, rgba(8,26,40,.62) 0%, transparent 42%);
+}
+.summer-copy { box-shadow: 0 28px 80px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08); }
+.summer-sparkles i {
+  position:absolute;
+  display:block;
+  border-radius:999px;
+  background: radial-gradient(circle, #fff6d7 0%, #f1d08b 62%, rgba(241,208,139,0) 72%);
+  box-shadow: 0 0 16px rgba(241,208,139,.35);
+  animation-name: summer-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.summer-float {
+  position:absolute;
+  z-index:9;
+  font-size: clamp(24px, 2.4vw, 40px);
+  filter: drop-shadow(0 10px 12px rgba(0,0,0,.28));
+  pointer-events:none;
+}
+.summer-shell { left: 13%; top: 70%; animation: summer-shell-drift 9s ease-in-out infinite; }
+.summer-star { left: 74%; top: 64%; animation: summer-star-drift 11s ease-in-out -2.5s infinite; }
+.summer-sun { left: 85%; top: 18%; animation: summer-sun-bob 8s ease-in-out -1.5s infinite; }
+@keyframes summer-cinematic-pan {
+  from { transform: scale(1.03) translate3d(0,0,0); }
+  to { transform: scale(1.08) translate3d(-1.1%,-.45%,0); }
+}
+@keyframes summer-twinkle {
+  0%,100% { transform: scale(.8); opacity:.35; }
+  50% { transform: scale(1.35); opacity:.92; }
+}
+@keyframes summer-shell-drift {
+  0%,100% { transform: translate3d(0,0,0) rotate(-8deg); }
+  50% { transform: translate3d(85px,-38px,0) rotate(8deg); }
+}
+@keyframes summer-star-drift {
+  0%,100% { transform: translate3d(0,0,0) rotate(6deg); }
+  50% { transform: translate3d(-72px,-42px,0) rotate(-7deg); }
+}
+@keyframes summer-sun-bob {
+  0%,100% { transform: translate3d(0,0,0) rotate(0deg); }
+  50% { transform: translate3d(-18px,14px,0) rotate(7deg); }
+}
+@media (max-width:900px) {
+  .summer-overlay { background: linear-gradient(0deg, rgba(8,26,40,.88) 0%, rgba(8,26,40,.24) 68%, rgba(8,26,40,.08) 100%); }
+  .summer-copy { max-width:100%; }
+  .summer-star { display:none; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .summer-scene,
+  .summer-sparkles i,
+  .summer-float { animation:none !important; }
 }

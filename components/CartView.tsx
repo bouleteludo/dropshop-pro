@@ -1,15 +1,40 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart-store";
+import { STORE, getShipping } from "@/lib/store-config";
 
 export function CartView() {
   const { items, setQuantity, remove, total } = useCart();
   const [mounted, setMounted] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const subtotal = total();
+  const shipping = getShipping(subtotal);
+  const remainingForFree = Math.max(0, STORE.freeShippingThreshold - subtotal);
 
   useEffect(() => setMounted(true), []);
+
+  async function handleCheckout() {
+    setCheckingOut(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Impossible de démarrer le paiement");
+      window.location.href = data.url;
+    } catch (err) {
+      setError((err as Error).message);
+      setCheckingOut(false);
+    }
+  }
   if (!mounted) {
     return <p className="text-bone-400">Chargement…</p>;
   }
@@ -29,13 +54,14 @@ export function CartView() {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_360px] gap-10">
-      <ul className="divide-y divide-white/5 border-y border-white/5">
+    <div className="grid lg:grid-cols-[1fr_360px] gap-10 min-w-0">
+      <ul className="divide-y divide-white/5 border-y border-white/5 min-w-0">
         {items.map((item) => (
-          <li key={item.productId} className="py-5 flex gap-4 sm:gap-6">
+          <li key={item.productId} className="py-5 flex gap-4 sm:gap-6 min-w-0">
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-lg overflow-hidden bg-ink-800 border border-white/5">
               {item.image ? (
-                <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover" />
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={item.image} alt={item.name} className="absolute inset-0 h-full w-full object-cover" />
               ) : null}
             </div>
             <div className="flex-1 min-w-0">
@@ -92,24 +118,30 @@ export function CartView() {
           </div>
           <div className="flex justify-between">
             <dt>Livraison</dt>
-            <dd>Calculée à l&apos;étape suivante</dd>
+            <dd>{shipping === 0 ? "Offerte" : `${shipping.toFixed(2)} €`}</dd>
           </div>
         </dl>
         <div className="flex justify-between text-bone-50 font-medium border-t border-white/5 pt-4 mb-6">
           <span>Total</span>
           <span>{total().toFixed(2)} €</span>
         </div>
+        {error && (
+          <p className="mb-3 text-sm text-red-400 rounded-lg border border-red-400/30 bg-red-400/5 px-3 py-2">
+            {error}
+          </p>
+        )}
         <button
           type="button"
-          disabled
-          className="w-full inline-flex items-center justify-center rounded-full bg-ember-500/40 text-ink-950/60 font-medium px-6 py-3 cursor-not-allowed"
-          title="Paiement bientôt disponible"
+          onClick={handleCheckout}
+          disabled={checkingOut}
+          className="w-full inline-flex items-center justify-center rounded-full bg-ember-500 hover:bg-ember-400 text-ink-950 font-medium px-6 py-3 disabled:opacity-50 transition-colors"
         >
-          Passer commande — bientôt
+          {checkingOut ? "Redirection…" : "Passer commande"}
         </button>
         <p className="mt-3 text-xs text-bone-400 text-center">
-          Paiement sécurisé · Livraison suivie · Retours sous 14 jours
+          {remainingForFree > 0 ? `Plus que ${remainingForFree.toFixed(2)} € pour la livraison offerte.` : "Livraison offerte sur cette commande."}
         </p>
+        <p className="mt-2 text-[11px] text-bone-500 text-center">Paiement Stripe sécurisé · conditions de rétractation disponibles avant commande</p>
       </aside>
     </div>
   );
