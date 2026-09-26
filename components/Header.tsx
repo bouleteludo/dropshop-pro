@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { CartBadge } from "@/components/CartBadge";
 
-export function Header({ seasonName = "Saison" }: { seasonName?: string }) {
+export function Header({ seasonName = "Saison", logoSrc }: { seasonName?: string; logoSrc?: string | null }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuId = useId();
@@ -46,8 +46,15 @@ export function Header({ seasonName = "Saison" }: { seasonName?: string }) {
   return (
     <header className={`sticky top-0 z-40 transition-all duration-300 ${headerClass}`}>
       <nav className="container flex items-center justify-between py-3.5" aria-label="Navigation principale">
-        <Link href="/" className="font-display text-lg sm:text-xl tracking-[0.22em] text-bone-50 hover:text-ember-300 transition-colors" aria-label="BOO SHOP — accueil">
-          BOO<span className="text-ember-500">·</span>SHOP
+        <Link href="/" className="shrink-0 hover:opacity-85 transition-opacity" aria-label="BOO SHOP — accueil">
+          {logoSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoSrc} alt="BOO SHOP" className="h-9 sm:h-11 w-auto" />
+          ) : (
+            <span className="font-display text-lg sm:text-xl tracking-[0.22em] text-bone-50">
+              BOO<span className="text-ember-500">·</span>SHOP
+            </span>
+          )}
         </Link>
 
         <ul className="hidden lg:flex items-center gap-6 xl:gap-7 text-sm" aria-label="Catégories et navigation">

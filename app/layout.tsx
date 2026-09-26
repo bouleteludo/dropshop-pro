@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { STORE } from "@/lib/store-config";
 import { getActiveThemeId } from "@/lib/site-settings";
 import { THEMES } from "@/lib/theme-config";
+import { getThemeBanner } from "@/lib/theme-banner";
 import "./globals.css";
 
 const cinzel = Cinzel({ weight: ["500", "600", "700"], subsets: ["latin"], variable: "--font-display", display: "swap" });
@@ -34,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const activeTheme = await getActiveThemeId();
   const theme = THEMES[activeTheme];
+  const logoSrc = await getThemeBanner("logo.png");
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "OnlineStore",
@@ -52,12 +54,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="seasonal-banner bg-ink-900 border-b border-ember-500/20 text-bone-200 text-center text-xs sm:text-sm tracking-wide py-2 px-4">
             {theme.banner}
           </div>
-          <Header />
+          <Header logoSrc={logoSrc} />
           <div className="flex-1">{children}</div>
           <footer className="seasonal-footer border-t border-white/5 mt-24">
             <div className="container py-12 grid gap-10 sm:grid-cols-3 text-sm">
               <div>
-                <p className="font-display text-lg tracking-[0.18em] text-bone-50 mb-3">BOO<span className="text-ember-500">·</span>SHOP</p>
+                {logoSrc ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logoSrc} alt="BOO SHOP" className="h-8 w-auto mb-3" />
+                ) : (
+                  <p className="font-display text-lg tracking-[0.18em] text-bone-50 mb-3">BOO<span className="text-ember-500">·</span>SHOP</p>
+                )}
                 <p className="text-bone-400 leading-relaxed">{theme.footerDescription}</p>
               </div>
               <div id="livraison">
