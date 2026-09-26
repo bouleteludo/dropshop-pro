@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { CATEGORIES, matchesCategory } from "@/lib/categories";
 import { STORE } from "@/lib/store-config";
 import { parseProductImages } from "@/lib/product-images";
+import { getThemeBanner } from "@/lib/theme-banner";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,8 @@ export default async function ProductPage({ params }: Props) {
   const images = parseProductImages(product.images);
   const inStock = product.stock > 0;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://boo-shop.vercel.app";
+
+  const bannerSrc = await getThemeBanner("pages/product.png");
 
   const productCategory = CATEGORIES.find((c) => matchesCategory(product, c));
   const similar = productCategory
@@ -100,6 +103,13 @@ export default async function ProductPage({ params }: Props) {
       <Link href="/#collection" className="text-sm text-bone-400 hover:text-ember-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ember-300 rounded-sm">
         ← Retour à la collection
       </Link>
+
+      {bannerSrc && (
+        <div className="mt-6 rounded-3xl overflow-hidden border border-white/10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={bannerSrc} alt="" className="w-full h-auto max-h-64 object-cover" />
+        </div>
+      )}
 
       <div className="mt-8 grid md:grid-cols-2 gap-10 lg:gap-16">
         <div className="flex flex-col gap-4">

@@ -1,23 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { existsSync } from "node:fs";
-import path from "node:path";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/ProductCard";
 import { parseProductImages } from "@/lib/product-images";
 import { CATEGORIES, getCategory, matchesCategory } from "@/lib/categories";
-import { getActiveThemeId } from "@/lib/site-settings";
-import { THEMES } from "@/lib/theme-config";
-
-// Category banners are optional, hand-picked per theme — only some
-// theme/category combos have one yet. previewImage is "/themes/<slug>/hero.png",
-// so stripping the filename gives the theme's asset folder.
-function categoryBannerSrc(themeFolder: string, categorySlug: string) {
-  const relative = `${themeFolder}/categories/${categorySlug}.png`;
-  const onDisk = path.join(process.cwd(), "public", relative);
-  return existsSync(onDisk) ? relative : null;
-}
+import { getThemeBanner } from "@/lib/theme-banner";
 
 export const dynamic = "force-dynamic";
 
@@ -43,16 +31,13 @@ export default async function CategoryPage({ params }: Props) {
   const category = getCategory(slug);
   if (!category) notFound();
 
-  const [products, activeTheme] = await Promise.all([
-    prisma.product.findMany({ where: { active: true }, orderBy: { createdAt: "desc" } }),
-    getActiveThemeId(),
-  ]);
-
+  const products = await prisma.product.findMany({ where: { active: true }, orderBy: { createdAt: "desc" } });
   const matched = products.filter((p) => matchesCategory(p, category));
 
-  const theme = THEMES[activeTheme];
-  const themeFolder = theme.previewImage.replace(/\/hero\.png$/, "");
-  const bannerSrc = categoryBannerSrc(themeFolder, category.slug);
+  // Prefer a banner made for this exact category, fall back to a generic
+  // "browsing" banner for the theme, then no image at all.
+  const bannerSrc =
+    (await getThemeBanner(`categories/${category.slug}.png`)) ?? (await getThemeBanner("pages/category.png"));
 
   return (
     <main className="container py-10 sm:py-14">
