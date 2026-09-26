@@ -25,7 +25,7 @@ Variables) :
 - `CJ_API_KEY` = ta clé CJ Dropshipping (nécessaire pour que
   `/admin/import` fonctionne — configurée en prod)
 - `ADMIN_PASSWORD` = mot de passe qui protège `/admin` (HTTP Basic Auth, voir
-  `middleware.ts`) — n'importe quel identifiant fonctionne, seul le mot de
+  `proxy.ts`) — n'importe quel identifiant fonctionne, seul le mot de
   passe est vérifié
 
 À chaque build, `prisma db push` synchronise automatiquement le schéma avec
