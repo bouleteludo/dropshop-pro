@@ -84,9 +84,14 @@ export default function ImportPage() {
         Recherchez un produit, importez-le en un clic. Le prix de vente est calculé automatiquement
         à partir du prix fournisseur.
       </p>
-      <Link href="/admin/add" className="text-sm text-ember-400 hover:text-ember-300 transition-colors">
-        Ajouter un produit d&apos;une autre source (AliExpress, Alibaba…) →
-      </Link>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <Link href="/admin/add" className="text-ember-400 hover:text-ember-300 transition-colors">
+          Ajouter un produit d&apos;une autre source (AliExpress, Alibaba…) →
+        </Link>
+        <Link href="/admin/products" className="text-ember-400 hover:text-ember-300 transition-colors">
+          Gérer / supprimer des produits →
+        </Link>
+      </div>
       <div className="mb-6" />
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-8">
