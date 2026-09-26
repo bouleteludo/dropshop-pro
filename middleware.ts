@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// /api/checkout and /api/webhooks/stripe are deliberately excluded — customers
+// and Stripe itself must be able to reach them without admin credentials.
+// Everything else here has no auth check of its own (delete/edit product,
+// change order status, import from CJ, scrape a product URL), so without this
+// matcher covering them too, restoring auth on /admin alone still leaves them
+// callable directly by anyone who finds the endpoint.
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/products/:path*", "/api/orders/:path*", "/api/cj/:path*"],
 };
 
 export function middleware(req: NextRequest) {
