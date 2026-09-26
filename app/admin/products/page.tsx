@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { DeleteProductButton } from "@/components/DeleteProductButton";
+import { ProductThemeSelect } from "@/components/ProductThemeSelect";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,7 @@ export default async function AdminProductsPage() {
         <ul className="flex flex-col gap-2">
           {products.map((product) => {
             const images = JSON.parse(product.images) as string[];
+            const seasonTags = JSON.parse(product.seasonTags) as string[];
             return (
               <li
                 key={product.id}
@@ -46,6 +48,7 @@ export default async function AdminProductsPage() {
                     {!product.active && " · masqué"}
                   </p>
                 </div>
+                <ProductThemeSelect productId={product.id} seasonTags={seasonTags} />
                 <DeleteProductButton productId={product.id} productName={product.name} />
               </li>
             );
