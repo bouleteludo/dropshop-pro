@@ -91,9 +91,6 @@ export default function ImportPage() {
         <Link href="/admin/products" className="text-ember-400 hover:text-ember-300 transition-colors">
           Gérer / supprimer des produits →
         </Link>
-        <Link href="/admin/orders" className="text-ember-400 hover:text-ember-300 transition-colors">
-          Voir les commandes →
-        </Link>
       </div>
       <div className="mb-6" />
 

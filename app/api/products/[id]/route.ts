@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
+  const denied = requireAdmin(_req);
+  if (denied) return denied;
   const { id } = await params;
 
   try {
@@ -25,6 +28,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const { id } = await params;
   const body = (await req.json()) as { active?: boolean };
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
 const VALID_STATUSES = ["PENDING", "PAID", "SENT_TO_CJ", "FULFILLED", "CANCELLED"];
@@ -6,6 +7,8 @@ const VALID_STATUSES = ["PENDING", "PAID", "SENT_TO_CJ", "FULFILLED", "CANCELLED
 type Params = { params: Promise<{ id: string }> };
 
 export async function PATCH(req: NextRequest, { params }: Params) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const { id } = await params;
   const body = (await req.json()) as { status?: string };
 

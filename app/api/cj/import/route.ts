@@ -1,25 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { getCjProductDetail } from "@/lib/cj-client";
 import { prisma } from "@/lib/prisma";
 import { makeSlug } from "@/lib/slug";
+import { getCurrentSeason } from "@/lib/seasons";
 
-// Default markup applied to CJ's supply price to get our sale price. Override
-// via CJ_MARKUP_MULTIPLIER once real payment-fee and ad-spend numbers are
-// known — 2.8x is a safer starting point than 2x for covering Stripe fees,
-// returns and marketing spend on a low-volume store.
+// Default markup applied to CJ's supply price to get our sale price.
+// Tune this per your margin target — it's intentionally simple for the MVP.
 const MARKUP_MULTIPLIER = Number(process.env.CJ_MARKUP_MULTIPLIER ?? "2.8");
-// Floor so a cheap CJ item doesn't end up priced below what covers payment
-// processing + handling.
-const MIN_PRICE = 9.9;
 
 export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const { pid } = (await req.json()) as { pid?: string };
   if (!pid) {
     return NextResponse.json({ error: "Missing pid" }, { status: 400 });
   }
 
   try {
-    const detail = await getCjProductDetail(pid);
+    const [detail, season] = await Promise.all([getCjProductDetail(pid), getCurrentSeason()]);
     const firstVariant = detail.variants[0];
     const cjPrice = Number(detail.sellPrice ?? firstVariant?.variantSellPrice ?? 0);
 
@@ -38,11 +37,12 @@ export async function POST(req: NextRequest) {
         description: detail.description ?? "",
         images: JSON.stringify(detail.productImageSet ?? []),
         video: detail.video,
-        price: Math.max(MIN_PRICE, Math.round(cjPrice * MARKUP_MULTIPLIER * 100) / 100),
+        price: Math.max(9.90, Math.round(cjPrice * MARKUP_MULTIPLIER * 100) / 100),
         cjPrice,
         stock: 0,
         category: detail.categoryName,
         sourceUrl: `https://cjdropshipping.com/product/${pid}.html`,
+        seasonTags: JSON.stringify([season.slug]),
         lastSyncedAt: new Date(),
       },
       update: {

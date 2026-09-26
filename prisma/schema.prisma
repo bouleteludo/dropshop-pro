@@ -26,6 +26,13 @@ model Product {
   category      String?
   sourceUrl     String? // link to the product on CJ, for reference
   active        Boolean  @default(true)
+  seasonTags    String   @default("[]") // JSON array of season slugs; empty means eligible as fallback
+  brand         String?
+  tags          String   @default("[]") // JSON array of merchandising/SEO tags
+  ebayOfferId   String?
+  ebayListingId String?
+  ebayStatus    String?
+  ebayPublishedAt DateTime?
   lastSyncedAt  DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -49,6 +56,52 @@ model Order {
   items OrderItem[]
 }
 
+model Season {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  tagline       String
+  startMonth    Int
+  startDay      Int
+  endMonth      Int
+  endDay        Int
+  heroTitle     String
+  heroSubtitle  String
+  badgeText     String
+  accent        String   @default("#c1651f")
+  secondary     String   @default("#4a2f74")
+  background    String   @default("#08090b")
+  foreground    String   @default("#f6f1ea")
+  active        Boolean  @default(true)
+  priority      Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([active, priority])
+}
+
+model ResearchCandidate {
+  id             String   @id @default(cuid())
+  query          String
+  title          String
+  url            String?
+  image          String?
+  source         String
+  externalId     String?
+  supplierPrice  Float?
+  marketPrice    Float?
+  shippingCost   Float?
+  estimatedMargin Float?
+  trendState     String?
+  notes          String?
+  status         String   @default("WATCHLIST")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([source, createdAt])
+  @@index([status, createdAt])
+}
+
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
@@ -58,4 +111,11 @@ model OrderItem {
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
+}
+
+
+model StoreSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }

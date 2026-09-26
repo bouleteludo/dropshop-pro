@@ -1,95 +1,32 @@
-# DropShop Pro
+# BOO SHOP
 
-Plateforme e-commerce autonome (Next.js + Prisma) avec import automatique de
-produits depuis [CJdropshipping](https://developers.cjdropshipping.com/) via
-leur API officielle v2.
+Boutique saisonnière Next.js pensée pour Vercel : le storefront change de thème, de messages et de sélection selon la saison, tandis qu'un cockpit `/admin` centralise catalogue, commandes, recherche produit et diffusion commerciale.
 
-## Stack
+## Ce qui est inclus
 
-- **Next.js 16** (App Router, TypeScript) — front + back dans le même projet
-- **Prisma** + **Postgres** (Neon, via l'intégration Vercel Storage — une
-  base de données serverless comme le SQLite fichier ne survit pas au
-  système de fichiers éphémère de Vercel)
-- **Tailwind CSS** pour le style
+- Moteur saisonnier : Halloween, Noël, Saint-Valentin, Pâques, Été et une inter-saison neutre ; bascule automatique par dates et thème dynamique.
+- Cockpit admin : dashboard, saisons, produits, commandes, recherche, eBay et Google Shopping.
+- Recherche eBay via l'API Browse quand les clés développeur sont configurées.
+- Publication eBay via l'Inventory API quand le jeton vendeur, la catégorie, l'emplacement et les business policies sont configurés.
+- Google Trends : ouverture directe de l'exploration France à partir de la requête étudiée, sans inventer de score de tendance.
+- Flux Google Merchant Center dynamique à `/google-shopping.xml`.
+- CJ Dropshipping : recherche/import/synchronisation, avec synchronisation quotidienne préparée pour Vercel Cron.
+- Stripe Checkout + webhook idempotent + gestion stock.
+- Protection de `/admin` et des routes d'écriture admin.
+- Import d'URL public durci contre les destinations locales/privées, HTTPS uniquement et redirections automatiques désactivées.
+- Finition UX/UI : navigation mobile complète, focus clavier, lien d'évitement, sections sémantiques, manifest web, metadata/canonical, JSON-LD boutique/site/produit/breadcrumb, images lazy/décodage asynchrone et fallback d'images robuste.
+- Centre de recherche corrigé pour gérer la watchlist sans erreur d'état et avec gestion d'erreurs plus explicite.
+
+## Variables principales
+
+Voir `.env.example`. Les familles utilisées sont `EBAY_*`, `GOOGLE_MERCHANT_*`, `CRON_SECRET`, Stripe, CJ et les informations légales/commerce.
 
 ## Déploiement
 
-Connecté à Vercel via l'intégration Git native, avec une base Postgres
-Neon — chaque push sur cette branche redéploie automatiquement. Variables
-d'environnement configurées dans Vercel (Project Settings → Environment
-Variables) :
+1. Configurer PostgreSQL, Stripe, CJ et `ADMIN_PASSWORD` dans Vercel.
+2. Renseigner les variables eBay si la recherche/publication eBay est souhaitée.
+3. Déclarer `https://<domaine>/google-shopping.xml` dans Merchant Center comme source de données.
+4. Configurer `CRON_SECRET` pour la synchronisation CJ planifiée.
+5. Compléter les informations légales avant ouverture publique.
 
-- `DATABASE_URL` = URL de connexion Postgres (créée depuis l'onglet
-  **Storage** du projet Vercel → **Create Database** → **Postgres** ; copie
-  la valeur de `POSTGRES_PRISMA_URL` générée dans `DATABASE_URL`)
-- `CJ_API_KEY` = ta clé CJ Dropshipping (nécessaire pour que
-  `/admin/import` fonctionne — configurée en prod)
-- `ADMIN_PASSWORD` = mot de passe qui protège `/admin` (HTTP Basic Auth, voir
-  `proxy.ts`) — n'importe quel identifiant fonctionne, seul le mot de
-  passe est vérifié
-
-À chaque build, `prisma db push` synchronise automatiquement le schéma avec
-la base — pas de fichier de migration à gérer pour ce projet.
-
-## Démarrer en local
-
-```bash
-npm install
-cp .env.example .env   # puis renseigne DATABASE_URL et CJ_API_KEY
-npx prisma db push
-npm run dev
-```
-
-Ouvre http://localhost:3000 pour la boutique, et
-http://localhost:3000/admin/import pour rechercher et importer des produits
-CJ.
-
-## Intégration CJ Dropshipping
-
-- `lib/cj-client.ts` : client pour l'API CJ v2 (auth par `apiKey` →
-  `accessToken` mis en cache, recherche produits, détail produit, stock par
-  variante, création de commande).
-- `app/api/cj/search` : proxy la recherche produit CJ (garde la clé API côté
-  serveur, jamais exposée au navigateur).
-- `app/api/cj/import` : importe un produit CJ dans la base locale (`Product`)
-  avec un prix de vente calculé via une marge (`MARKUP_MULTIPLIER`, à ajuster
-  dans `app/api/cj/import/route.ts`).
-- `app/api/cj/sync` : rafraîchit prix et stock de tous les produits déjà
-  importés — à brancher sur un cron (ex: tâche planifiée toutes les heures)
-  une fois en production.
-- `/admin/import` : interface pour chercher un mot-clé sur CJ et importer les
-  produits en un clic.
-
-### ⚠️ À vérifier avant la mise en prod
-
-Le domaine `developers.cjdropshipping.com` est bloqué par le proxy réseau de
-cet environnement de développement — je n'ai donc pas pu revérifier en direct
-la doc officielle. Le client a été écrit à partir de la structure connue de
-l'API CJ v2 (endpoints, noms de champs), mais CJ modifie parfois ces détails.
-**Avant de mettre en prod : crée ta clé API sur CJ (mon compte CJ → API →
-Add API), teste chaque appel (`getAccessToken`, `/product/list`,
-`/product/query`, `/product/stock/queryByVid`, `/shopping/order/createOrderV2`)
-et ajuste les noms de champs dans `lib/cj-client.ts` si un appel échoue.**
-
-## Ce qui n'est pas encore fait
-
-- Paiement (Stripe/PayPal) — pas encore branché, `Order`/`OrderItem` existent
-  dans le schéma mais rien ne crée de commande côté storefront pour l'instant.
-- Panier persistant — la fiche produit n'a pas encore de bouton "ajouter au
-  panier" fonctionnel.
-- Passage de commande vers CJ (`createCjOrder`) une fois un paiement reçu.
-
-## Structure
-
-```
-app/
-  page.tsx                # accueil boutique
-  products/[id]/page.tsx  # fiche produit
-  admin/import/page.tsx   # recherche + import CJ
-  api/cj/                 # routes serveur qui appellent l'API CJ
-lib/
-  cj-client.ts            # client API CJ
-  prisma.ts               # instance Prisma partagée
-prisma/
-  schema.prisma           # modèles Product / Order / OrderItem
-```
+Le projet conserve `prisma db push` dans le script de build d'origine pour appliquer les modèles (`Season`, `ResearchCandidate`) et les nouveaux champs produit.

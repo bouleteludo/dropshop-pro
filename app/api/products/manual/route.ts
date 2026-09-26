@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { makeSlug } from "@/lib/slug";
+import { getCurrentSeason } from "@/lib/seasons";
 
 function slugify(name: string) {
   return name
@@ -13,6 +15,8 @@ function slugify(name: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const body = (await req.json()) as {
     name?: string;
     description?: string;
@@ -36,6 +40,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const [season] = await Promise.all([getCurrentSeason()]);
     const sku = `manual-${slugify(body.name)}-${Date.now().toString(36)}`;
 
     const product = await prisma.product.create({
@@ -50,6 +55,7 @@ export async function POST(req: NextRequest) {
         category: body.category?.trim() || undefined,
         sourceUrl: body.sourceUrl?.trim() || undefined,
         video: body.video?.trim() || undefined,
+        seasonTags: JSON.stringify([season.slug]),
       },
     });
 

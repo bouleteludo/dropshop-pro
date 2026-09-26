@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/ProductCard";
+import { parseProductImages } from "@/lib/product-images";
 import { CATEGORIES, getCategory, matchesCategory } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
@@ -77,7 +78,7 @@ export default async function CategoryPage({ params }: Props) {
                 slug={product.slug ?? product.id}
                 name={product.name}
                 price={product.price}
-                images={JSON.parse(product.images) as string[]}
+                images={parseProductImages(product.images)}
                 stock={product.stock}
               />
             </li>
