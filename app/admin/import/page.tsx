@@ -16,6 +16,8 @@ export default function ImportPage() {
   const [importingPid, setImportingPid] = useState<string | null>(null);
   const [importedPids, setImportedPids] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [checkingPid, setCheckingPid] = useState<string | null>(null);
+  const [warehouseInfo, setWarehouseInfo] = useState<Record<string, { countries: string[]; hasEuStock: boolean }>>({});
 
   async function runSearch(nextPage: number, append: boolean) {
     const res = await fetch(
@@ -55,6 +57,21 @@ export default function ImportPage() {
   }
 
   const hasMore = results.length < total;
+
+  async function handleCheckWarehouse(pid: string) {
+    setCheckingPid(pid);
+    setError(null);
+    try {
+      const res = await fetch(`/api/cj/warehouses?pid=${encodeURIComponent(pid)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Vérification échouée");
+      setWarehouseInfo((prev) => ({ ...prev, [pid]: { countries: data.countries ?? [], hasEuStock: !!data.hasEuStock } }));
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setCheckingPid(null);
+    }
+  }
 
   async function handleImport(pid: string) {
     setImportingPid(pid);
@@ -120,6 +137,7 @@ export default function ImportPage() {
         <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {results.map((product) => {
             const done = importedPids.has(product.pid);
+            const warehouse = warehouseInfo[product.pid];
             return (
               <li key={product.pid} className="bg-ink-900 border border-white/10 rounded-xl overflow-hidden flex flex-col">
                 <div className="relative aspect-square bg-ink-800">
@@ -138,6 +156,25 @@ export default function ImportPage() {
                     {product.productNameEn ?? product.productName}
                   </p>
                   <p className="text-xs text-bone-400">Fournisseur : {product.sellPrice} $</p>
+
+                  {warehouse ? (
+                    <p className={`text-xs font-medium ${warehouse.hasEuStock ? "text-green-400" : "text-amber-400"}`}>
+                      {warehouse.hasEuStock
+                        ? `🇪🇺 Stock UE (${warehouse.countries.join(", ")}) — 3-7j, pas de surtaxe douane`
+                        : warehouse.countries.length > 0
+                          ? `🐌 Stock hors UE (${warehouse.countries.join(", ")}) — 15-25j, +~5€ douane`
+                          : "Stock inconnu"}
+                    </p>
+                  ) : (
+                    <button
+                      onClick={() => handleCheckWarehouse(product.pid)}
+                      disabled={checkingPid === product.pid}
+                      className="text-xs text-bone-400 hover:text-ember-300 underline underline-offset-2 disabled:opacity-50 text-left"
+                    >
+                      {checkingPid === product.pid ? "Vérification…" : "Vérifier l'entrepôt (UE vs Chine)"}
+                    </button>
+                  )}
+
                   <button
                     onClick={() => handleImport(product.pid)}
                     disabled={importingPid === product.pid || done}
