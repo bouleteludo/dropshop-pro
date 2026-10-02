@@ -1,0 +1,167 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "logo": "",
+    "logo_width": 150,
+    "favicon": "",
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#08090B",
+          "background_gradient": "",
+          "text": "#F6F1EA",
+          "accent": "#E8A978",
+          "button": "#C1651F",
+          "button_label": "#08090B",
+          "secondary_button_label": "#F6F1EA"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#131518",
+          "background_gradient": "",
+          "text": "#F6F1EA",
+          "accent": "#E8A978",
+          "button": "#C1651F",
+          "button_label": "#08090B",
+          "secondary_button_label": "#F6F1EA"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#2C1C47",
+          "background_gradient": "",
+          "text": "#F6F1EA",
+          "accent": "#F0C29E",
+          "button": "#C1651F",
+          "button_label": "#08090B",
+          "secondary_button_label": "#F6F1EA"
+        }
+      },
+      "scheme-4": {
+        "settings": {
+          "background": "#F6F1EA",
+          "background_gradient": "",
+          "text": "#17191C",
+          "accent": "#8A4511",
+          "button": "#17191C",
+          "button_label": "#F6F1EA",
+          "secondary_button_label": "#17191C"
+        }
+      }
+    },
+    "type_heading_font": "marcellus_n4",
+    "heading_scale": 105,
+    "heading_letter_spacing": 2,
+    "heading_uppercase": false,
+    "type_body_font": "inter_n4",
+    "body_scale": 100,
+    "page_width": 1280,
+    "page_margin": 20,
+    "button_radius": 40,
+    "card_radius": 16,
+    "input_radius": 10,
+    "product_card_ratio": "1 / 1",
+    "card_show_second_image": true,
+    "card_show_vendor": false,
+    "deadline_enable": false,
+    "deadline_month": "12",
+    "deadline_day": 20,
+    "deadline_days_before": 21,
+    "deadline_message": "Order by [date] for delivery in time for the holidays.",
+    "social_facebook_link": "",
+    "social_instagram_link": "",
+    "social_tiktok_link": "",
+    "social_pinterest_link": "",
+    "social_youtube_link": "",
+    "social_twitter_link": "",
+    "social_snapchat_link": ""
+  },
+  "presets": {
+    "Lanterne": {
+      "logo": "",
+      "logo_width": 150,
+      "favicon": "",
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#08090B",
+            "background_gradient": "",
+            "text": "#F6F1EA",
+            "accent": "#E8A978",
+            "button": "#C1651F",
+            "button_label": "#08090B",
+            "secondary_button_label": "#F6F1EA"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#131518",
+            "background_gradient": "",
+            "text": "#F6F1EA",
+            "accent": "#E8A978",
+            "button": "#C1651F",
+            "button_label": "#08090B",
+            "secondary_button_label": "#F6F1EA"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#2C1C47",
+            "background_gradient": "",
+            "text": "#F6F1EA",
+            "accent": "#F0C29E",
+            "button": "#C1651F",
+            "button_label": "#08090B",
+            "secondary_button_label": "#F6F1EA"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#F6F1EA",
+            "background_gradient": "",
+            "text": "#17191C",
+            "accent": "#8A4511",
+            "button": "#17191C",
+            "button_label": "#F6F1EA",
+            "secondary_button_label": "#17191C"
+          }
+        }
+      },
+      "type_heading_font": "marcellus_n4",
+      "heading_scale": 105,
+      "heading_letter_spacing": 2,
+      "heading_uppercase": false,
+      "type_body_font": "inter_n4",
+      "body_scale": 100,
+      "page_width": 1280,
+      "page_margin": 20,
+      "button_radius": 40,
+      "card_radius": 16,
+      "input_radius": 10,
+      "product_card_ratio": "1 / 1",
+      "card_show_second_image": true,
+      "card_show_vendor": false,
+      "deadline_enable": false,
+      "deadline_month": "12",
+      "deadline_day": 20,
+      "deadline_days_before": 21,
+      "deadline_message": "Order by [date] for delivery in time for the holidays.",
+      "social_facebook_link": "",
+      "social_instagram_link": "",
+      "social_tiktok_link": "",
+      "social_pinterest_link": "",
+      "social_youtube_link": "",
+      "social_twitter_link": "",
+      "social_snapchat_link": ""
+    }
+  }
+}

@@ -6,9 +6,9 @@ leur API officielle v2.
 
 ## Thèmes Shopify
 
-Les cinq univers saisonniers sont aussi déclinés en thème Shopify
-« Lanterne » (5 styles), destiné à la vente sur le Theme Store : voir
-[`shopify/README.md`](shopify/README.md).
+Les cinq univers saisonniers sont déclinés en 5 thèmes Shopify séparés
+(Lanterne, Sapin, Printemps, Velours, Rivage), destinés à la vente sur le
+Theme Store : voir [`shopify/README.md`](shopify/README.md).
 
 ## Stack
 

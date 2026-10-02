@@ -1,0 +1,38 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_note": true
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "all",
+        "color_scheme": "scheme-2",
+        "eyebrow": "",
+        "heading": "You may also like",
+        "description": "",
+        "product_count": 4,
+        "columns": 4,
+        "show_view_all": false,
+        "padding": "medium"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "featured_collection"
+  ]
+}

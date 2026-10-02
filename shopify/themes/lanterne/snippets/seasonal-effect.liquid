@@ -1,0 +1,20 @@
+{%- doc -%}
+  Renders a decorative, CSS-only seasonal particle layer. Hidden from
+  assistive technology and disabled when the visitor prefers reduced motion.
+
+  @param {string} effect - One of: none, embers
+{%- enddoc -%}
+{%- if effect == 'embers' -%}
+  {%- assign count = 18 -%}
+  <div class="seasonal-effect seasonal-effect--{{ effect }}" aria-hidden="true">
+    {%- for i in (1..count) -%}
+      {%- liquid
+        assign left = i | times: 47 | modulo: 101
+        assign size = i | modulo: 4 | plus: 2
+        assign duration = i | modulo: 8 | plus: 9
+        assign delay = i | times: -0.7
+      -%}
+      <i style="--left: {{ left }}%; --size: {{ size }}px; --duration: {{ duration }}s; --delay: {{ delay }}s;"></i>
+    {%- endfor -%}
+  </div>
+{%- endif -%}

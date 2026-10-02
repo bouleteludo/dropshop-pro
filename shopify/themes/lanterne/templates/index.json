@@ -1,0 +1,228 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner": {
+      "type": "seasonal-banner",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "height": "large",
+        "content_position": "left",
+        "overlay_style": "left",
+        "overlay_opacity": 80,
+        "image_position": "center center",
+        "mobile_image_position": "75% center",
+        "animate_image": true,
+        "color_scheme": "scheme-1",
+        "image": "",
+        "artwork": "halloween",
+        "artwork_alt": "Gothic shop front decorated for Halloween with carved pumpkins and lanterns under a full moon",
+        "effect": "embers",
+        "subheading": "Halloween collection — limited edition",
+        "heading": "A night",
+        "heading_accent": "to remember.",
+        "text": "<p>Lanterns, pumpkins and a full moon: costumes and decorations for a dark, elegant and truly memorable Halloween.</p>",
+        "button_label_1": "Shop the collection",
+        "button_link_1": "shopify://collections/all",
+        "button_label_2": "",
+        "button_link_2": ""
+      }
+    },
+    "highlights": {
+      "type": "highlights",
+      "blocks": {
+        "secure": {
+          "type": "highlight",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure checkout",
+            "text": "<p>Pay safely with the payment methods you trust.</p>"
+          }
+        },
+        "delivery": {
+          "type": "highlight",
+          "settings": {
+            "icon": "truck",
+            "title": "Tracked delivery",
+            "text": "<p>Follow your order until it reaches your door.</p>"
+          }
+        },
+        "season": {
+          "type": "highlight",
+          "settings": {
+            "icon": "star",
+            "title": "For every party",
+            "text": "<p>Costumes and accessories for kids and adults.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "secure",
+        "delivery",
+        "season"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "heading": "",
+        "padding": "small"
+      }
+    },
+    "featured_product": {
+      "type": "featured-product",
+      "blocks": {
+        "label": {
+          "type": "text",
+          "settings": {
+            "text": "Featured costume",
+            "style": "eyebrow"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "buttons",
+            "show_swatches": true
+          }
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "label",
+        "title",
+        "price",
+        "variant_picker",
+        "quantity",
+        "buy_buttons",
+        "description"
+      ],
+      "settings": {
+        "product": "",
+        "color_scheme": "scheme-1",
+        "padding": "large"
+      }
+    },
+    "collection_list": {
+      "type": "collection-list",
+      "blocks": {
+        "collection_1": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_2": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_3": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_4": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3",
+        "collection_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "Explore",
+        "heading": "Shop by category",
+        "columns": 4,
+        "show_count": true,
+        "show_view_all": true,
+        "padding": "medium"
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "all",
+        "color_scheme": "scheme-1",
+        "eyebrow": "The Halloween collection",
+        "heading": "Selected pieces",
+        "description": "",
+        "product_count": 8,
+        "columns": 4,
+        "show_view_all": true,
+        "padding": "large"
+      }
+    },
+    "story": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Our story",
+            "size": "h2"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Costumes, masks and decorations chosen for their character, their quality and the memories they create.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "alignment": "center",
+        "padding": "large"
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "highlights",
+    "featured_product",
+    "collection_list",
+    "featured_collection",
+    "story"
+  ]
+}
