@@ -12,19 +12,15 @@ l'ordre. Coche au fur et à mesure.
 
 ## ⚠️ À faire avant d'envoyer le zip à Shopify
 
-Le zip `1-theme/lanterne.zip` fonctionne déjà pour ta boutique de démo, mais
-il ne peut pas encore être envoyé à Shopify :
-
-- [ ] **L'image Halloween montre l'enseigne « BOO SHOP ».** Shopify refuse
-  toute marque dans un thème vendu. Refais-la avec ChatGPT : « Recrée
-  exactement cette image, même scène, même lumière, même cadrage, format
-  16:9, mais l'enseigne doit être vierge : aucun texte, aucun nom, aucun
-  logo. » Envoie-moi le résultat.
+- [x] ~~Image Halloween sans enseigne~~ : c'est fait, l'enseigne a été effacée.
 - [ ] **L'adresse de ta documentation** doit être écrite dans le thème
-  (étape 3 ci-dessous). Envoie-moi l'adresse.
-
-Dès que j'ai les deux, je te renvoie un `lanterne.zip` final, prêt pour
-Shopify.
+  (étape 3 ci-dessous). Envoie-moi l'adresse et je te renvoie le
+  `lanterne.zip` final, prêt pour Shopify.
+- [ ] **Passe ton dépôt GitHub en privé.** Aujourd'hui, n'importe qui peut y
+  télécharger tes thèmes gratuitement, ce qui est contraire à l'exclusivité
+  exigée par Shopify. Sur github.com/bouleteludo/dropshop-pro : **Settings**
+  → tout en bas, **Danger Zone** → **Change repository visibility** →
+  **Make private**.
 
 ## Étape 1 — Compte Shopify Partner (10 min)
 
