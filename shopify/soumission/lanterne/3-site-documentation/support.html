@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lanterne support</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <p class="brand">Lanterne <span>Shopify theme</span></p>
+  <nav aria-label="Site"><a href="index.html" >Documentation</a><a href="support.html" aria-current="page">Support</a></nav>
+</header>
+<main>
+<h1>Lanterne support</h1>
+<p>Describe your question or problem and we will reply within two business days. Support covers bugs and questions about the theme's features; customizations aren't included.</p>
+<form name="lanterne-support" method="POST" action="thanks.html" data-netlify="true" netlify-honeypot="company" enctype="multipart/form-data">
+  <input type="hidden" name="form-name" value="lanterne-support">
+  <input type="hidden" name="theme" value="Lanterne">
+  <p class="hidden"><label for="company">Leave this field empty</label><input id="company" name="company"></p>
+  <div class="field"><label for="name">First and last name</label><input id="name" name="name" autocomplete="name" required></div>
+  <div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+  <div class="field"><label for="store">Store URL</label><input id="store" name="store" type="url" placeholder="https://your-store.myshopify.com" required aria-describedby="store-hint"><p class="hint" id="store-hint">For example https://storename.myshopify.com</p></div>
+  <div class="field"><label for="subject">Subject</label><input id="subject" name="subject" required></div>
+  <div class="field"><label for="description">Description of the problem</label><textarea id="description" name="description" rows="7" required></textarea></div>
+  <div class="field"><label for="screenshot">Screenshot (optional)</label><input id="screenshot" name="screenshot" type="file" accept="image/*"></div>
+  <button type="submit">Send</button>
+</form>
+
+</main>
+<footer><p>Lanterne theme for Shopify</p></footer>
+</body>
+</html>
