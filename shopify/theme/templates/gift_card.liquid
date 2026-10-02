@@ -27,7 +27,7 @@
     <main id="MainContent" class="gift-card section section--padding-large">
       <div class="page-width page-width--narrow gift-card__inner">
         <header class="gift-card__header">
-          {%- if settings.logo != blank or settings.seasonal_logo != 'none' -%}
+          {%- if settings.logo != blank -%}
             <div class="logo">{% render 'logo', eager: true %}</div>
           {%- else -%}
             <p class="h2">{{ shop.name | escape }}</p>

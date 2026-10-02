@@ -15,8 +15,8 @@
       "type": "newsletter",
       "settings": {
         "color_scheme": "scheme-2",
-        "heading": "Recevez les nouveautés d’Halloween",
-        "text": "<p>Nouvelles pièces, idées de déguisements et offres réservées aux abonnés.</p>",
+        "heading": "Get Halloween news first",
+        "text": "<p>New arrivals, costume ideas and subscriber-only offers.</p>",
         "padding": "medium"
       }
     },
@@ -27,21 +27,21 @@
           "type": "brand",
           "settings": {
             "show_logo": true,
-            "text": "<p>Une sélection Halloween choisie pour son impact visuel, son potentiel cadeau et sa capacité à se vendre en vidéo.</p>"
+            "text": "<p>Costumes, masks and decorations chosen for their character, their quality and the memories they create.</p>"
           }
         },
         "menu": {
           "type": "menu",
           "settings": {
-            "heading": "Informations",
+            "heading": "Information",
             "menu": "footer"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "heading": "Service client",
-            "text": "<p>Une question ? Écrivez-nous à <a href=\"mailto:contact@boo-shop.fr\">contact@boo-shop.fr</a>.</p><p>Paiement sécurisé, livraison suivie et rétractation sous 14 jours.</p>"
+            "heading": "Customer care",
+            "text": "<p>Questions about an order? Visit our contact page and our team will be happy to help.</p>"
           }
         }
       },

@@ -90,7 +90,10 @@
   "name": "t:names.product_information",
   "class": "section-main-product",
   "disabled_on": {
-    "groups": ["header", "footer"]
+    "groups": [
+      "header",
+      "footer"
+    ]
   },
   "settings": [
     {
@@ -104,8 +107,14 @@
       "id": "media_size",
       "label": "t:settings.media_size",
       "options": [
-        { "value": "medium", "label": "t:options.medium" },
-        { "value": "large", "label": "t:options.large" }
+        {
+          "value": "medium",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "large",
+          "label": "t:options.large"
+        }
       ],
       "default": "large"
     },
@@ -117,7 +126,9 @@
     }
   ],
   "blocks": [
-    { "type": "@app" },
+    {
+      "type": "@app"
+    },
     {
       "type": "text",
       "name": "t:names.text",
@@ -133,16 +144,37 @@
           "id": "style",
           "label": "t:settings.text_style",
           "options": [
-            { "value": "body", "label": "t:options.text_style.body" },
-            { "value": "eyebrow", "label": "t:options.text_style.eyebrow" }
+            {
+              "value": "body",
+              "label": "t:options.text_style.body"
+            },
+            {
+              "value": "eyebrow",
+              "label": "t:options.text_style.eyebrow"
+            }
           ],
           "default": "body"
         }
       ]
     },
-    { "type": "title", "name": "t:names.title", "limit": 1, "settings": [] },
-    { "type": "vendor", "name": "t:names.vendor", "limit": 1, "settings": [] },
-    { "type": "price", "name": "t:names.price", "limit": 1, "settings": [] },
+    {
+      "type": "title",
+      "name": "t:names.title",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "vendor",
+      "name": "t:names.vendor",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "price",
+      "name": "t:names.price",
+      "limit": 1,
+      "settings": []
+    },
     {
       "type": "variant_picker",
       "name": "t:names.variant_picker",
@@ -153,8 +185,14 @@
           "id": "picker_type",
           "label": "t:settings.picker_type",
           "options": [
-            { "value": "buttons", "label": "t:options.picker.buttons" },
-            { "value": "dropdown", "label": "t:options.picker.dropdown" }
+            {
+              "value": "buttons",
+              "label": "t:options.picker.buttons"
+            },
+            {
+              "value": "dropdown",
+              "label": "t:options.picker.dropdown"
+            }
           ],
           "default": "buttons"
         },
@@ -167,7 +205,12 @@
         }
       ]
     },
-    { "type": "quantity_selector", "name": "t:names.quantity_selector", "limit": 1, "settings": [] },
+    {
+      "type": "quantity_selector",
+      "name": "t:names.quantity_selector",
+      "limit": 1,
+      "settings": []
+    },
     {
       "type": "buy_buttons",
       "name": "t:names.buy_buttons",
@@ -189,7 +232,23 @@
         }
       ]
     },
-    { "type": "description", "name": "t:names.description", "limit": 1, "settings": [] },
+    {
+      "type": "delivery_deadline",
+      "name": "t:names.delivery_deadline",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "t:info.delivery_deadline_block"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "t:names.description",
+      "limit": 1,
+      "settings": []
+    },
     {
       "type": "collapsible_tab",
       "name": "t:names.collapsible_tab",
@@ -205,13 +264,34 @@
           "id": "icon",
           "label": "t:settings.icon",
           "options": [
-            { "value": "none", "label": "t:options.none" },
-            { "value": "truck", "label": "t:options.icon.truck" },
-            { "value": "return", "label": "t:options.icon.return" },
-            { "value": "lock", "label": "t:options.icon.lock" },
-            { "value": "gift", "label": "t:options.icon.gift" },
-            { "value": "leaf", "label": "t:options.icon.leaf" },
-            { "value": "chat", "label": "t:options.icon.chat" }
+            {
+              "value": "none",
+              "label": "t:options.none"
+            },
+            {
+              "value": "truck",
+              "label": "t:options.icon.truck"
+            },
+            {
+              "value": "return",
+              "label": "t:options.icon.return"
+            },
+            {
+              "value": "lock",
+              "label": "t:options.icon.lock"
+            },
+            {
+              "value": "gift",
+              "label": "t:options.icon.gift"
+            },
+            {
+              "value": "leaf",
+              "label": "t:options.icon.leaf"
+            },
+            {
+              "value": "chat",
+              "label": "t:options.icon.chat"
+            }
           ],
           "default": "none"
         },

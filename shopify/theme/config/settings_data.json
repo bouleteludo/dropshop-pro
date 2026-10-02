@@ -10,7 +10,6 @@
 {
   "current": {
     "logo": "",
-    "seasonal_logo": "halloween",
     "logo_width": 150,
     "favicon": "",
     "color_schemes": {
@@ -73,6 +72,11 @@
     "product_card_ratio": "1 / 1",
     "card_show_second_image": true,
     "card_show_vendor": false,
+    "deadline_enable": false,
+    "deadline_month": "12",
+    "deadline_day": 20,
+    "deadline_days_before": 21,
+    "deadline_message": "Order by [date] for delivery in time for the holidays.",
     "social_facebook_link": "",
     "social_instagram_link": "",
     "social_tiktok_link": "",
@@ -84,7 +88,6 @@
   "presets": {
     "Lanterne": {
       "logo": "",
-      "seasonal_logo": "halloween",
       "logo_width": 150,
       "favicon": "",
       "color_schemes": {
@@ -147,6 +150,11 @@
       "product_card_ratio": "1 / 1",
       "card_show_second_image": true,
       "card_show_vendor": false,
+      "deadline_enable": false,
+      "deadline_month": "12",
+      "deadline_day": 20,
+      "deadline_days_before": 21,
+      "deadline_message": "Order by [date] for delivery in time for the holidays.",
       "social_facebook_link": "",
       "social_instagram_link": "",
       "social_tiktok_link": "",
@@ -157,7 +165,6 @@
     },
     "Sapin": {
       "logo": "",
-      "seasonal_logo": "noel",
       "logo_width": 150,
       "favicon": "",
       "color_schemes": {
@@ -220,6 +227,11 @@
       "product_card_ratio": "1 / 1",
       "card_show_second_image": true,
       "card_show_vendor": false,
+      "deadline_enable": false,
+      "deadline_month": "12",
+      "deadline_day": 20,
+      "deadline_days_before": 21,
+      "deadline_message": "Order by [date] for delivery in time for the holidays.",
       "social_facebook_link": "",
       "social_instagram_link": "",
       "social_tiktok_link": "",
@@ -230,7 +242,6 @@
     },
     "Printemps": {
       "logo": "",
-      "seasonal_logo": "paques",
       "logo_width": 150,
       "favicon": "",
       "color_schemes": {
@@ -293,6 +304,11 @@
       "product_card_ratio": "1 / 1",
       "card_show_second_image": true,
       "card_show_vendor": false,
+      "deadline_enable": false,
+      "deadline_month": "12",
+      "deadline_day": 20,
+      "deadline_days_before": 21,
+      "deadline_message": "Order by [date] for delivery in time for the holidays.",
       "social_facebook_link": "",
       "social_instagram_link": "",
       "social_tiktok_link": "",
@@ -303,7 +319,6 @@
     },
     "Velours": {
       "logo": "",
-      "seasonal_logo": "valentin",
       "logo_width": 150,
       "favicon": "",
       "color_schemes": {
@@ -366,6 +381,11 @@
       "product_card_ratio": "1 / 1",
       "card_show_second_image": true,
       "card_show_vendor": false,
+      "deadline_enable": false,
+      "deadline_month": "12",
+      "deadline_day": 20,
+      "deadline_days_before": 21,
+      "deadline_message": "Order by [date] for delivery in time for the holidays.",
       "social_facebook_link": "",
       "social_instagram_link": "",
       "social_tiktok_link": "",
@@ -376,7 +396,6 @@
     },
     "Rivage": {
       "logo": "",
-      "seasonal_logo": "ete",
       "logo_width": 150,
       "favicon": "",
       "color_schemes": {
@@ -439,6 +458,11 @@
       "product_card_ratio": "1 / 1",
       "card_show_second_image": true,
       "card_show_vendor": false,
+      "deadline_enable": false,
+      "deadline_month": "12",
+      "deadline_day": 20,
+      "deadline_days_before": 21,
+      "deadline_message": "Order by [date] for delivery in time for the holidays.",
       "social_facebook_link": "",
       "social_instagram_link": "",
       "social_tiktok_link": "",

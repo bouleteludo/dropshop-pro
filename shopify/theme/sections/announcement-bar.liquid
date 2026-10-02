@@ -1,14 +1,46 @@
-{%- if section.blocks.size > 0 -%}
+{%- liquid
+  assign deadline = ''
+  if section.settings.show_deadline
+    capture deadline
+      render 'delivery-deadline', class: 'announcement-bar__message'
+    endcapture
+    assign deadline = deadline | strip
+  endif
+
+  assign visible_ids = ','
+  assign visible_count = 0
+  for block in section.blocks
+    assign is_visible = true
+    if block.settings.schedule
+      capture in_range
+        render 'date-range-active', start_month: block.settings.start_month, start_day: block.settings.start_day, end_month: block.settings.end_month, end_day: block.settings.end_day
+      endcapture
+      unless in_range contains 'true'
+        assign is_visible = false
+      endunless
+    endif
+    if is_visible or request.design_mode
+      assign visible_ids = visible_ids | append: block.id | append: ','
+      assign visible_count = visible_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- if deadline != blank or visible_count > 0 -%}
   <div class="announcement-bar color-{{ section.settings.color_scheme }}">
     <div class="page-width announcement-bar__inner">
+      {{ deadline }}
       {%- for block in section.blocks -%}
-        <p class="announcement-bar__message" {{ block.shopify_attributes }}>
-          {%- if block.settings.link != blank -%}
-            <a href="{{ block.settings.link }}" class="announcement-bar__link">{{ block.settings.text | escape }}</a>
-          {%- else -%}
-            {{ block.settings.text | escape }}
-          {%- endif -%}
-        </p>
+        {%- assign block_key = ',' | append: block.id | append: ',' -%}
+        {%- if visible_ids contains block_key -%}
+          <p class="announcement-bar__message" {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" class="announcement-bar__link">{{ block.settings.text | escape }}</a>
+            {%- else -%}
+              {{ block.settings.text | escape }}
+            {%- endif -%}
+          </p>
+        {%- endif -%}
       {%- endfor -%}
     </div>
   </div>
@@ -18,7 +50,7 @@
 {
   "name": "t:names.announcement_bar",
   "class": "section-announcement-bar",
-  "max_blocks": 3,
+  "max_blocks": 6,
   "enabled_on": {
     "groups": ["header"]
   },
@@ -28,6 +60,13 @@
       "id": "color_scheme",
       "label": "t:settings.color_scheme",
       "default": "scheme-3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_deadline",
+      "label": "t:settings.show_deadline",
+      "info": "t:info.show_deadline",
+      "default": true
     }
   ],
   "blocks": [
@@ -45,6 +84,75 @@
           "type": "url",
           "id": "link",
           "label": "t:settings.link"
+        },
+        {
+          "type": "header",
+          "content": "t:settings.headers.schedule"
+        },
+        {
+          "type": "checkbox",
+          "id": "schedule",
+          "label": "t:settings.schedule_announcement",
+          "info": "t:info.schedule_announcement",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "start_month",
+          "label": "t:settings.start_month",
+          "options": [
+            { "value": "1", "label": "t:options.month.january" },
+            { "value": "2", "label": "t:options.month.february" },
+            { "value": "3", "label": "t:options.month.march" },
+            { "value": "4", "label": "t:options.month.april" },
+            { "value": "5", "label": "t:options.month.may" },
+            { "value": "6", "label": "t:options.month.june" },
+            { "value": "7", "label": "t:options.month.july" },
+            { "value": "8", "label": "t:options.month.august" },
+            { "value": "9", "label": "t:options.month.september" },
+            { "value": "10", "label": "t:options.month.october" },
+            { "value": "11", "label": "t:options.month.november" },
+            { "value": "12", "label": "t:options.month.december" }
+          ],
+          "default": "12"
+        },
+        {
+          "type": "range",
+          "id": "start_day",
+          "label": "t:settings.start_day",
+          "min": 1,
+          "max": 31,
+          "step": 1,
+          "default": 1
+        },
+        {
+          "type": "select",
+          "id": "end_month",
+          "label": "t:settings.end_month",
+          "options": [
+            { "value": "1", "label": "t:options.month.january" },
+            { "value": "2", "label": "t:options.month.february" },
+            { "value": "3", "label": "t:options.month.march" },
+            { "value": "4", "label": "t:options.month.april" },
+            { "value": "5", "label": "t:options.month.may" },
+            { "value": "6", "label": "t:options.month.june" },
+            { "value": "7", "label": "t:options.month.july" },
+            { "value": "8", "label": "t:options.month.august" },
+            { "value": "9", "label": "t:options.month.september" },
+            { "value": "10", "label": "t:options.month.october" },
+            { "value": "11", "label": "t:options.month.november" },
+            { "value": "12", "label": "t:options.month.december" }
+          ],
+          "default": "12"
+        },
+        {
+          "type": "range",
+          "id": "end_day",
+          "label": "t:settings.end_day",
+          "min": 1,
+          "max": 31,
+          "step": 1,
+          "default": 26
         }
       ]
     }

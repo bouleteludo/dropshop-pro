@@ -275,6 +275,12 @@
       </div>
     </div>
 
+  {%- when 'delivery_deadline' -%}
+    {%- capture deadline -%}{% render 'delivery-deadline' %}{%- endcapture -%}
+    {%- if deadline != blank -%}
+      <div class="product-info__block" {{ block.shopify_attributes }}>{{ deadline }}</div>
+    {%- endif -%}
+
   {%- when 'description' -%}
     {%- if product.description != blank -%}
       <div class="product-info__block rte product-info__description" {{ block.shopify_attributes }}>

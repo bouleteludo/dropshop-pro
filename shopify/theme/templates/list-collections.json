@@ -13,7 +13,7 @@
       "type": "main-list-collections",
       "settings": {
         "color_scheme": "scheme-1",
-        "title": "Nos collections",
+        "title": "Collections",
         "sort": "alphabetical",
         "columns": 3
       }

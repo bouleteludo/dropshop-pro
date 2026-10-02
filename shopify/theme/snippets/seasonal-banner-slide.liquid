@@ -1,0 +1,119 @@
+{%- doc -%}
+  Renders one slide of the seasonal banner: the default banner or one of the
+  scheduled seasons. Layout settings come from the section, content from the
+  section or the season block.
+
+  @param {object} content - Settings that hold the slide content
+  @param {object} layout - The section settings (height, overlay, positions)
+  @param {string} slide_id - Unique ID used by the theme editor preview
+  @param {string} heading_tag - Element used for the heading
+  @param {boolean} [hidden] - Render the slide hidden (theme editor only)
+  @param {boolean} [eager] - Load the image with high priority
+  @param {string} [attributes] - Theme editor attributes of the season block
+{%- enddoc -%}
+{%- liquid
+  assign artwork = content.artwork
+  if eager
+    assign loading = 'eager'
+    assign priority = 'high'
+  else
+    assign loading = 'lazy'
+    assign priority = 'auto'
+  endif
+-%}
+
+<div
+  class="seasonal-banner__slide color-{{ content.color_scheme }} seasonal-banner__slide--content-{{ layout.content_position }}"
+  data-slide="{{ slide_id }}"
+  {% if hidden %}
+    hidden
+  {% endif %}
+  {{ attributes }}
+>
+  <div class="seasonal-banner__media{% if layout.animate_image %} seasonal-banner__media--animated{% endif %}">
+    {%- if content.image != blank -%}
+      {{
+        content.image
+        | image_url: width: 3000
+        | image_tag:
+          widths: '640, 960, 1280, 1600, 2000, 2400, 3000',
+          sizes: '100vw',
+          loading: loading,
+          fetchpriority: priority,
+          alt: content.image.alt,
+          class: 'seasonal-banner__image'
+      }}
+    {%- elsif artwork != blank and artwork != 'none' -%}
+      {%- liquid
+        assign art_base = 'hero-' | append: artwork
+        assign art_640 = art_base | append: '-640.webp' | asset_url
+        assign art_1024 = art_base | append: '-1024.webp' | asset_url
+        assign art_1440 = art_base | append: '-1440.webp' | asset_url
+        assign art_1672 = art_base | append: '-1672.webp' | asset_url
+      -%}
+      <img
+        src="{{ art_1440 }}"
+        srcset="{{ art_640 }} 640w, {{ art_1024 }} 1024w, {{ art_1440 }} 1440w, {{ art_1672 }} 1672w"
+        sizes="100vw"
+        width="1672"
+        height="941"
+        alt="{{ content.artwork_alt | escape }}"
+        class="seasonal-banner__image seasonal-banner__image--artwork"
+        loading="{{ loading }}"
+        fetchpriority="{{ priority }}"
+      >
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg seasonal-banner__image' }}
+    {%- endif -%}
+  </div>
+
+  <div class="seasonal-banner__overlay seasonal-banner__overlay--{{ layout.overlay_style }}" aria-hidden="true"></div>
+  {% render 'seasonal-effect', effect: content.effect %}
+
+  <div class="page-width seasonal-banner__content">
+    <div class="seasonal-banner__box">
+      {%- if content.subheading != blank -%}
+        <p class="eyebrow">{{ content.subheading | escape }}</p>
+      {%- endif -%}
+      {%- if content.heading != blank or content.heading_accent != blank -%}
+        <{{ heading_tag }} class="h0 seasonal-banner__heading">
+          {{- content.heading | escape -}}
+          {%- if content.heading_accent != blank -%}
+            <span class="seasonal-banner__accent">{{ content.heading_accent | escape }}</span>
+          {%- endif -%}
+        </{{ heading_tag }}>
+      {%- endif -%}
+      {%- if content.text != blank -%}
+        <div class="rte seasonal-banner__text">{{ content.text }}</div>
+      {%- endif -%}
+      {%- if content.button_label_1 != blank or content.button_label_2 != blank -%}
+        <div class="button-group">
+          {%- if content.button_label_1 != blank -%}
+            <a
+              {% if content.button_link_1 != blank %}
+                href="{{ content.button_link_1 }}"
+              {% else %}
+                role="link" aria-disabled="true"
+              {% endif %}
+              class="button"
+            >
+              {{- content.button_label_1 | escape -}}
+            </a>
+          {%- endif -%}
+          {%- if content.button_label_2 != blank -%}
+            <a
+              {% if content.button_link_2 != blank %}
+                href="{{ content.button_link_2 }}"
+              {% else %}
+                role="link" aria-disabled="true"
+              {% endif %}
+              class="button button--secondary"
+            >
+              {{- content.button_label_2 | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

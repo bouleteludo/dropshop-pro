@@ -149,12 +149,57 @@
         </table>
 
         <div class="cart__footer">
-          {%- if section.settings.show_note -%}
-            <div class="field cart__note">
-              <label class="field__label" for="CartNote-{{ section.id }}">{{ 'cart.note' | t }}</label>
-              <textarea id="CartNote-{{ section.id }}" class="field__input" name="note" rows="3" data-cart-note>{{ cart.note }}</textarea>
-            </div>
-          {%- endif -%}
+          <div class="cart__extras">
+            {%- if section.settings.show_gift_message -%}
+              {%- liquid
+                assign gift_order_key = 'cart.gift.order_attribute' | t
+                assign gift_message_key = 'cart.gift.message_attribute' | t
+                assign is_gift = false
+                if cart.attributes[gift_order_key] != blank
+                  assign is_gift = true
+                endif
+              -%}
+              <div class="cart__gift" data-cart-gift>
+                <div class="checkbox-field">
+                  <input type="hidden" name="attributes[{{ gift_order_key }}]" value="">
+                  <input
+                    type="checkbox"
+                    class="checkbox-field__input"
+                    id="CartGift-{{ section.id }}"
+                    name="attributes[{{ gift_order_key }}]"
+                    value="{{ 'cart.gift.order_value' | t }}"
+                    {% if is_gift %}
+                      checked
+                    {% endif %}
+                    data-cart-attribute="{{ gift_order_key }}"
+                  >
+                  <label for="CartGift-{{ section.id }}">{{ 'cart.gift.checkbox' | t }}</label>
+                </div>
+                <div class="field cart__gift-message">
+                  <label class="field__label" for="CartGiftMessage-{{ section.id }}">{{ 'cart.gift.message_label' | t }}</label>
+                  <textarea
+                    id="CartGiftMessage-{{ section.id }}"
+                    class="field__input"
+                    name="attributes[{{ gift_message_key }}]"
+                    rows="3"
+                    maxlength="{{ section.settings.gift_message_limit }}"
+                    aria-describedby="CartGiftMessageHint-{{ section.id }}"
+                    data-cart-attribute="{{ gift_message_key }}"
+                  >{{ cart.attributes[gift_message_key] }}</textarea>
+                  <p class="field__hint" id="CartGiftMessageHint-{{ section.id }}">
+                    {{ 'cart.gift.message_hint' | t: max_characters: section.settings.gift_message_limit }}
+                  </p>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if section.settings.show_note -%}
+              <div class="field cart__note">
+                <label class="field__label" for="CartNote-{{ section.id }}">{{ 'cart.note' | t }}</label>
+                <textarea id="CartNote-{{ section.id }}" class="field__input" name="note" rows="3" data-cart-note>{{ cart.note }}</textarea>
+              </div>
+            {%- endif -%}
+          </div>
 
           <div class="cart__summary">
             {%- if cart.cart_level_discount_applications.size > 0 -%}
@@ -167,6 +212,8 @@
                 {%- endfor -%}
               </ul>
             {%- endif -%}
+
+            {% render 'delivery-deadline', class: 'cart__deadline' %}
 
             <p class="cart__total">
               <span>{{ 'cart.total' | t }}</span>
@@ -215,7 +262,10 @@
   "name": "t:names.cart",
   "class": "section-main-cart",
   "disabled_on": {
-    "groups": ["header", "footer"]
+    "groups": [
+      "header",
+      "footer"
+    ]
   },
   "settings": [
     {
@@ -229,6 +279,22 @@
       "id": "show_note",
       "label": "t:settings.show_cart_note",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gift_message",
+      "label": "t:settings.show_gift_message",
+      "info": "t:info.gift_message",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "gift_message_limit",
+      "label": "t:settings.gift_message_limit",
+      "min": 100,
+      "max": 500,
+      "step": 50,
+      "default": 250
     }
   ]
 }

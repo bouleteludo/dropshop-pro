@@ -17,8 +17,9 @@
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Édition été — golden hour, sable chaud et lumière solaire",
-            "link": ""
+            "text": "Summer edition — golden hour, warm sand and sunlight",
+            "link": "",
+            "schedule": false
           }
         }
       },
@@ -26,7 +27,8 @@
         "announcement"
       ],
       "settings": {
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "show_deadline": true
       }
     },
     "header": {

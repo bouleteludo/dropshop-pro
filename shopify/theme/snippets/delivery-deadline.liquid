@@ -1,0 +1,26 @@
+{%- doc -%}
+  Renders the holiday shipping deadline set in theme settings, only while it
+  is upcoming: from the chosen number of days before the date until the end
+  of that day. The date is real and set by the merchant, never a fake timer.
+
+  @param {string} [class] - Extra classes
+{%- enddoc -%}
+{%- if settings.deadline_enable and settings.deadline_message != blank -%}
+  {%- liquid
+    assign year = 'now' | date: '%Y'
+    assign month_padded = settings.deadline_month | prepend: '0' | slice: -2, 2
+    assign day_padded = settings.deadline_day | prepend: '0' | slice: -2, 2
+    assign deadline_date = year | append: '-' | append: month_padded | append: '-' | append: day_padded
+    assign deadline_end = deadline_date | append: 'T23:59:59' | date: '%s' | plus: 0
+    assign now_seconds = 'now' | date: '%s' | plus: 0
+    assign window_seconds = settings.deadline_days_before | times: 86400
+    assign window_start = deadline_end | minus: window_seconds
+  -%}
+  {%- if now_seconds >= window_start and now_seconds <= deadline_end -%}
+    {%- assign formatted_date = deadline_date | date: format: 'month_day' -%}
+    <p class="delivery-deadline {{ class }}">
+      {% render 'icon', name: 'truck' %}
+      <span>{{ settings.deadline_message | escape | replace: '[date]', formatted_date }}</span>
+    </p>
+  {%- endif -%}
+{%- endif -%}

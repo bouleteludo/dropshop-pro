@@ -1,6 +1,5 @@
 {%- doc -%}
-  Renders the store logo: the uploaded logo first, then the built-in seasonal
-  logo selected in theme settings, then the store name.
+  Renders the uploaded store logo, or the store name when no logo is set.
 
   @param {boolean} [eager] - Load the logo eagerly (header)
   @param {string} [class] - Extra classes
@@ -28,35 +27,6 @@
       alt: shop.name,
       class: 'logo__image'
   }}
-{%- elsif settings.seasonal_logo != 'none' -%}
-  {%- liquid
-    case settings.seasonal_logo
-      when 'halloween'
-        assign ratio = 2.34
-      when 'noel'
-        assign ratio = 2.54
-      when 'paques'
-        assign ratio = 2.74
-      when 'valentin'
-        assign ratio = 3.12
-      else
-        assign ratio = 2.62
-    endcase
-    assign logo_height = logo_width | divided_by: ratio | round
-    assign logo_base = 'logo-' | append: settings.seasonal_logo
-    assign logo_small = logo_base | append: '-320.webp' | asset_url
-    assign logo_large = logo_base | append: '-640.webp' | asset_url
-  -%}
-  <img
-    src="{{ logo_small }}"
-    srcset="{{ logo_small }} 320w, {{ logo_large }} 640w"
-    sizes="{{ logo_sizes }}"
-    width="{{ logo_width }}"
-    height="{{ logo_height }}"
-    alt="{{ shop.name | escape }}"
-    class="logo__image"
-    loading="{{ loading }}"
-  >
 {%- else -%}
   <span class="logo__text {{ class }}">{{ shop.name | escape }}</span>
 {%- endif -%}

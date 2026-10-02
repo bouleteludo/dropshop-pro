@@ -27,6 +27,24 @@ class CartItems extends HTMLElement {
       this.updateQuantity(remove.dataset.line, 0);
     });
 
+    const saveAttributes = debounce(() => {
+      const attributes = {};
+      this.querySelectorAll('[data-cart-attribute]').forEach((field) => {
+        attributes[field.dataset.cartAttribute] = field.type === 'checkbox' ? (field.checked ? field.value : '') : field.value;
+      });
+      fetch(theme.routes.cartUpdate, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ attributes }),
+      });
+    }, 500);
+    this.addEventListener('input', (event) => {
+      if (event.target.matches('[data-cart-attribute]')) saveAttributes();
+    });
+    this.addEventListener('change', (event) => {
+      if (event.target.matches('[data-cart-attribute]')) saveAttributes();
+    });
+
     this.addEventListener(
       'input',
       debounce((event) => {

@@ -16,21 +16,6 @@
         "label": "t:settings_schema.logo.logo_image"
       },
       {
-        "type": "select",
-        "id": "seasonal_logo",
-        "label": "t:settings_schema.logo.seasonal_logo",
-        "info": "t:settings_schema.logo.seasonal_logo_info",
-        "options": [
-          { "value": "none", "label": "t:options.none" },
-          { "value": "halloween", "label": "t:options.season.halloween" },
-          { "value": "noel", "label": "t:options.season.christmas" },
-          { "value": "paques", "label": "t:options.season.easter" },
-          { "value": "valentin", "label": "t:options.season.valentine" },
-          { "value": "ete", "label": "t:options.season.summer" }
-        ],
-        "default": "none"
-      },
-      {
         "type": "range",
         "id": "logo_width",
         "label": "t:settings_schema.logo.logo_width",
@@ -244,9 +229,18 @@
         "id": "product_card_ratio",
         "label": "t:settings_schema.cards.image_ratio",
         "options": [
-          { "value": "1 / 1", "label": "t:options.ratio.square" },
-          { "value": "4 / 5", "label": "t:options.ratio.portrait" },
-          { "value": "3 / 2", "label": "t:options.ratio.landscape" }
+          {
+            "value": "1 / 1",
+            "label": "t:options.ratio.square"
+          },
+          {
+            "value": "4 / 5",
+            "label": "t:options.ratio.portrait"
+          },
+          {
+            "value": "3 / 2",
+            "label": "t:options.ratio.landscape"
+          }
         ],
         "default": "1 / 1"
       },
@@ -261,6 +255,102 @@
         "id": "card_show_vendor",
         "label": "t:settings_schema.cards.show_vendor",
         "default": false
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.deadline.name",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "t:settings_schema.deadline.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "deadline_enable",
+        "label": "t:settings_schema.deadline.enable",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "deadline_month",
+        "label": "t:settings_schema.deadline.month",
+        "options": [
+          {
+            "value": "1",
+            "label": "t:options.month.january"
+          },
+          {
+            "value": "2",
+            "label": "t:options.month.february"
+          },
+          {
+            "value": "3",
+            "label": "t:options.month.march"
+          },
+          {
+            "value": "4",
+            "label": "t:options.month.april"
+          },
+          {
+            "value": "5",
+            "label": "t:options.month.may"
+          },
+          {
+            "value": "6",
+            "label": "t:options.month.june"
+          },
+          {
+            "value": "7",
+            "label": "t:options.month.july"
+          },
+          {
+            "value": "8",
+            "label": "t:options.month.august"
+          },
+          {
+            "value": "9",
+            "label": "t:options.month.september"
+          },
+          {
+            "value": "10",
+            "label": "t:options.month.october"
+          },
+          {
+            "value": "11",
+            "label": "t:options.month.november"
+          },
+          {
+            "value": "12",
+            "label": "t:options.month.december"
+          }
+        ],
+        "default": "12"
+      },
+      {
+        "type": "range",
+        "id": "deadline_day",
+        "label": "t:settings_schema.deadline.day",
+        "min": 1,
+        "max": 31,
+        "step": 1,
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "deadline_days_before",
+        "label": "t:settings_schema.deadline.days_before",
+        "min": 1,
+        "max": 60,
+        "step": 1,
+        "default": 21
+      },
+      {
+        "type": "text",
+        "id": "deadline_message",
+        "label": "t:settings_schema.deadline.message",
+        "info": "t:settings_schema.deadline.message_info",
+        "default": "Order by [date] for delivery in time for the holidays."
       }
     ]
   },

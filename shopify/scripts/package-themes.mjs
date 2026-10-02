@@ -1,15 +1,19 @@
 #!/usr/bin/env node
-// Builds one ready-to-upload Shopify theme zip per season from shopify/theme.
+// Packages the Lanterne theme (shopify/theme) for Shopify.
 //
-//   node shopify/scripts/package-themes.mjs                → shopify/dist/boo-shop-<season>.zip
-//   node shopify/scripts/package-themes.mjs --theme-store  → also shopify/dist/lanterne-theme-store.zip
+//   node shopify/scripts/package-themes.mjs
 //
-// Each seasonal zip contains the whole theme with that season's preset applied
-// (settings, home page, header and footer). The other presets stay available
-// in the theme editor under Theme settings > Theme style.
-// The Theme Store zip keeps the /listings folder required for a submission.
+// Outputs, in shopify/dist:
+//   demo/lanterne-<style>.zip   one zip per style, with that style applied
+//                               (settings, home page, header, footer): upload
+//                               it to the matching demo store.
+//   lanterne-theme-store.zip    the Theme Store submission, with the
+//                               /listings folder. Only built once the
+//                               pre-submission checks below pass.
+//
 // No dependencies: Node 22+ (zlib.crc32).
 
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
@@ -18,15 +22,24 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const THEME = path.join(ROOT, 'theme');
 const DIST = path.join(ROOT, 'dist');
 const THEME_DIRS = ['assets', 'blocks', 'config', 'layout', 'locales', 'sections', 'snippets', 'templates'];
+const STYLES = ['Lanterne', 'Sapin', 'Printemps', 'Velours', 'Rivage'];
 
-// Preset name (config/settings_data.json) → zip name. The parent preset uses
-// the root templates; the others override them from listings/<preset-slug>/.
-const SEASONS = {
-  Lanterne: 'boo-shop-halloween',
-  Sapin: 'boo-shop-noel',
-  Printemps: 'boo-shop-paques',
-  Velours: 'boo-shop-saint-valentin',
-  Rivage: 'boo-shop-ete',
+// Built-in images that still show the BOO SHOP shop sign. The Theme Store
+// forbids brand names in a theme: replace these files (same names) with
+// versions without any sign or text before submitting.
+const BRANDED_ASSETS = {
+  '93b7a314ca4b67458937ec79e24cbc9ca70a95352f7f5a93dea091c5e0466a32': 'hero-halloween',
+  '36ac6951989556b5c464837b9ecc9fc7abd9914e13ebc9a53b7bda37d876d161': 'hero-halloween',
+  '21f7cb0f81f34b8e5022f16a3e9d351f1f97ae6608242a795a1f0be4d125ae70': 'hero-halloween',
+  '95c0929607364748044208b32ba16058ecb3bbb4755dec96f3087024d7560df6': 'hero-halloween',
+  '4a89f047fb5ce9102140f91d4b1b441434977e7df3133e6c685e11526eb5a66f': 'hero-noel',
+  dfa2cbac1568c58f063e43ae97022274a25bfd9053b7fb24d0264056fbc2002b: 'hero-noel',
+  cea305843d098d6483099208656764fb9b9a83c8f00dfc24ebc357c3a6898857: 'hero-noel',
+  e2b7dd77c8ce8cd5a384ca08b65534ceec3ab43e9d5a741e9c43cac824820ace: 'hero-noel',
+  e883947c1687b135ffe187af87a9d96efb7abc269d018714b7751ba8a3a813c6: 'hero-paques',
+  '5450e8f3f1767bac4951f1734bf49a32229dcbc5b427dbeb147d633e99b0d157': 'hero-paques',
+  '75cf12269b05c79c20d1a6a114ebca637894eb93f5be9c3854559c5761f37cda': 'hero-paques',
+  b2b13140235120b95cb40f8a644cbd424120210c40b6e6b213af404c3aca8aa2: 'hero-paques',
 };
 
 const kebab = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -109,28 +122,46 @@ const settingsText = fs.readFileSync(path.join(THEME, settingsPath), 'utf8');
 const settingsHeader = settingsText.match(/^\s*\/\*[\s\S]*?\*\/\s*/)?.[0] ?? '';
 const settings = JSON.parse(stripComment(settingsText));
 
-fs.mkdirSync(DIST, { recursive: true });
-
-for (const [preset, zipName] of Object.entries(SEASONS)) {
-  if (!settings.presets[preset]) throw new Error(`Preset "${preset}" is missing from ${settingsPath}`);
+/* ---------- Demo store zips: one per style ---------- */
+fs.mkdirSync(path.join(DIST, 'demo'), { recursive: true });
+for (const style of STYLES) {
+  if (!settings.presets[style]) throw new Error(`Style "${style}" is missing from ${settingsPath}`);
   const files = themeFiles({ withListings: false });
+  const listing = path.join(THEME, 'listings', kebab(style));
+  for (const rel of listFiles(listing)) files.set(rel, fs.readFileSync(path.join(listing, rel)));
+  const styled = { ...settings, current: settings.presets[style] };
+  files.set(settingsPath, Buffer.from(`${settingsHeader}${JSON.stringify(styled, null, 2)}\n`));
 
-  const listing = path.join(THEME, 'listings', kebab(preset));
-  for (const rel of listFiles(listing)) {
-    files.set(rel, fs.readFileSync(path.join(listing, rel)));
-  }
-
-  const seasonal = { ...settings, current: settings.presets[preset] };
-  files.set(settingsPath, Buffer.from(`${settingsHeader}${JSON.stringify(seasonal, null, 2)}\n`));
-
-  const out = path.join(DIST, `${zipName}.zip`);
+  const out = path.join(DIST, 'demo', `lanterne-${kebab(style)}.zip`);
   fs.writeFileSync(out, zip(files));
-  console.log(`${path.relative(process.cwd(), out)}  (${preset}, ${files.size} files)`);
+  console.log(`${path.relative(process.cwd(), out)}  (${style}, ${files.size} files)`);
 }
 
-if (process.argv.includes('--theme-store')) {
+/* ---------- Theme Store submission: pre-submission checks ---------- */
+const problems = [];
+const branded = new Set();
+for (const rel of listFiles(path.join(THEME, 'assets'))) {
+  const hash = crypto.createHash('sha256').update(fs.readFileSync(path.join(THEME, 'assets', rel))).digest('hex');
+  if (BRANDED_ASSETS[hash]) branded.add(BRANDED_ASSETS[hash]);
+}
+for (const name of branded) {
+  problems.push(`assets/${name}-*.webp montre encore l'enseigne BOO SHOP : remplacer par une image sans texte ni marque.`);
+}
+const themeInfo = JSON.parse(fs.readFileSync(path.join(THEME, 'config/settings_schema.json'), 'utf8'))[0];
+if (!themeInfo.theme_documentation_url || themeInfo.theme_documentation_url.includes('help.shopify.com')) {
+  problems.push('config/settings_schema.json : theme_documentation_url doit pointer vers ta propre documentation.');
+}
+if (!themeInfo.theme_support_email && !themeInfo.theme_support_url) {
+  problems.push('config/settings_schema.json : ajouter theme_support_email ou theme_support_url.');
+}
+
+const submission = path.join(DIST, 'lanterne-theme-store.zip');
+if (problems.length) {
+  fs.rmSync(submission, { force: true });
+  console.log('\nZip Theme Store NON fabriqué. À corriger avant la soumission :');
+  for (const problem of problems) console.log(`  - ${problem}`);
+} else {
   const files = themeFiles({ withListings: true });
-  const out = path.join(DIST, 'lanterne-theme-store.zip');
-  fs.writeFileSync(out, zip(files));
-  console.log(`${path.relative(process.cwd(), out)}  (Theme Store structure, ${files.size} files)`);
+  fs.writeFileSync(submission, zip(files));
+  console.log(`\n${path.relative(process.cwd(), submission)}  (Theme Store, ${files.size} files)`);
 }

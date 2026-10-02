@@ -1,0 +1,26 @@
+{%- doc -%}
+  Outputs "true" when today, in the store's time zone, falls between two
+  yearly dates (inclusive). A range can wrap the new year, for example
+  December 26 to January 6. Outputs nothing otherwise.
+
+  @param {number} start_month - Month the range starts (1-12)
+  @param {number} start_day - Day the range starts (1-31)
+  @param {number} end_month - Month the range ends (1-12)
+  @param {number} end_day - Day the range ends (1-31)
+
+  @example
+  {%- capture is_active -%}{% render 'date-range-active', start_month: 10, start_day: 1, end_month: 10, end_day: 31 %}{%- endcapture -%}
+{%- enddoc -%}
+{%- liquid
+  assign today = 'now' | date: '%m%d' | plus: 0
+  assign range_start = start_month | times: 100 | plus: start_day
+  assign range_end = end_month | times: 100 | plus: end_day
+
+  if range_start <= range_end
+    if today >= range_start and today <= range_end
+      echo 'true'
+    endif
+  elsif today >= range_start or today <= range_end
+    echo 'true'
+  endif
+-%}

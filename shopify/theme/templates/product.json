@@ -38,6 +38,10 @@
             "show_gift_card_recipient": true
           }
         },
+        "delivery_deadline": {
+          "type": "delivery_deadline",
+          "settings": {}
+        },
         "description": {
           "type": "description",
           "settings": {}
@@ -45,25 +49,25 @@
         "shipping": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Livraison",
+            "heading": "Shipping",
             "icon": "truck",
-            "content": "<p>Le délai de livraison dépend du produit et de la destination. Il est indiqué avant la validation de votre commande.</p>",
+            "content": "<p>Shipping rates and delivery times are shown at checkout, before you pay.</p>",
             "page": ""
           }
         },
         "returns": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Retours et rétractation",
+            "heading": "Returns",
             "icon": "return",
-            "content": "<p>Vous disposez de 14 jours après réception pour exercer votre droit de rétractation, sous réserve des exceptions légales. Consultez notre politique de remboursement pour le détail.</p>",
+            "content": "<p>See our refund policy for return conditions and timeframes.</p>",
             "page": ""
           }
         },
         "complementary": {
           "type": "complementary",
           "settings": {
-            "heading": "À associer avec",
+            "heading": "Pairs well with",
             "product_count": 3
           }
         }
@@ -74,6 +78,7 @@
         "variant_picker",
         "quantity",
         "buy_buttons",
+        "delivery_deadline",
         "description",
         "shipping",
         "returns",
@@ -89,7 +94,7 @@
       "type": "product-recommendations",
       "settings": {
         "color_scheme": "scheme-1",
-        "heading": "Vous aimerez aussi",
+        "heading": "You may also like",
         "product_count": 4,
         "columns": 4
       }

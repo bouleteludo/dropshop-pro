@@ -6,8 +6,9 @@ leur API officielle v2.
 
 ## Thèmes Shopify
 
-Les cinq univers saisonniers existent aussi en thème Shopify prêt à
-téléverser (un zip par saison) : voir [`shopify/README.md`](shopify/README.md).
+Les cinq univers saisonniers sont aussi déclinés en thème Shopify
+« Lanterne » (5 styles), destiné à la vente sur le Theme Store : voir
+[`shopify/README.md`](shopify/README.md).
 
 ## Stack
 

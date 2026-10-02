@@ -17,8 +17,9 @@
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Édition de Pâques — fleurs, cadeaux et lumière de printemps",
-            "link": ""
+            "text": "Spring edition — fresh flowers and Easter decorations",
+            "link": "",
+            "schedule": false
           }
         }
       },
@@ -26,7 +27,8 @@
         "announcement"
       ],
       "settings": {
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "show_deadline": true
       }
     },
     "header": {

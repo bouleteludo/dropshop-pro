@@ -9,26 +9,28 @@
  */
 {
   "sections": {
-    "hero": {
-      "type": "seasonal-hero",
+    "banner": {
+      "type": "seasonal-banner",
+      "blocks": {},
+      "block_order": [],
       "settings": {
-        "color_scheme": "scheme-1",
-        "artwork": "noel",
-        "artwork_alt": "Boutique sous la neige décorée pour Noël, avec le traîneau du Père Noël dans le ciel",
-        "image_position": "center center",
-        "mobile_image_position": "25% center",
-        "animate_image": true,
-        "effect": "snow",
         "height": "large",
         "content_position": "right",
         "overlay_style": "right",
         "overlay_opacity": 80,
-        "eyebrow": "Collection de Noël — édition saisonnière",
-        "heading": "La magie de Noël",
-        "heading_accent": "s’installe chez BOO SHOP.",
-        "heading_tag": "h1",
-        "text": "<p>Cadeaux, lumières dorées, neige et ambiance de village de Noël : une sélection pensée pour créer un vrai moment de fête.</p>",
-        "button_label_1": "Découvrir la collection",
+        "image_position": "center center",
+        "mobile_image_position": "25% center",
+        "animate_image": true,
+        "color_scheme": "scheme-1",
+        "image": "",
+        "artwork": "noel",
+        "artwork_alt": "Snowy shop front decorated for Christmas with a sleigh in the night sky",
+        "effect": "snow",
+        "subheading": "Christmas collection — seasonal edition",
+        "heading": "The magic of Christmas",
+        "heading_accent": "starts here.",
+        "text": "<p>Gifts, golden lights and a snowy village atmosphere: a selection designed to make every celebration feel special.</p>",
+        "button_label_1": "Shop the collection",
         "button_link_1": "shopify://collections/all",
         "button_label_2": "",
         "button_link_2": ""
@@ -37,35 +39,35 @@
     "highlights": {
       "type": "highlights",
       "blocks": {
-        "highlight_1": {
+        "secure": {
           "type": "highlight",
           "settings": {
             "icon": "lock",
-            "title": "Paiement sécurisé",
-            "text": "<p>Transactions chiffrées et protégées.</p>"
+            "title": "Secure checkout",
+            "text": "<p>Pay safely with the payment methods you trust.</p>"
           }
         },
-        "highlight_2": {
+        "delivery": {
           "type": "highlight",
           "settings": {
             "icon": "truck",
-            "title": "Livraison suivie",
-            "text": "<p>Délai estimé selon le produit et la destination.</p>"
+            "title": "Tracked delivery",
+            "text": "<p>Follow your order until it reaches your door.</p>"
           }
         },
-        "highlight_3": {
+        "season": {
           "type": "highlight",
           "settings": {
-            "icon": "return",
-            "title": "Retours sous 14 jours",
-            "text": "<p>Droit de rétractation de 14 jours après réception.</p>"
+            "icon": "gift",
+            "title": "Gift-ready",
+            "text": "<p>Add a personal gift message to your order.</p>"
           }
         }
       },
       "block_order": [
-        "highlight_1",
-        "highlight_2",
-        "highlight_3"
+        "secure",
+        "delivery",
+        "season"
       ],
       "settings": {
         "color_scheme": "scheme-2",
@@ -76,10 +78,10 @@
     "featured_product": {
       "type": "featured-product",
       "blocks": {
-        "eyebrow": {
+        "label": {
           "type": "text",
           "settings": {
-            "text": "Idée cadeau",
+            "text": "Gift idea",
             "style": "eyebrow"
           }
         },
@@ -115,7 +117,7 @@
         }
       },
       "block_order": [
-        "eyebrow",
+        "label",
         "title",
         "price",
         "variant_picker",
@@ -165,8 +167,8 @@
       ],
       "settings": {
         "color_scheme": "scheme-1",
-        "eyebrow": "Navigation",
-        "heading": "Choisir son univers",
+        "eyebrow": "Explore",
+        "heading": "Shop by category",
         "columns": 4,
         "show_count": true,
         "show_view_all": true,
@@ -178,8 +180,8 @@
       "settings": {
         "collection": "all",
         "color_scheme": "scheme-1",
-        "eyebrow": "Sous le sapin",
-        "heading": "La sélection de Noël",
+        "eyebrow": "Under the tree",
+        "heading": "The Christmas selection",
         "description": "",
         "product_count": 8,
         "columns": 4,
@@ -187,20 +189,71 @@
         "padding": "large"
       }
     },
-    "rich_text": {
+    "gift_guide": {
+      "type": "gift-guide",
+      "blocks": {
+        "budget_1": {
+          "type": "budget",
+          "settings": {
+            "max_price": 25,
+            "title": "",
+            "text": "Thoughtful little extras"
+          }
+        },
+        "budget_2": {
+          "type": "budget",
+          "settings": {
+            "max_price": 50,
+            "title": "",
+            "text": "Gifts they will love"
+          }
+        },
+        "budget_3": {
+          "type": "budget",
+          "settings": {
+            "max_price": 100,
+            "title": "",
+            "text": "Something special"
+          }
+        },
+        "budget_4": {
+          "type": "budget",
+          "settings": {
+            "min_price": 100,
+            "title": "",
+            "text": "The ultimate treat"
+          }
+        }
+      },
+      "block_order": [
+        "budget_1",
+        "budget_2",
+        "budget_3",
+        "budget_4"
+      ],
+      "settings": {
+        "collection": "all",
+        "color_scheme": "scheme-2",
+        "subheading": "Gift guide",
+        "heading": "Find a gift for every budget",
+        "text": "",
+        "padding": "large"
+      }
+    },
+    "story": {
       "type": "rich-text",
       "blocks": {
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "L’esprit BOO SHOP",
+            "heading": "Our story",
             "size": "h2"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>Une boutique de Noël vivante et élégante, pensée autour du cadeau, de la découverte produit et d’une expérience saisonnière forte.</p>"
+            "text": "<p>A festive shop built around gifting: decorations, lights and presents chosen to make the season shine.</p>"
           }
         }
       },
@@ -209,18 +262,19 @@
         "text"
       ],
       "settings": {
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "alignment": "center",
         "padding": "large"
       }
     }
   },
   "order": [
-    "hero",
+    "banner",
     "highlights",
     "featured_product",
     "collection_list",
     "featured_collection",
-    "rich_text"
+    "gift_guide",
+    "story"
   ]
 }

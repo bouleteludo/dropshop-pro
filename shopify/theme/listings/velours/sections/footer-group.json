@@ -15,8 +15,8 @@
       "type": "newsletter",
       "settings": {
         "color_scheme": "scheme-2",
-        "heading": "Recevez nos idées cadeaux à deux",
-        "text": "<p>Nouveautés, sélections romantiques et offres réservées aux abonnés.</p>",
+        "heading": "Get our gift ideas for two",
+        "text": "<p>New arrivals, romantic picks and subscriber-only offers.</p>",
         "padding": "medium"
       }
     },
@@ -27,21 +27,21 @@
           "type": "brand",
           "settings": {
             "show_logo": true,
-            "text": "<p>Une édition Saint-Valentin élégante et chaleureuse, pensée autour du cadeau, de l’émotion et d’une expérience visuelle premium.</p>"
+            "text": "<p>Jewelry and romantic gifts chosen for their elegance, their emotion and the moments they celebrate.</p>"
           }
         },
         "menu": {
           "type": "menu",
           "settings": {
-            "heading": "Informations",
+            "heading": "Information",
             "menu": "footer"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "heading": "Service client",
-            "text": "<p>Une question ? Écrivez-nous à <a href=\"mailto:contact@boo-shop.fr\">contact@boo-shop.fr</a>.</p><p>Paiement sécurisé, livraison suivie et rétractation sous 14 jours.</p>"
+            "heading": "Customer care",
+            "text": "<p>Questions about an order? Visit our contact page and our team will be happy to help.</p>"
           }
         }
       },

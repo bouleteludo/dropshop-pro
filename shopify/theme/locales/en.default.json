@@ -29,6 +29,14 @@
     "discounts": "Discounts",
     "empty": "Your cart is empty",
     "error": "There was an error. Please try again.",
+    "gift": {
+      "checkbox": "This order is a gift",
+      "message_attribute": "Gift message",
+      "message_hint": "{{ max_characters }} characters max. Sent with your order details.",
+      "message_label": "Gift message (optional)",
+      "order_attribute": "Gift order",
+      "order_value": "Yes"
+    },
     "headings": {
       "product": "Product",
       "quantity": "Quantity",
@@ -65,6 +73,9 @@
     "phone": "Phone number",
     "send": "Send",
     "success": "Thanks for contacting us. We’ll get back to you as soon as possible."
+  },
+  "date_formats": {
+    "month_day": "%B %-d"
   },
   "general": {
     "cart": {
@@ -241,6 +252,15 @@
       "page": "Page"
     },
     "view_all": "Search for “{{ terms }}”"
+  },
+  "sections": {
+    "gift_guide": {
+      "all": "All gifts",
+      "between": "{{ min }} to {{ max }}",
+      "over": "{{ price }} and up",
+      "shop": "Shop gifts",
+      "under": "Under {{ price }}"
+    }
   },
   "templates": {
     "404": {

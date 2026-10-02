@@ -17,8 +17,9 @@
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Édition Saint-Valentin — cadeaux, roses et lumière chaleureuse",
-            "link": ""
+            "text": "Valentine’s Day edition — jewelry, roses and warm light",
+            "link": "",
+            "schedule": false
           }
         }
       },
@@ -26,7 +27,8 @@
         "announcement"
       ],
       "settings": {
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "show_deadline": true
       }
     },
     "header": {

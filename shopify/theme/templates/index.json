@@ -9,26 +9,28 @@
  */
 {
   "sections": {
-    "hero": {
-      "type": "seasonal-hero",
+    "banner": {
+      "type": "seasonal-banner",
+      "blocks": {},
+      "block_order": [],
       "settings": {
-        "color_scheme": "scheme-1",
-        "artwork": "halloween",
-        "artwork_alt": "Façade de la boutique décorée pour Halloween, citrouilles et lanternes sous la pleine lune",
-        "image_position": "center center",
-        "mobile_image_position": "75% center",
-        "animate_image": true,
-        "effect": "embers",
         "height": "large",
         "content_position": "left",
         "overlay_style": "left",
         "overlay_opacity": 80,
-        "eyebrow": "Collection Halloween — édition limitée",
-        "heading": "Une nuit",
-        "heading_accent": "plus magique chez BOO SHOP.",
-        "heading_tag": "h1",
-        "text": "<p>Lanternes, citrouilles, pleine lune et boutique gothique : l’univers Halloween BOO SHOP reste sombre, élégant et immédiatement reconnaissable.</p>",
-        "button_label_1": "Découvrir la collection",
+        "image_position": "center center",
+        "mobile_image_position": "75% center",
+        "animate_image": true,
+        "color_scheme": "scheme-1",
+        "image": "",
+        "artwork": "halloween",
+        "artwork_alt": "Gothic shop front decorated for Halloween with carved pumpkins and lanterns under a full moon",
+        "effect": "embers",
+        "subheading": "Halloween collection — limited edition",
+        "heading": "A night",
+        "heading_accent": "to remember.",
+        "text": "<p>Lanterns, pumpkins and a full moon: costumes and decorations for a dark, elegant and truly memorable Halloween.</p>",
+        "button_label_1": "Shop the collection",
         "button_link_1": "shopify://collections/all",
         "button_label_2": "",
         "button_link_2": ""
@@ -37,35 +39,35 @@
     "highlights": {
       "type": "highlights",
       "blocks": {
-        "highlight_1": {
+        "secure": {
           "type": "highlight",
           "settings": {
             "icon": "lock",
-            "title": "Paiement sécurisé",
-            "text": "<p>Transactions chiffrées et protégées.</p>"
+            "title": "Secure checkout",
+            "text": "<p>Pay safely with the payment methods you trust.</p>"
           }
         },
-        "highlight_2": {
+        "delivery": {
           "type": "highlight",
           "settings": {
             "icon": "truck",
-            "title": "Livraison suivie",
-            "text": "<p>Délai estimé selon le produit et la destination.</p>"
+            "title": "Tracked delivery",
+            "text": "<p>Follow your order until it reaches your door.</p>"
           }
         },
-        "highlight_3": {
+        "season": {
           "type": "highlight",
           "settings": {
-            "icon": "return",
-            "title": "Retours sous 14 jours",
-            "text": "<p>Droit de rétractation de 14 jours après réception.</p>"
+            "icon": "star",
+            "title": "For every party",
+            "text": "<p>Costumes and accessories for kids and adults.</p>"
           }
         }
       },
       "block_order": [
-        "highlight_1",
-        "highlight_2",
-        "highlight_3"
+        "secure",
+        "delivery",
+        "season"
       ],
       "settings": {
         "color_scheme": "scheme-2",
@@ -76,10 +78,10 @@
     "featured_product": {
       "type": "featured-product",
       "blocks": {
-        "eyebrow": {
+        "label": {
           "type": "text",
           "settings": {
-            "text": "Produit vedette",
+            "text": "Featured costume",
             "style": "eyebrow"
           }
         },
@@ -115,7 +117,7 @@
         }
       },
       "block_order": [
-        "eyebrow",
+        "label",
         "title",
         "price",
         "variant_picker",
@@ -165,8 +167,8 @@
       ],
       "settings": {
         "color_scheme": "scheme-1",
-        "eyebrow": "Navigation",
-        "heading": "Choisir son univers",
+        "eyebrow": "Explore",
+        "heading": "Shop by category",
         "columns": 4,
         "show_count": true,
         "show_view_all": true,
@@ -178,8 +180,8 @@
       "settings": {
         "collection": "all",
         "color_scheme": "scheme-1",
-        "eyebrow": "La collection Halloween",
-        "heading": "Pièces sélectionnées",
+        "eyebrow": "The Halloween collection",
+        "heading": "Selected pieces",
         "description": "",
         "product_count": 8,
         "columns": 4,
@@ -187,20 +189,71 @@
         "padding": "large"
       }
     },
-    "rich_text": {
+    "gift_guide": {
+      "type": "gift-guide",
+      "blocks": {
+        "budget_1": {
+          "type": "budget",
+          "settings": {
+            "max_price": 25,
+            "title": "",
+            "text": "Thoughtful little extras"
+          }
+        },
+        "budget_2": {
+          "type": "budget",
+          "settings": {
+            "max_price": 50,
+            "title": "",
+            "text": "Gifts they will love"
+          }
+        },
+        "budget_3": {
+          "type": "budget",
+          "settings": {
+            "max_price": 100,
+            "title": "",
+            "text": "Something special"
+          }
+        },
+        "budget_4": {
+          "type": "budget",
+          "settings": {
+            "min_price": 100,
+            "title": "",
+            "text": "The ultimate treat"
+          }
+        }
+      },
+      "block_order": [
+        "budget_1",
+        "budget_2",
+        "budget_3",
+        "budget_4"
+      ],
+      "settings": {
+        "collection": "all",
+        "color_scheme": "scheme-2",
+        "subheading": "Gift guide",
+        "heading": "Find a gift for every budget",
+        "text": "",
+        "padding": "large"
+      }
+    },
+    "story": {
       "type": "rich-text",
       "blocks": {
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "L’esprit BOO SHOP",
+            "heading": "Our story",
             "size": "h2"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>Une sélection Halloween choisie pour son impact visuel, son potentiel cadeau et sa capacité à se vendre en vidéo.</p>"
+            "text": "<p>Costumes, masks and decorations chosen for their character, their quality and the memories they create.</p>"
           }
         }
       },
@@ -209,18 +262,19 @@
         "text"
       ],
       "settings": {
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "alignment": "center",
         "padding": "large"
       }
     }
   },
   "order": [
-    "hero",
+    "banner",
     "highlights",
     "featured_product",
     "collection_list",
     "featured_collection",
-    "rich_text"
+    "gift_guide",
+    "story"
   ]
 }

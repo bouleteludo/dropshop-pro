@@ -986,48 +986,48 @@ textarea.field__input {
 }
 
 /* ---------------------------------------------------------------------------
-   Seasonal hero
+   Seasonal banner
    --------------------------------------------------------------------------- */
-.seasonal-hero {
+.seasonal-banner__slide {
   position: relative;
   display: grid;
   overflow: hidden;
   isolation: isolate;
 }
 
-.seasonal-hero--medium {
+.seasonal-banner--medium .seasonal-banner__slide {
   min-height: 52rem;
 }
 
-.seasonal-hero--large {
+.seasonal-banner--large .seasonal-banner__slide {
   min-height: 72rem;
 }
 
-.seasonal-hero--full {
+.seasonal-banner--full .seasonal-banner__slide {
   min-height: 100svh;
 }
 
-.seasonal-hero__media,
-.seasonal-hero__overlay {
+.seasonal-banner__media,
+.seasonal-banner__overlay {
   position: absolute;
   inset: 0;
 }
 
-.seasonal-hero__media {
+.seasonal-banner__media {
   z-index: -2;
 }
 
-.seasonal-hero__image {
+.seasonal-banner__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.seasonal-hero__image--artwork {
+.seasonal-banner__image--artwork {
   object-position: var(--image-position);
 }
 
-.seasonal-hero__media--animated .seasonal-hero__image {
+.seasonal-banner__media--animated .seasonal-banner__image {
   transform: scale(1.03);
   animation: hero-pan 22s ease-in-out infinite alternate;
 }
@@ -1041,50 +1041,50 @@ textarea.field__input {
   }
 }
 
-.seasonal-hero__overlay {
+.seasonal-banner__overlay {
   z-index: -1;
   opacity: var(--overlay-opacity);
 }
 
-.seasonal-hero__overlay--left {
+.seasonal-banner__overlay--left {
   background: linear-gradient(90deg, rgb(var(--color-overlay-rgb)) 0%, rgba(var(--color-overlay-rgb), 0.7) 36%, rgba(var(--color-overlay-rgb), 0.1) 72%, rgba(var(--color-overlay-rgb), 0.25) 100%),
     linear-gradient(0deg, rgba(var(--color-overlay-rgb), 0.85) 0%, transparent 45%);
 }
 
-.seasonal-hero__overlay--right {
+.seasonal-banner__overlay--right {
   background: linear-gradient(270deg, rgb(var(--color-overlay-rgb)) 0%, rgba(var(--color-overlay-rgb), 0.7) 36%, rgba(var(--color-overlay-rgb), 0.1) 72%, rgba(var(--color-overlay-rgb), 0.25) 100%),
     linear-gradient(0deg, rgba(var(--color-overlay-rgb), 0.85) 0%, transparent 45%);
 }
 
-.seasonal-hero__overlay--bottom {
+.seasonal-banner__overlay--bottom {
   background: linear-gradient(0deg, rgb(var(--color-overlay-rgb)) 0%, rgba(var(--color-overlay-rgb), 0.45) 55%, rgba(var(--color-overlay-rgb), 0.05) 100%);
 }
 
-.seasonal-hero__overlay--full {
+.seasonal-banner__overlay--full {
   background: rgb(var(--color-overlay-rgb));
 }
 
-.seasonal-hero__content {
+.seasonal-banner__content {
   display: flex;
   align-items: flex-end;
   padding-top: 8rem;
   padding-bottom: 8rem;
 }
 
-.seasonal-hero--content-center .seasonal-hero__content {
+.seasonal-banner__slide--content-center .seasonal-banner__content {
   justify-content: center;
   text-align: center;
 }
 
-.seasonal-hero--content-center .button-group {
+.seasonal-banner__slide--content-center .button-group {
   justify-content: center;
 }
 
-.seasonal-hero--content-right .seasonal-hero__content {
+.seasonal-banner__slide--content-right .seasonal-banner__content {
   justify-content: flex-end;
 }
 
-.seasonal-hero__box {
+.seasonal-banner__box {
   max-width: 60rem;
   padding: 3.6rem;
   border: 0.1rem solid var(--color-border-strong);
@@ -1094,54 +1094,54 @@ textarea.field__input {
 }
 
 @supports (backdrop-filter: blur(1px)) {
-  .seasonal-hero__box {
+  .seasonal-banner__box {
     background: rgba(var(--color-background-rgb), 0.68);
     backdrop-filter: blur(12px);
   }
 }
 
-.seasonal-hero__heading {
+.seasonal-banner__heading {
   margin-bottom: 2rem;
 }
 
-.seasonal-hero__accent {
+.seasonal-banner__accent {
   display: block;
   color: var(--color-accent);
 }
 
-.seasonal-hero__text {
+.seasonal-banner__text {
   font-size: 1.8rem;
   margin-bottom: 2.8rem;
 }
 
 @media screen and (max-width: 749px) {
-  .seasonal-hero--large {
+  .seasonal-banner--large .seasonal-banner__slide {
     min-height: 64rem;
   }
 
-  .seasonal-hero__image {
+  .seasonal-banner__image {
     object-position: var(--image-position-mobile);
   }
 
-  .seasonal-hero__overlay--left,
-  .seasonal-hero__overlay--right {
+  .seasonal-banner__overlay--left,
+  .seasonal-banner__overlay--right {
     background: linear-gradient(0deg, rgb(var(--color-overlay-rgb)) 0%, rgba(var(--color-overlay-rgb), 0.4) 62%, rgba(var(--color-overlay-rgb), 0.1) 100%);
   }
 
-  .seasonal-hero__content {
+  .seasonal-banner__content {
     padding-top: 20rem;
     padding-bottom: 3.2rem;
   }
 
-  .seasonal-hero__box {
+  .seasonal-banner__box {
     padding: 2.4rem;
   }
 
-  .seasonal-hero__text {
+  .seasonal-banner__text {
     font-size: 1.6rem;
   }
 
-  .seasonal-hero .button-group .button {
+  .seasonal-banner .button-group .button {
     width: 100%;
   }
 }
@@ -1251,6 +1251,137 @@ textarea.field__input {
     transform: scale(1.35);
     opacity: 0.92;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Holiday shipping deadline
+   --------------------------------------------------------------------------- */
+.delivery-deadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  font-weight: var(--font-body-weight-bold);
+}
+
+.delivery-deadline .icon {
+  color: var(--color-accent);
+}
+
+.announcement-bar .delivery-deadline .icon {
+  color: inherit;
+}
+
+.product-info__block .delivery-deadline,
+.cart__deadline {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  border: 0.1rem solid var(--color-border-strong);
+  border-radius: var(--radius-input);
+  background: var(--color-card);
+  font-size: 1.45rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Gift guide
+   --------------------------------------------------------------------------- */
+.gift-guide__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.6rem;
+}
+
+@media screen and (min-width: 990px) {
+  .gift-guide__list--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .gift-guide__list--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.gift-guide__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.gift-guide__item:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-0.2rem);
+}
+
+.gift-guide__item:has(.gift-guide__link:focus-visible) {
+  outline: 0.2rem solid var(--color-accent);
+  outline-offset: 0.3rem;
+}
+
+.gift-guide__media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.gift-guide__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gift-guide__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.6rem;
+  height: 5.6rem;
+  margin: 2.4rem 2.4rem 0;
+  border-radius: 50%;
+  border: 0.1rem solid var(--color-border-strong);
+  color: var(--color-accent);
+}
+
+.gift-guide__icon .icon {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.gift-guide__info {
+  display: grid;
+  gap: 0.6rem;
+  padding: 2rem 2.4rem 2.4rem;
+}
+
+.gift-guide__title {
+  margin: 0;
+}
+
+.gift-guide__link {
+  text-decoration: none;
+}
+
+.gift-guide__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.gift-guide__link:focus-visible {
+  outline: none;
+}
+
+.gift-guide__text {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.gift-guide__cta {
+  margin-top: 0.6rem;
+  font-size: 1.4rem;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2368,6 +2499,32 @@ a.pagination__item:hover {
   }
 }
 
+.cart__extras {
+  display: grid;
+  gap: 2.4rem;
+  align-content: start;
+}
+
+.cart__extras .field {
+  margin: 0;
+}
+
+.cart__gift {
+  display: grid;
+  gap: 1.2rem;
+  padding: 2rem;
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.cart__gift-message {
+  display: none;
+}
+
+.cart__gift:has([data-cart-attribute]:checked) .cart__gift-message {
+  display: grid;
+}
+
 .cart__summary {
   display: grid;
   gap: 1.6rem;
@@ -2923,7 +3080,7 @@ a.pagination__item:hover {
     display: none;
   }
 
-  .seasonal-hero__media--animated .seasonal-hero__image {
+  .seasonal-banner__media--animated .seasonal-banner__image {
     animation: none;
     transform: none;
   }

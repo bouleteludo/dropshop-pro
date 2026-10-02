@@ -17,8 +17,9 @@
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Édition Halloween — une nuit BOO SHOP pleine de caractère",
-            "link": ""
+            "text": "Halloween edition — new costumes and decorations every week",
+            "link": "",
+            "schedule": false
           }
         }
       },
@@ -26,7 +27,8 @@
         "announcement"
       ],
       "settings": {
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "show_deadline": true
       }
     },
     "header": {

@@ -17,8 +17,9 @@
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Édition de Noël — cadeaux, magie et lumière dorée",
-            "link": ""
+            "text": "Christmas edition — gifts, decorations and golden light",
+            "link": "",
+            "schedule": false
           }
         }
       },
@@ -26,7 +27,8 @@
         "announcement"
       ],
       "settings": {
-        "color_scheme": "scheme-3"
+        "color_scheme": "scheme-3",
+        "show_deadline": true
       }
     },
     "header": {

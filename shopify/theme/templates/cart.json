@@ -13,7 +13,9 @@
       "type": "main-cart",
       "settings": {
         "color_scheme": "scheme-1",
-        "show_note": true
+        "show_note": true,
+        "show_gift_message": true,
+        "gift_message_limit": 250
       }
     },
     "featured_collection": {
@@ -22,7 +24,7 @@
         "collection": "all",
         "color_scheme": "scheme-2",
         "eyebrow": "",
-        "heading": "Vous aimerez aussi",
+        "heading": "You may also like",
         "description": "",
         "product_count": 4,
         "columns": 4,

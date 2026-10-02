@@ -131,3 +131,25 @@ class PredictiveSearch extends HTMLElement {
   }
 }
 customElements.define('predictive-search', PredictiveSearch);
+
+/* ---------------------------------------------------------------------------
+   Theme editor: preview a scheduled season when its block is selected
+   --------------------------------------------------------------------------- */
+if (window.Shopify && window.Shopify.designMode) {
+  const showSlide = (banner, id) => {
+    banner.querySelectorAll('[data-slide]').forEach((slide) => {
+      slide.hidden = slide.dataset.slide !== id;
+    });
+  };
+
+  document.addEventListener('shopify:block:select', (event) => {
+    const slide = event.target.closest('[data-slide]');
+    const banner = slide && slide.closest('[data-seasonal-banner]');
+    if (banner) showSlide(banner, slide.dataset.slide);
+  });
+
+  document.addEventListener('shopify:block:deselect', (event) => {
+    const banner = event.target.closest('[data-seasonal-banner]');
+    if (banner) showSlide(banner, banner.dataset.activeSlide);
+  });
+}

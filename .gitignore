@@ -10,5 +10,3 @@ tsconfig.tsbuildinfo
 .DS_Store
 .vercel
 
-# Shopify Theme Store package (generated on demand)
-shopify/dist/lanterne-theme-store.zip

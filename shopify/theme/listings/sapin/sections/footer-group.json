@@ -15,8 +15,8 @@
       "type": "newsletter",
       "settings": {
         "color_scheme": "scheme-2",
-        "heading": "Recevez nos idées cadeaux de Noël",
-        "text": "<p>Nouveautés, sélections cadeaux et offres réservées aux abonnés.</p>",
+        "heading": "Get our Christmas gift ideas",
+        "text": "<p>Gift guides, new arrivals and subscriber-only offers.</p>",
         "padding": "medium"
       }
     },
@@ -27,21 +27,21 @@
           "type": "brand",
           "settings": {
             "show_logo": true,
-            "text": "<p>Une boutique de Noël vivante et élégante, pensée autour du cadeau, de la découverte produit et d’une expérience saisonnière forte.</p>"
+            "text": "<p>A festive shop built around gifting: decorations, lights and presents chosen to make the season shine.</p>"
           }
         },
         "menu": {
           "type": "menu",
           "settings": {
-            "heading": "Informations",
+            "heading": "Information",
             "menu": "footer"
           }
         },
         "text": {
           "type": "text",
           "settings": {
-            "heading": "Service client",
-            "text": "<p>Une question ? Écrivez-nous à <a href=\"mailto:contact@boo-shop.fr\">contact@boo-shop.fr</a>.</p><p>Paiement sécurisé, livraison suivie et rétractation sous 14 jours.</p>"
+            "heading": "Customer care",
+            "text": "<p>Questions about an order? Visit our contact page and our team will be happy to help.</p>"
           }
         }
       },

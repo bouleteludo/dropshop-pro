@@ -1,0 +1,196 @@
+{%- liquid
+  assign collection = section.settings.collection
+  if collection != blank
+    assign base_url = collection.url
+  else
+    assign base_url = routes.all_products_collection_url
+  endif
+-%}
+
+<div class="gift-guide section color-{{ section.settings.color_scheme }} section--padding-{{ section.settings.padding }}">
+  <div class="page-width">
+    <div class="section-header">
+      <div>
+        {%- if section.settings.subheading != blank -%}
+          <p class="eyebrow">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="h2 section-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="rte section-header__text">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <ul class="gift-guide__list gift-guide__list--{{ section.blocks.size | at_most: 4 }}" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign min_price = block.settings.min_price
+          assign max_price = block.settings.max_price
+          assign params = ''
+          if min_price != blank and min_price > 0
+            assign params = params | append: '&filter.v.price.gte=' | append: min_price
+          endif
+          if max_price != blank and max_price > 0
+            assign params = params | append: '&filter.v.price.lte=' | append: max_price
+          endif
+          assign params = params | remove_first: '&'
+          if params != blank
+            assign budget_url = base_url | append: '?' | append: params
+          else
+            assign budget_url = base_url
+          endif
+
+          if block.settings.title != blank
+            assign budget_title = block.settings.title | escape
+          elsif min_price > 0 and max_price > 0
+            assign min_money = min_price | times: 100 | money_without_trailing_zeros
+            assign max_money = max_price | times: 100 | money_without_trailing_zeros
+            assign budget_title = 'sections.gift_guide.between' | t: min: min_money, max: max_money
+          elsif max_price > 0
+            assign max_money = max_price | times: 100 | money_without_trailing_zeros
+            assign budget_title = 'sections.gift_guide.under' | t: price: max_money
+          elsif min_price > 0
+            assign min_money = min_price | times: 100 | money_without_trailing_zeros
+            assign budget_title = 'sections.gift_guide.over' | t: price: min_money
+          else
+            assign budget_title = 'sections.gift_guide.all' | t
+          endif
+        -%}
+        <li class="gift-guide__item" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="gift-guide__media">
+              {{
+                block.settings.image
+                | image_url: width: 900
+                | image_tag:
+                  widths: '300, 450, 600, 900',
+                  sizes: '(min-width: 990px) 25vw, 50vw',
+                  loading: 'lazy',
+                  alt: block.settings.image.alt,
+                  class: 'gift-guide__image'
+              }}
+            </div>
+          {%- else -%}
+            <span class="gift-guide__icon">{% render 'icon', name: 'gift' %}</span>
+          {%- endif -%}
+          <div class="gift-guide__info">
+            <h3 class="h3 gift-guide__title">
+              <a href="{{ budget_url }}" class="gift-guide__link">{{ budget_title }}</a>
+            </h3>
+            {%- if block.settings.text != blank -%}
+              <p class="gift-guide__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+            <span class="link gift-guide__cta" aria-hidden="true">{{ 'sections.gift_guide.shop' | t }}</span>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.gift_guide",
+  "class": "section-gift-guide",
+  "max_blocks": 6,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:info.gift_guide"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:settings.collection",
+      "info": "t:info.gift_guide_collection"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:settings.subheading",
+      "default": "Gift guide"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Find a gift for every budget"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:settings.text"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "t:settings.padding",
+      "options": [
+        { "value": "small", "label": "t:options.small" },
+        { "value": "medium", "label": "t:options.medium" },
+        { "value": "large", "label": "t:options.large" }
+      ],
+      "default": "large"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "budget",
+      "name": "t:names.budget",
+      "settings": [
+        {
+          "type": "number",
+          "id": "min_price",
+          "label": "t:settings.min_price",
+          "info": "t:info.budget_price"
+        },
+        {
+          "type": "number",
+          "id": "max_price",
+          "label": "t:settings.max_price",
+          "info": "t:info.budget_price"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:settings.budget_title",
+          "info": "t:info.budget_title"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:settings.text",
+          "default": "Thoughtful little extras"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:settings.image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.gift_guide",
+      "blocks": [
+        { "type": "budget", "settings": { "max_price": 25, "text": "Thoughtful little extras" } },
+        { "type": "budget", "settings": { "max_price": 50, "text": "Gifts they will love" } },
+        { "type": "budget", "settings": { "max_price": 100, "text": "Something special" } },
+        { "type": "budget", "settings": { "min_price": 100, "text": "The ultimate treat" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

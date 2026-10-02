@@ -29,6 +29,14 @@
     "discounts": "Réductions",
     "empty": "Votre panier est vide",
     "error": "Une erreur est survenue. Veuillez réessayer.",
+    "gift": {
+      "checkbox": "Cette commande est un cadeau",
+      "message_attribute": "Message cadeau",
+      "message_hint": "{{ max_characters }} caractères maximum. Transmis avec les détails de votre commande.",
+      "message_label": "Message cadeau (facultatif)",
+      "order_attribute": "Commande cadeau",
+      "order_value": "Oui"
+    },
     "headings": {
       "product": "Produit",
       "quantity": "Quantité",
@@ -65,6 +73,9 @@
     "phone": "Téléphone",
     "send": "Envoyer",
     "success": "Merci de nous avoir contactés. Nous vous répondrons dans les meilleurs délais."
+  },
+  "date_formats": {
+    "month_day": "%-d %B"
   },
   "general": {
     "cart": {
@@ -241,6 +252,15 @@
       "page": "Page"
     },
     "view_all": "Rechercher « {{ terms }} »"
+  },
+  "sections": {
+    "gift_guide": {
+      "all": "Tous les cadeaux",
+      "between": "De {{ min }} à {{ max }}",
+      "over": "{{ price }} et plus",
+      "shop": "Voir les cadeaux",
+      "under": "Moins de {{ price }}"
+    }
   },
   "templates": {
     "404": {
