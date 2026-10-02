@@ -1,0 +1,73 @@
+{%- liquid
+  assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+  assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+  assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+  assign heading_font_bold = settings.type_heading_font | font_modify: 'weight', 'bold'
+  assign heading_font_italic = settings.type_heading_font | font_modify: 'style', 'italic'
+  assign heading_font_bold_italic = heading_font_bold | font_modify: 'style', 'italic'
+-%}
+
+{% style %}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ body_font_bold | font_face: font_display: 'swap' }}
+  {{ body_font_italic | font_face: font_display: 'swap' }}
+  {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ heading_font_bold | font_face: font_display: 'swap' }}
+  {{ heading_font_italic | font_face: font_display: 'swap' }}
+  {{ heading_font_bold_italic | font_face: font_display: 'swap' }}
+
+  :root {
+    --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-body-style: {{ settings.type_body_font.style }};
+    --font-body-weight: {{ settings.type_body_font.weight }};
+    --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 900 }};
+    --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+
+    --font-heading-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading-style: {{ settings.type_heading_font.style }};
+    --font-heading-weight: {{ settings.type_heading_font.weight }};
+    --font-heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+    --heading-letter-spacing: {{ settings.heading_letter_spacing | divided_by: 100.0 }}em;
+    {%- if settings.heading_uppercase %}
+      --heading-text-transform: uppercase;
+    {%- else %}
+      --heading-text-transform: none;
+    {%- endif %}
+
+    --page-width: {{ settings.page_width }}px;
+    --page-margin: {{ settings.page_margin }}px;
+    --radius-button: {{ settings.button_radius }}px;
+    --radius-card: {{ settings.card_radius }}px;
+    --radius-input: {{ settings.input_radius }}px;
+    --product-card-ratio: {{ settings.product_card_ratio }};
+    --logo-width: {{ settings.logo_width }}px;
+  }
+
+  {% for scheme in settings.color_schemes %}
+    {%- liquid
+      assign background = scheme.settings.background
+      assign foreground = scheme.settings.text
+    -%}
+    .color-{{ scheme.id }} {
+      --color-background: {{ background }};
+      --color-background-rgb: {{ background.red }}, {{ background.green }}, {{ background.blue }};
+      {%- if scheme.settings.background_gradient != blank %}
+        --gradient-background: {{ scheme.settings.background_gradient }};
+      {%- else %}
+        --gradient-background: {{ background }};
+      {%- endif %}
+      --color-foreground: {{ foreground }};
+      --color-foreground-rgb: {{ foreground.red }}, {{ foreground.green }}, {{ foreground.blue }};
+      --color-accent: {{ scheme.settings.accent }};
+      --color-button: {{ scheme.settings.button }};
+      --color-button-text: {{ scheme.settings.button_label }};
+      --color-secondary-button-text: {{ scheme.settings.secondary_button_label }};
+      --color-muted: rgba({{ foreground.red }}, {{ foreground.green }}, {{ foreground.blue }}, 0.78);
+      --color-border: rgba({{ foreground.red }}, {{ foreground.green }}, {{ foreground.blue }}, 0.18);
+      --color-border-strong: rgba({{ foreground.red }}, {{ foreground.green }}, {{ foreground.blue }}, 0.42);
+      --color-card: rgba({{ foreground.red }}, {{ foreground.green }}, {{ foreground.blue }}, 0.05);
+      --color-overlay-rgb: {{ background.red }}, {{ background.green }}, {{ background.blue }};
+    }
+  {% endfor %}
+{% endstyle %}

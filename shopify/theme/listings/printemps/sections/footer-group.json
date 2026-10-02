@@ -1,0 +1,68 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "t:names.footer_group",
+  "sections": {
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "heading": "Recevez les nouveautés du printemps",
+        "text": "<p>Nouvelles pièces, idées cadeaux et offres réservées aux abonnés.</p>",
+        "padding": "medium"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "brand": {
+          "type": "brand",
+          "settings": {
+            "show_logo": true,
+            "text": "<p>Une édition de Pâques lumineuse et élégante, pensée autour du cadeau, de la décoration et d’un univers printanier premium.</p>"
+          }
+        },
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "heading": "Informations",
+            "menu": "footer"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "heading": "Service client",
+            "text": "<p>Une question ? Écrivez-nous à <a href=\"mailto:contact@boo-shop.fr\">contact@boo-shop.fr</a>.</p><p>Paiement sécurisé, livraison suivie et rétractation sous 14 jours.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "brand",
+        "menu",
+        "text"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "show_payment_icons": true,
+        "show_policies": true,
+        "show_follow_on_shop": true,
+        "show_powered_by": true
+      }
+    }
+  },
+  "order": [
+    "newsletter",
+    "footer"
+  ]
+}

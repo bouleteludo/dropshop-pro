@@ -1,0 +1,150 @@
+<div class="collection-list section color-{{ section.settings.color_scheme }} section--padding-{{ section.settings.padding }}">
+  <div class="page-width">
+    <div class="section-header">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="h2 section-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_view_all -%}
+        <a href="{{ routes.collections_url }}" class="link section-header__link">{{ 'collections.view_all_collections' | t }}</a>
+      {%- endif -%}
+    </div>
+
+    <ul class="collection-grid collection-grid--{{ section.settings.columns }}" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign collection = block.settings.collection -%}
+        <li class="collection-card" {{ block.shopify_attributes }}>
+          <div class="collection-card__media">
+            {%- liquid
+              assign card_image = block.settings.image | default: collection.featured_image
+            -%}
+            {%- if card_image != blank -%}
+              {{
+                card_image
+                | image_url: width: 900
+                | image_tag:
+                  widths: '300, 450, 600, 900',
+                  sizes: '(min-width: 990px) 25vw, 50vw',
+                  loading: 'lazy',
+                  alt: card_image.alt,
+                  class: 'collection-card__image'
+              }}
+            {%- else -%}
+              {%- assign placeholder_index = forloop.index0 | modulo: 6 | plus: 1 -%}
+              {%- assign placeholder = 'collection-' | append: placeholder_index -%}
+              {{ placeholder | placeholder_svg_tag: 'placeholder-svg collection-card__image' }}
+            {%- endif -%}
+          </div>
+          <div class="collection-card__info">
+            {%- if collection != blank -%}
+              <h3 class="collection-card__title">
+                <a href="{{ collection.url }}" class="collection-card__link">{{ collection.title | escape }}</a>
+              </h3>
+              {%- if section.settings.show_count -%}
+                <p class="collection-card__count">{{ 'collections.product_count' | t: count: collection.products_count }}</p>
+              {%- endif -%}
+            {%- else -%}
+              <h3 class="collection-card__title">{{ 'onboarding.collection_title' | t }}</h3>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.collection_list",
+  "class": "section-collection-list",
+  "max_blocks": 12,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:settings.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Collections"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "t:settings.show_product_count",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "t:settings.show_view_all",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "t:settings.padding",
+      "options": [
+        { "value": "small", "label": "t:options.small" },
+        { "value": "medium", "label": "t:options.medium" },
+        { "value": "large", "label": "t:options.large" }
+      ],
+      "default": "large"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "t:names.collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:settings.collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:settings.image",
+          "info": "t:info.collection_image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.collection_list",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

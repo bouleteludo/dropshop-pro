@@ -1,0 +1,97 @@
+<div class="main-list-collections section color-{{ section.settings.color_scheme }} section--padding-medium">
+  <div class="page-width">
+    <h1 class="h1 page-title">{{ section.settings.title | default: page_title | escape }}</h1>
+
+    {%- liquid
+      case section.settings.sort
+        when 'products_high', 'products_low'
+          assign collections = collections | sort: 'all_products_count'
+        when 'date', 'date_reversed'
+          assign collections = collections | sort: 'published_at'
+      endcase
+      if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed'
+        assign collections = collections | reverse
+      endif
+    -%}
+
+    {%- paginate collections by 24 -%}
+      <ul class="collection-grid collection-grid--{{ section.settings.columns }}" role="list">
+        {%- for collection in collections -%}
+          <li class="collection-card">
+            <div class="collection-card__media">
+              {%- if collection.featured_image -%}
+                {{
+                  collection.featured_image
+                  | image_url: width: 900
+                  | image_tag:
+                    widths: '300, 450, 600, 900',
+                    sizes: '(min-width: 990px) 25vw, 50vw',
+                    loading: 'lazy',
+                    alt: collection.featured_image.alt,
+                    class: 'collection-card__image'
+                }}
+              {%- else -%}
+                {%- assign placeholder_index = forloop.index0 | modulo: 6 | plus: 1 -%}
+                {%- assign placeholder = 'collection-' | append: placeholder_index -%}
+                {{ placeholder | placeholder_svg_tag: 'placeholder-svg collection-card__image' }}
+              {%- endif -%}
+            </div>
+            <div class="collection-card__info">
+              <h2 class="collection-card__title">
+                <a href="{{ collection.url }}" class="collection-card__link">{{ collection.title | escape }}</a>
+              </h2>
+              <p class="collection-card__count">{{ 'collections.product_count' | t: count: collection.all_products_count }}</p>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.collections_list_page",
+  "class": "section-main-list-collections",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:settings.heading",
+      "default": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "label": "t:settings.sort_collections",
+      "options": [
+        { "value": "alphabetical", "label": "t:options.sort.alphabetical" },
+        { "value": "products_high", "label": "t:options.sort.products_high" },
+        { "value": "products_low", "label": "t:options.sort.products_low" },
+        { "value": "date", "label": "t:options.sort.date" },
+        { "value": "date_reversed", "label": "t:options.sort.date_reversed" }
+      ],
+      "default": "alphabetical"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    }
+  ]
+}
+{% endschema %}

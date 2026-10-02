@@ -1,0 +1,47 @@
+{%- doc -%}
+  Renders accessible pagination links for a paginate object.
+
+  @param {object} paginate - The paginate object
+  @param {string} [anchor] - Optional anchor appended to every page URL
+{%- enddoc -%}
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+    <ul class="pagination__list" role="list">
+      {%- if paginate.previous -%}
+        <li>
+          <a href="{{ paginate.previous.url }}{{ anchor }}" class="pagination__item pagination__item--arrow">
+            {% render 'icon', name: 'chevron-left' %}
+            <span class="visually-hidden">{{ 'general.pagination.previous' | t }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- for part in paginate.parts -%}
+        <li>
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}{{ anchor }}" class="pagination__item">
+              <span class="visually-hidden">{{ 'general.pagination.page' | t: number: part.title }}</span>
+              <span aria-hidden="true">{{ part.title }}</span>
+            </a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="pagination__item pagination__item--current" aria-current="page">
+              <span class="visually-hidden">{{ 'general.pagination.page' | t: number: part.title }}</span>
+              <span aria-hidden="true">{{ part.title }}</span>
+            </span>
+          {%- else -%}
+            <span class="pagination__item pagination__item--gap">{{ part.title }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      {%- if paginate.next -%}
+        <li>
+          <a href="{{ paginate.next.url }}{{ anchor }}" class="pagination__item pagination__item--arrow">
+            <span class="visually-hidden">{{ 'general.pagination.next' | t }}</span>
+            {% render 'icon', name: 'chevron-right' %}
+          </a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </nav>
+{%- endif -%}

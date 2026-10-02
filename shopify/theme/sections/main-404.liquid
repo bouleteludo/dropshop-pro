@@ -1,0 +1,33 @@
+<div class="main-404 section color-{{ section.settings.color_scheme }} section--padding-large">
+  <div class="page-width page-width--narrow empty-state">
+    <p class="eyebrow">404</p>
+    <h1 class="h1">{{ 'templates.404.title' | t }}</h1>
+    <p>{{ 'templates.404.subtext' | t }}</p>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <label class="visually-hidden" for="Search404-{{ section.id }}">{{ 'general.search.label' | t }}</label>
+      <input class="field__input" id="Search404-{{ section.id }}" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}">
+      <button type="submit" class="button">{{ 'general.search.submit' | t }}</button>
+    </form>
+
+    <a href="{{ routes.root_url }}" class="button button--secondary">{{ 'templates.404.home' | t }}</a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.page_not_found",
+  "class": "section-main-404",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    }
+  ]
+}
+{% endschema %}

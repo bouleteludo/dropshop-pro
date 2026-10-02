@@ -1,0 +1,100 @@
+<div class="main-search section color-{{ section.settings.color_scheme }} section--padding-medium">
+  <div class="page-width">
+    <h1 class="h1 page-title">{{ 'search.title' | t }}</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <label class="visually-hidden" for="SearchPage-{{ section.id }}">{{ 'general.search.label' | t }}</label>
+      <input
+        class="field__input"
+        id="SearchPage-{{ section.id }}"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="submit" class="button">{{ 'general.search.submit' | t }}</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        {% render 'facets',
+          results: search,
+          section_id: section.id,
+          enable_filtering: section.settings.enable_filtering,
+          enable_sorting: section.settings.enable_sorting
+        %}
+
+        {%- if search.results_count == 0 -%}
+          {%- assign terms = search.terms | escape -%}
+          <div class="empty-state">
+            <p class="h3">{{ 'search.no_results' | t: terms: terms }}</p>
+            <p>{{ 'search.no_results_hint' | t }}</p>
+          </div>
+        {%- else -%}
+          <ul class="product-grid product-grid--4 search-results" role="list">
+            {%- for item in search.results -%}
+              <li class="search-results__item search-results__item--{{ item.object_type }}">
+                {%- case item.object_type -%}
+                  {%- when 'product' -%}
+                    {% render 'product-card', product: item, heading_tag: 'h2' %}
+                  {%- when 'article' -%}
+                    <article class="search-card">
+                      {%- if item.image -%}
+                        <div class="search-card__media">
+                          {{ item.image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 990px) 25vw, 50vw', alt: item.image.alt }}
+                        </div>
+                      {%- endif -%}
+                      <p class="search-card__type">{{ 'search.types.article' | t }}</p>
+                      <h2 class="search-card__title"><a href="{{ item.url }}" class="search-card__link">{{ item.title | escape }}</a></h2>
+                      <p class="search-card__excerpt">{{ item.excerpt_or_content | strip_html | truncatewords: 20 }}</p>
+                    </article>
+                  {%- when 'page' -%}
+                    <article class="search-card">
+                      <p class="search-card__type">{{ 'search.types.page' | t }}</p>
+                      <h2 class="search-card__title"><a href="{{ item.url }}" class="search-card__link">{{ item.title | escape }}</a></h2>
+                      <p class="search-card__excerpt">{{ item.content | strip_html | truncatewords: 20 }}</p>
+                    </article>
+                {%- endcase -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+          {% render 'pagination', paginate: paginate %}
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</div>
+
+<script src="{{ 'facets.js' | asset_url }}" type="module" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:names.search_results",
+  "class": "section-main-search",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "t:settings.enable_filtering",
+      "info": "t:info.filtering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "t:settings.enable_sorting",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

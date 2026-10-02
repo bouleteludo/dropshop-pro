@@ -1,0 +1,50 @@
+{%- doc -%}
+  Renders one product media item: image, Shopify-hosted video,
+  YouTube/Vimeo video or 3D model.
+
+  @param {object} media - The product media
+  @param {string} [sizes] - The sizes attribute for images
+  @param {boolean} [eager] - Load the first image eagerly
+{%- enddoc -%}
+{%- liquid
+  assign sizes = sizes | default: '(min-width: 990px) 55vw, 100vw'
+  if eager
+    assign loading = 'eager'
+    assign priority = 'high'
+  else
+    assign loading = 'lazy'
+    assign priority = 'auto'
+  endif
+-%}
+{%- case media.media_type -%}
+  {%- when 'image' -%}
+    {{
+      media
+      | image_url: width: 1946
+      | image_tag:
+        widths: '360, 550, 750, 990, 1200, 1500, 1946',
+        sizes: sizes,
+        loading: loading,
+        fetchpriority: priority,
+        alt: media.alt,
+        class: 'product-media__image'
+    }}
+  {%- when 'video' -%}
+    {{
+      media
+      | video_tag:
+        controls: true,
+        playsinline: true,
+        preload: 'none',
+        image_size: '1100x',
+        class: 'product-media__video'
+    }}
+  {%- when 'external_video' -%}
+    {{ media | external_video_url: rel: 0, playsinline: 1 | external_video_tag: class: 'product-media__video', loading: 'lazy', title: media.alt }}
+  {%- when 'model' -%}
+    <div class="product-media__model" data-model>
+      {{ media | model_viewer_tag: image_size: '1100x', reveal: 'interaction', toggleable: true }}
+    </div>
+  {%- else -%}
+    {{ media | media_tag }}
+{%- endcase -%}

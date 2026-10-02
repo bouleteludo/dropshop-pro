@@ -1,0 +1,90 @@
+<div class="newsletter section color-{{ section.settings.color_scheme }} section--padding-{{ section.settings.padding }}">
+  <div class="page-width page-width--narrow newsletter__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="h2 newsletter__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <div class="rte newsletter__text">{{ section.settings.text }}</div>
+    {%- endif -%}
+
+    {%- assign form_id = 'NewsletterForm-' | append: section.id -%}
+    {%- form 'customer', id: form_id, class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="newsletter__field">
+        <label class="visually-hidden" for="NewsletterEmail-{{ section.id }}">{{ 'newsletter.label' | t }}</label>
+        <input
+          id="NewsletterEmail-{{ section.id }}"
+          type="email"
+          name="contact[email]"
+          class="field__input"
+          value="{{ form.email }}"
+          autocomplete="email"
+          autocapitalize="off"
+          spellcheck="false"
+          required
+          placeholder="{{ 'newsletter.placeholder' | t }}"
+          {% if form.errors %}
+            aria-invalid="true"
+            aria-describedby="NewsletterError-{{ section.id }}"
+          {% elsif form.posted_successfully? %}
+            aria-describedby="NewsletterSuccess-{{ section.id }}"
+          {% endif %}
+        >
+        <button type="submit" class="button" name="commit">{{ 'newsletter.button' | t }}</button>
+      </div>
+      {%- if form.errors -%}
+        <p class="form-message form-message--error" id="NewsletterError-{{ section.id }}" role="alert">
+          {{ form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email }}
+        </p>
+      {%- elsif form.posted_successfully? -%}
+        <p class="form-message form-message--success" id="NewsletterSuccess-{{ section.id }}" role="status" tabindex="-1" autofocus>
+          {{ 'newsletter.success' | t }}
+        </p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.newsletter",
+  "class": "section-newsletter",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Subscribe to our emails"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:settings.text",
+      "default": "<p>Be the first to know about new collections and exclusive offers.</p>"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "t:settings.padding",
+      "options": [
+        { "value": "small", "label": "t:options.small" },
+        { "value": "medium", "label": "t:options.medium" },
+        { "value": "large", "label": "t:options.large" }
+      ],
+      "default": "medium"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.newsletter"
+    }
+  ]
+}
+{% endschema %}

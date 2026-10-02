@@ -1,0 +1,451 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "logo": "",
+    "seasonal_logo": "halloween",
+    "logo_width": 150,
+    "favicon": "",
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#08090B",
+          "background_gradient": "",
+          "text": "#F6F1EA",
+          "accent": "#E8A978",
+          "button": "#C1651F",
+          "button_label": "#08090B",
+          "secondary_button_label": "#F6F1EA"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#131518",
+          "background_gradient": "",
+          "text": "#F6F1EA",
+          "accent": "#E8A978",
+          "button": "#C1651F",
+          "button_label": "#08090B",
+          "secondary_button_label": "#F6F1EA"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#2C1C47",
+          "background_gradient": "",
+          "text": "#F6F1EA",
+          "accent": "#F0C29E",
+          "button": "#C1651F",
+          "button_label": "#08090B",
+          "secondary_button_label": "#F6F1EA"
+        }
+      },
+      "scheme-4": {
+        "settings": {
+          "background": "#F6F1EA",
+          "background_gradient": "",
+          "text": "#17191C",
+          "accent": "#8A4511",
+          "button": "#17191C",
+          "button_label": "#F6F1EA",
+          "secondary_button_label": "#17191C"
+        }
+      }
+    },
+    "type_heading_font": "marcellus_n4",
+    "heading_scale": 105,
+    "heading_letter_spacing": 2,
+    "heading_uppercase": false,
+    "type_body_font": "inter_n4",
+    "body_scale": 100,
+    "page_width": 1280,
+    "page_margin": 20,
+    "button_radius": 40,
+    "card_radius": 16,
+    "input_radius": 10,
+    "product_card_ratio": "1 / 1",
+    "card_show_second_image": true,
+    "card_show_vendor": false,
+    "social_facebook_link": "",
+    "social_instagram_link": "",
+    "social_tiktok_link": "",
+    "social_pinterest_link": "",
+    "social_youtube_link": "",
+    "social_twitter_link": "",
+    "social_snapchat_link": ""
+  },
+  "presets": {
+    "Lanterne": {
+      "logo": "",
+      "seasonal_logo": "halloween",
+      "logo_width": 150,
+      "favicon": "",
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#08090B",
+            "background_gradient": "",
+            "text": "#F6F1EA",
+            "accent": "#E8A978",
+            "button": "#C1651F",
+            "button_label": "#08090B",
+            "secondary_button_label": "#F6F1EA"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#131518",
+            "background_gradient": "",
+            "text": "#F6F1EA",
+            "accent": "#E8A978",
+            "button": "#C1651F",
+            "button_label": "#08090B",
+            "secondary_button_label": "#F6F1EA"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#2C1C47",
+            "background_gradient": "",
+            "text": "#F6F1EA",
+            "accent": "#F0C29E",
+            "button": "#C1651F",
+            "button_label": "#08090B",
+            "secondary_button_label": "#F6F1EA"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#F6F1EA",
+            "background_gradient": "",
+            "text": "#17191C",
+            "accent": "#8A4511",
+            "button": "#17191C",
+            "button_label": "#F6F1EA",
+            "secondary_button_label": "#17191C"
+          }
+        }
+      },
+      "type_heading_font": "marcellus_n4",
+      "heading_scale": 105,
+      "heading_letter_spacing": 2,
+      "heading_uppercase": false,
+      "type_body_font": "inter_n4",
+      "body_scale": 100,
+      "page_width": 1280,
+      "page_margin": 20,
+      "button_radius": 40,
+      "card_radius": 16,
+      "input_radius": 10,
+      "product_card_ratio": "1 / 1",
+      "card_show_second_image": true,
+      "card_show_vendor": false,
+      "social_facebook_link": "",
+      "social_instagram_link": "",
+      "social_tiktok_link": "",
+      "social_pinterest_link": "",
+      "social_youtube_link": "",
+      "social_twitter_link": "",
+      "social_snapchat_link": ""
+    },
+    "Sapin": {
+      "logo": "",
+      "seasonal_logo": "noel",
+      "logo_width": 150,
+      "favicon": "",
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#021D14",
+            "background_gradient": "",
+            "text": "#FFFAF0",
+            "accent": "#F3D47A",
+            "button": "#B31325",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#FFFAF0"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#073421",
+            "background_gradient": "",
+            "text": "#FFFAF0",
+            "accent": "#F3D47A",
+            "button": "#B31325",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#FFFAF0"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#9E1020",
+            "background_gradient": "",
+            "text": "#FFF4CF",
+            "accent": "#FFF4CF",
+            "button": "#021D14",
+            "button_label": "#FFFAF0",
+            "secondary_button_label": "#FFF4CF"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#FFFAF0",
+            "background_gradient": "",
+            "text": "#021D14",
+            "accent": "#9E1020",
+            "button": "#B31325",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#021D14"
+          }
+        }
+      },
+      "type_heading_font": "playfair_display_n6",
+      "heading_scale": 100,
+      "heading_letter_spacing": 0,
+      "heading_uppercase": false,
+      "type_body_font": "inter_n4",
+      "body_scale": 100,
+      "page_width": 1280,
+      "page_margin": 20,
+      "button_radius": 40,
+      "card_radius": 16,
+      "input_radius": 10,
+      "product_card_ratio": "1 / 1",
+      "card_show_second_image": true,
+      "card_show_vendor": false,
+      "social_facebook_link": "",
+      "social_instagram_link": "",
+      "social_tiktok_link": "",
+      "social_pinterest_link": "",
+      "social_youtube_link": "",
+      "social_twitter_link": "",
+      "social_snapchat_link": ""
+    },
+    "Printemps": {
+      "logo": "",
+      "seasonal_logo": "paques",
+      "logo_width": 150,
+      "favicon": "",
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#F5F0E4",
+            "background_gradient": "",
+            "text": "#243126",
+            "accent": "#4F5E3B",
+            "button": "#4F5E3B",
+            "button_label": "#FFFAF0",
+            "secondary_button_label": "#243126"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#273228",
+            "background_gradient": "",
+            "text": "#FFFAF0",
+            "accent": "#E8D79D",
+            "button": "#C8B37A",
+            "button_label": "#243126",
+            "secondary_button_label": "#FFFAF0"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#435032",
+            "background_gradient": "",
+            "text": "#FFF7DC",
+            "accent": "#FFF7DC",
+            "button": "#FFFAF0",
+            "button_label": "#243126",
+            "secondary_button_label": "#FFF7DC"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#FFFDF7",
+            "background_gradient": "",
+            "text": "#243126",
+            "accent": "#4F5E3B",
+            "button": "#4F5E3B",
+            "button_label": "#FFFAF0",
+            "secondary_button_label": "#243126"
+          }
+        }
+      },
+      "type_heading_font": "cormorant_n6",
+      "heading_scale": 115,
+      "heading_letter_spacing": 0,
+      "heading_uppercase": false,
+      "type_body_font": "dm_sans_n4",
+      "body_scale": 100,
+      "page_width": 1280,
+      "page_margin": 20,
+      "button_radius": 40,
+      "card_radius": 16,
+      "input_radius": 10,
+      "product_card_ratio": "1 / 1",
+      "card_show_second_image": true,
+      "card_show_vendor": false,
+      "social_facebook_link": "",
+      "social_instagram_link": "",
+      "social_tiktok_link": "",
+      "social_pinterest_link": "",
+      "social_youtube_link": "",
+      "social_twitter_link": "",
+      "social_snapchat_link": ""
+    },
+    "Velours": {
+      "logo": "",
+      "seasonal_logo": "valentin",
+      "logo_width": 150,
+      "favicon": "",
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#21050C",
+            "background_gradient": "",
+            "text": "#FFF4EF",
+            "accent": "#F0B9AA",
+            "button": "#A30F2D",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#FFF4EF"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#340812",
+            "background_gradient": "",
+            "text": "#FFF4EF",
+            "accent": "#F0B9AA",
+            "button": "#A30F2D",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#FFF4EF"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#8E0D27",
+            "background_gradient": "",
+            "text": "#FFE5DC",
+            "accent": "#FFE5DC",
+            "button": "#21050C",
+            "button_label": "#FFF4EF",
+            "secondary_button_label": "#FFE5DC"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#FFF4EF",
+            "background_gradient": "",
+            "text": "#21050C",
+            "accent": "#8E0D27",
+            "button": "#A30F2D",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#21050C"
+          }
+        }
+      },
+      "type_heading_font": "bodoni_moda_n5",
+      "heading_scale": 100,
+      "heading_letter_spacing": 0,
+      "heading_uppercase": false,
+      "type_body_font": "inter_n4",
+      "body_scale": 100,
+      "page_width": 1280,
+      "page_margin": 20,
+      "button_radius": 40,
+      "card_radius": 16,
+      "input_radius": 10,
+      "product_card_ratio": "1 / 1",
+      "card_show_second_image": true,
+      "card_show_vendor": false,
+      "social_facebook_link": "",
+      "social_instagram_link": "",
+      "social_tiktok_link": "",
+      "social_pinterest_link": "",
+      "social_youtube_link": "",
+      "social_twitter_link": "",
+      "social_snapchat_link": ""
+    },
+    "Rivage": {
+      "logo": "",
+      "seasonal_logo": "ete",
+      "logo_width": 150,
+      "favicon": "",
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#082031",
+            "background_gradient": "",
+            "text": "#FFF6EA",
+            "accent": "#F5D98B",
+            "button": "#D89137",
+            "button_label": "#08273A",
+            "secondary_button_label": "#FFF6EA"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#103247",
+            "background_gradient": "",
+            "text": "#FFF6EA",
+            "accent": "#F5D98B",
+            "button": "#D89137",
+            "button_label": "#08273A",
+            "secondary_button_label": "#FFF6EA"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#0C4661",
+            "background_gradient": "",
+            "text": "#FFF6E3",
+            "accent": "#F5D98B",
+            "button": "#D89137",
+            "button_label": "#08273A",
+            "secondary_button_label": "#FFF6E3"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#FFF6EA",
+            "background_gradient": "",
+            "text": "#082031",
+            "accent": "#0C4661",
+            "button": "#0C4661",
+            "button_label": "#FFF6EA",
+            "secondary_button_label": "#082031"
+          }
+        }
+      },
+      "type_heading_font": "fraunces_n6",
+      "heading_scale": 100,
+      "heading_letter_spacing": 0,
+      "heading_uppercase": false,
+      "type_body_font": "work_sans_n4",
+      "body_scale": 100,
+      "page_width": 1280,
+      "page_margin": 20,
+      "button_radius": 40,
+      "card_radius": 16,
+      "input_radius": 10,
+      "product_card_ratio": "1 / 1",
+      "card_show_second_image": true,
+      "card_show_vendor": false,
+      "social_facebook_link": "",
+      "social_instagram_link": "",
+      "social_tiktok_link": "",
+      "social_pinterest_link": "",
+      "social_youtube_link": "",
+      "social_twitter_link": "",
+      "social_snapchat_link": ""
+    }
+  }
+}

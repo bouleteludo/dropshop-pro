@@ -4,6 +4,11 @@ Plateforme e-commerce autonome (Next.js + Prisma) avec import automatique de
 produits depuis [CJdropshipping](https://developers.cjdropshipping.com/) via
 leur API officielle v2.
 
+## Thèmes Shopify
+
+Les cinq univers saisonniers existent aussi en thème Shopify prêt à
+téléverser (un zip par saison) : voir [`shopify/README.md`](shopify/README.md).
+
 ## Stack
 
 - **Next.js 16** (App Router, TypeScript) — front + back dans le même projet

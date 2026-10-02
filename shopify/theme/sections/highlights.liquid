@@ -1,0 +1,108 @@
+<div class="highlights section color-{{ section.settings.color_scheme }} section--padding-{{ section.settings.padding }}">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="h3 highlights__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <ul class="highlights__list highlights__list--{{ section.blocks.size | at_most: 4 }}" role="list">
+      {%- for block in section.blocks -%}
+        <li class="highlights__item" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != 'none' -%}
+            <span class="highlights__icon">{% render 'icon', name: block.settings.icon %}</span>
+          {%- endif -%}
+          <div>
+            {%- if block.settings.title != blank -%}
+              <p class="highlights__title">{{ block.settings.title | escape }}</p>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <div class="rte highlights__text">{{ block.settings.text }}</div>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.highlights",
+  "class": "section-highlights",
+  "max_blocks": 4,
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:settings.heading"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "t:settings.padding",
+      "options": [
+        { "value": "small", "label": "t:options.small" },
+        { "value": "medium", "label": "t:options.medium" },
+        { "value": "large", "label": "t:options.large" }
+      ],
+      "default": "small"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "highlight",
+      "name": "t:names.highlight",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:settings.icon",
+          "options": [
+            { "value": "none", "label": "t:options.none" },
+            { "value": "truck", "label": "t:options.icon.truck" },
+            { "value": "lock", "label": "t:options.icon.lock" },
+            { "value": "return", "label": "t:options.icon.return" },
+            { "value": "gift", "label": "t:options.icon.gift" },
+            { "value": "star", "label": "t:options.icon.star" },
+            { "value": "heart", "label": "t:options.icon.heart" },
+            { "value": "leaf", "label": "t:options.icon.leaf" },
+            { "value": "sun", "label": "t:options.icon.sun" },
+            { "value": "chat", "label": "t:options.icon.chat" },
+            { "value": "check", "label": "t:options.icon.check" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:settings.heading",
+          "default": "Highlight a benefit"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:settings.text",
+          "default": "<p>Share shipping, returns or payment information.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.highlights",
+      "blocks": [
+        { "type": "highlight", "settings": { "icon": "lock" } },
+        { "type": "highlight", "settings": { "icon": "truck" } },
+        { "type": "highlight", "settings": { "icon": "return" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,102 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "buttons",
+            "show_swatches": true
+          }
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "shipping": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Livraison",
+            "icon": "truck",
+            "content": "<p>Le délai de livraison dépend du produit et de la destination. Il est indiqué avant la validation de votre commande.</p>",
+            "page": ""
+          }
+        },
+        "returns": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Retours et rétractation",
+            "icon": "return",
+            "content": "<p>Vous disposez de 14 jours après réception pour exercer votre droit de rétractation, sous réserve des exceptions légales. Consultez notre politique de remboursement pour le détail.</p>",
+            "page": ""
+          }
+        },
+        "complementary": {
+          "type": "complementary",
+          "settings": {
+            "heading": "À associer avec",
+            "product_count": 3
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "variant_picker",
+        "quantity",
+        "buy_buttons",
+        "description",
+        "shipping",
+        "returns",
+        "complementary"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "media_size": "large",
+        "sticky_info": true
+      }
+    },
+    "related": {
+      "type": "product-recommendations",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "Vous aimerez aussi",
+        "product_count": 4,
+        "columns": 4
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}

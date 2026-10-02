@@ -1,0 +1,88 @@
+{%- doc -%}
+  Renders a product card for grids and sliders. Without a product, renders
+  an onboarding placeholder card.
+
+  @param {product} [product] - The product to render
+  @param {number} [index] - Position used for the placeholder illustration
+  @param {string} [sizes] - The sizes attribute for the card image
+  @param {boolean} [eager] - Load the image eagerly (first row only)
+  @param {string} [heading_tag] - Heading element for the product title
+{%- enddoc -%}
+{%- liquid
+  assign heading_tag = heading_tag | default: 'h3'
+  assign sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign placeholder_index = index | default: 0 | modulo: 6 | plus: 1
+-%}
+
+{%- if product != blank -%}
+  {%- liquid
+    assign media = product.featured_media
+    assign second_media = product.media[1]
+    if settings.card_show_second_image == false or second_media.media_type != 'image'
+      assign second_media = nil
+    endif
+    if eager
+      assign loading = 'eager'
+    else
+      assign loading = 'lazy'
+    endif
+  -%}
+  <div class="product-card{% if second_media %} product-card--has-hover{% endif %}">
+    <div class="product-card__media">
+      {%- if media -%}
+        {{
+          media.preview_image
+          | image_url: width: 1100
+          | image_tag:
+            widths: '220, 330, 460, 600, 800, 1100',
+            sizes: sizes,
+            loading: loading,
+            alt: media.preview_image.alt,
+            class: 'product-card__image'
+        }}
+        {%- if second_media -%}
+          {{
+            second_media.preview_image
+            | image_url: width: 1100
+            | image_tag:
+              widths: '220, 330, 460, 600, 800, 1100',
+              sizes: sizes,
+              loading: 'lazy',
+              alt: '',
+              class: 'product-card__image product-card__image--hover'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg product-card__image' }}
+      {%- endif -%}
+
+      <div class="product-card__badges">
+        {%- if product.available == false -%}
+          <span class="badge badge--sold-out">{{ 'products.badges.sold_out' | t }}</span>
+        {%- elsif product.compare_at_price > product.price -%}
+          <span class="badge badge--sale">{{ 'products.badges.sale' | t }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="product-card__info">
+      <{{ heading_tag }} class="product-card__title">
+        <a href="{{ product.url }}" class="product-card__link">{{ product.title | escape }}</a>
+      </{{ heading_tag }}>
+      {%- if settings.card_show_vendor and product.vendor != blank -%}
+        <p class="product-card__vendor"><span class="visually-hidden">{{ 'products.vendor' | t }}</span>{{ product.vendor }}</p>
+      {%- endif -%}
+      {% render 'price', product: product, show_range: true %}
+    </div>
+  </div>
+{%- else -%}
+  <div class="product-card product-card--placeholder">
+    <div class="product-card__media">
+      {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg product-card__image' }}
+    </div>
+    <div class="product-card__info">
+      <{{ heading_tag }} class="product-card__title">{{ 'onboarding.product_title' | t }}</{{ heading_tag }}>
+      <div class="price"><span class="price__current">{{ 1999 | money }}</span></div>
+    </div>
+  </div>
+{%- endif -%}

@@ -1,0 +1,115 @@
+{%- assign collection = section.settings.collection -%}
+<div class="featured-collection section color-{{ section.settings.color_scheme }} section--padding-{{ section.settings.padding }}">
+  <div class="page-width">
+    <div class="section-header">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="h2 section-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <div class="rte section-header__text">{{ section.settings.description }}</div>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_view_all and collection != blank and collection.products_count > section.settings.product_count -%}
+        <a href="{{ collection.url }}" class="link section-header__link">
+          {{ 'collections.view_all' | t }}
+          <span class="visually-hidden"> {{ collection.title | escape }}</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <ul class="product-grid product-grid--{{ section.settings.columns }}" role="list">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: section.settings.product_count -%}
+          <li>{% render 'product-card', product: product, index: forloop.index0 %}</li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..section.settings.product_count) -%}
+          <li>{% render 'product-card', index: i %}</li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.featured_collection",
+  "class": "section-featured-collection",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:settings.collection"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:settings.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Featured collection"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:settings.description"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "label": "t:settings.product_count",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "t:settings.show_view_all",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "t:settings.padding",
+      "options": [
+        { "value": "small", "label": "t:options.small" },
+        { "value": "medium", "label": "t:options.medium" },
+        { "value": "large", "label": "t:options.large" }
+      ],
+      "default": "large"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.featured_collection"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,226 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "seasonal-hero",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "artwork": "paques",
+        "artwork_alt": "Devanture fleurie décorée pour Pâques, avec œufs décorés, lapins et tulipes",
+        "image_position": "center center",
+        "mobile_image_position": "75% center",
+        "animate_image": true,
+        "effect": "petals",
+        "height": "large",
+        "content_position": "left",
+        "overlay_style": "left",
+        "overlay_opacity": 70,
+        "eyebrow": "Collection de Pâques — édition printanière",
+        "heading": "Pâques en douceur",
+        "heading_accent": "chez BOO SHOP.",
+        "heading_tag": "h1",
+        "text": "<p>Ivoire, vert mousse et or vieilli : une sélection lumineuse inspirée des fleurs, des cadeaux et des détails raffinés du printemps.</p>",
+        "button_label_1": "Découvrir la collection",
+        "button_link_1": "shopify://collections/all",
+        "button_label_2": "",
+        "button_link_2": ""
+      }
+    },
+    "highlights": {
+      "type": "highlights",
+      "blocks": {
+        "highlight_1": {
+          "type": "highlight",
+          "settings": {
+            "icon": "lock",
+            "title": "Paiement sécurisé",
+            "text": "<p>Transactions chiffrées et protégées.</p>"
+          }
+        },
+        "highlight_2": {
+          "type": "highlight",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison suivie",
+            "text": "<p>Délai estimé selon le produit et la destination.</p>"
+          }
+        },
+        "highlight_3": {
+          "type": "highlight",
+          "settings": {
+            "icon": "return",
+            "title": "Retours sous 14 jours",
+            "text": "<p>Droit de rétractation de 14 jours après réception.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "highlight_1",
+        "highlight_2",
+        "highlight_3"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "heading": "",
+        "padding": "small"
+      }
+    },
+    "featured_product": {
+      "type": "featured-product",
+      "blocks": {
+        "eyebrow": {
+          "type": "text",
+          "settings": {
+            "text": "Idée de Pâques",
+            "style": "eyebrow"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "buttons",
+            "show_swatches": true
+          }
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "eyebrow",
+        "title",
+        "price",
+        "variant_picker",
+        "quantity",
+        "buy_buttons",
+        "description"
+      ],
+      "settings": {
+        "product": "",
+        "color_scheme": "scheme-1",
+        "padding": "large"
+      }
+    },
+    "collection_list": {
+      "type": "collection-list",
+      "blocks": {
+        "collection_1": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_2": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_3": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_4": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3",
+        "collection_4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "Navigation",
+        "heading": "Choisir son univers",
+        "columns": 4,
+        "show_count": true,
+        "show_view_all": true,
+        "padding": "medium"
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "all",
+        "color_scheme": "scheme-1",
+        "eyebrow": "Sélection printanière",
+        "heading": "La collection de Pâques",
+        "description": "",
+        "product_count": 8,
+        "columns": 4,
+        "show_view_all": true,
+        "padding": "large"
+      }
+    },
+    "rich_text": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "L’esprit BOO SHOP",
+            "size": "h2"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Une édition de Pâques lumineuse et élégante, pensée autour du cadeau, de la décoration et d’un univers printanier premium.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "alignment": "center",
+        "padding": "large"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "highlights",
+    "featured_product",
+    "collection_list",
+    "featured_collection",
+    "rich_text"
+  ]
+}

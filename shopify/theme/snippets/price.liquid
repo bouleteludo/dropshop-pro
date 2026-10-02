@@ -1,0 +1,63 @@
+{%- doc -%}
+  Renders a product or variant price with compare-at price, sale state,
+  price ranges and unit price.
+
+  @param {product} product - The product
+  @param {variant} [variant] - Variant to show instead of the product price range
+  @param {boolean} [show_range] - Show "From" price when variant prices differ
+  @param {string} [class] - Extra classes
+{%- enddoc -%}
+{%- liquid
+  if variant
+    assign target = variant
+    assign price = variant.price
+    assign compare_at_price = variant.compare_at_price
+    assign available = variant.available
+  else
+    assign target = product.selected_or_first_available_variant
+    assign price = product.price
+    assign compare_at_price = product.compare_at_price
+    assign available = product.available
+  endif
+
+  assign on_sale = false
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+-%}
+
+<div class="price{% if on_sale %} price--on-sale{% endif %}{% unless available %} price--sold-out{% endunless %} {{ class }}">
+  <span class="visually-hidden">
+    {%- if on_sale -%}
+      {{ 'products.price.sale_price' | t }}
+    {%- else -%}
+      {{ 'products.price.regular_price' | t }}
+    {%- endif -%}
+  </span>
+  <span class="price__current">
+    {%- if show_range and product.price_varies and variant == blank -%}
+      {%- assign min_price = product.price_min | money -%}
+      {{ 'products.price.from_price_html' | t: price: min_price }}
+    {%- else -%}
+      {{ price | money }}
+    {%- endif -%}
+  </span>
+
+  {%- if on_sale -%}
+    <span class="visually-hidden">{{ 'products.price.regular_price' | t }}</span>
+    <s class="price__compare">{{ compare_at_price | money }}</s>
+  {%- endif -%}
+
+  {%- if target.unit_price_measurement -%}
+    <small class="price__unit">
+      <span class="visually-hidden">{{ 'products.price.unit_price' | t }}</span>
+      {{ target.unit_price | money -}}
+      <span aria-hidden="true">/</span>
+      <span class="visually-hidden">&nbsp;{{ 'products.price.unit_price_separator' | t }}&nbsp;</span>
+      {%- if target.unit_price_measurement.reference_value != 1 -%}
+        {{- target.unit_price_measurement.reference_value -}}
+      {%- endif -%}
+      {{ target.unit_price_measurement.reference_unit }}
+    </small>
+  {%- endif -%}
+</div>

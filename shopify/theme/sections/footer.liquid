@@ -1,0 +1,272 @@
+<footer class="site-footer color-{{ section.settings.color_scheme }}">
+  {%- if section.blocks.size > 0 -%}
+    <div class="page-width site-footer__blocks">
+      {%- for block in section.blocks -%}
+        <div class="site-footer__block site-footer__block--{{ block.type }}" {{ block.shopify_attributes }}>
+          {%- case block.type -%}
+            {%- when 'brand' -%}
+              {%- if block.settings.show_logo -%}
+                <a href="{{ routes.root_url }}" class="logo site-footer__logo">{% render 'logo' %}</a>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="rte site-footer__text">{{ block.settings.text }}</div>
+              {%- endif -%}
+            {%- when 'menu' -%}
+              {%- if block.settings.heading != blank -%}
+                <h2 class="site-footer__heading">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {%- if block.settings.menu.links.size > 0 -%}
+                <ul class="site-footer__menu" role="list">
+                  {%- for link in block.settings.menu.links -%}
+                    <li>
+                      <a
+                        href="{{ link.url }}"
+                        class="site-footer__link"
+                        {% if link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{- link.title | escape -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            {%- when 'text' -%}
+              {%- if block.settings.heading != blank -%}
+                <h2 class="site-footer__heading">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              <div class="rte site-footer__text">{{ block.settings.text }}</div>
+            {%- when 'custom_liquid' -%}
+              {{ block.settings.custom_liquid }}
+            {%- when '@app' -%}
+              {% render block %}
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <div class="page-width site-footer__bottom">
+    <div class="site-footer__row">
+      {% render 'social-icons' %}
+
+      {%- if section.settings.show_follow_on_shop -%}
+        <div class="site-footer__follow">{{ shop | login_button: action: 'follow' }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- liquid
+      assign show_country = false
+      assign show_language = false
+      if section.settings.enable_country_selector and localization.available_countries.size > 1
+        assign show_country = true
+      endif
+      if section.settings.enable_language_selector and localization.available_languages.size > 1
+        assign show_language = true
+      endif
+    -%}
+    {%- if show_country or show_language -%}
+      {%- form 'localization', id: 'FooterLocalizationForm', class: 'localization-form' -%}
+        {%- if show_country -%}
+          <div class="field">
+            <label class="field__label" for="FooterCountry">{{ 'localization.country_label' | t }}</label>
+            <select id="FooterCountry" name="country_code" class="field__input field__select">
+              {%- for country in localization.available_countries -%}
+                <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected="selected"{% endif %}>
+                  {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+        {%- if show_language -%}
+          <div class="field">
+            <label class="field__label" for="FooterLanguage">{{ 'localization.language_label' | t }}</label>
+            <select id="FooterLanguage" name="language_code" class="field__input field__select">
+              {%- for language in localization.available_languages -%}
+                <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected="selected"{% endif %}>
+                  {{ language.endonym_name | capitalize }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+        <button type="submit" class="button button--secondary button--small">{{ 'localization.update' | t }}</button>
+      {%- endform -%}
+    {%- endif -%}
+
+    {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+      <div class="site-footer__payment">
+        <span class="visually-hidden">{{ 'general.payment.methods' | t }}</span>
+        <ul class="payment-icons" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+      <ul class="site-footer__policies" role="list">
+        {%- for policy in shop.policies -%}
+          <li><a href="{{ policy.url }}" class="site-footer__link">{{ policy.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <p class="site-footer__copyright">
+      &copy; {{ 'now' | date: '%Y' }}
+      {{ shop.name | link_to: routes.root_url }}
+      {%- if section.settings.show_powered_by %} &middot; {{ powered_by_link }}{% endif %}
+    </p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "t:names.footer",
+  "class": "section-footer",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "header",
+      "content": "t:settings.headers.localization"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "label": "t:settings.enable_country_selector",
+      "info": "t:info.country_selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "label": "t:settings.enable_language_selector",
+      "info": "t:info.language_selector",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:settings.headers.bottom_bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "t:settings.show_payment_icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policies",
+      "label": "t:settings.show_policies",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_follow_on_shop",
+      "label": "t:settings.show_follow_on_shop",
+      "info": "t:info.follow_on_shop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_powered_by",
+      "label": "t:settings.show_powered_by",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "brand",
+      "name": "t:names.brand_information",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_logo",
+          "label": "t:settings.show_logo",
+          "default": true
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:settings.text",
+          "default": "<p>Share information about your brand with your customers.</p>"
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "t:names.menu",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "t:settings.heading",
+          "default": "Quick links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "t:settings.menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:names.text",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "t:settings.heading",
+          "default": "Customer care"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:settings.text",
+          "default": "<p>Share contact details, store hours or shipping information.</p>"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "t:names.custom_liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "t:settings.custom_liquid",
+          "info": "t:info.custom_liquid"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.footer",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "menu" },
+        { "type": "text" }
+      ]
+    }
+  ]
+}
+{% endschema %}

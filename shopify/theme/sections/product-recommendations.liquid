@@ -1,0 +1,73 @@
+<div class="product-recommendations section color-{{ section.settings.color_scheme }} section--padding-medium">
+  <product-recommendations
+    class="page-width"
+    data-url="{{ routes.product_recommendations_url }}?product_id={{ product.id }}&limit={{ section.settings.product_count }}&intent=related&section_id={{ section.id }}"
+    data-target="related-{{ section.id }}"
+  >
+    <div data-recommendations-target="related-{{ section.id }}">
+      {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="h2 section-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        <ul class="product-grid product-grid--{{ section.settings.columns }}" role="list">
+          {%- for recommendation in recommendations.products -%}
+            <li>{% render 'product-card', product: recommendation %}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </product-recommendations>
+</div>
+
+<script src="{{ 'product.js' | asset_url }}" type="module" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:names.related_products",
+  "class": "section-product-recommendations",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:info.related_products"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "label": "t:settings.product_count",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.related_products"
+    }
+  ]
+}
+{% endschema %}

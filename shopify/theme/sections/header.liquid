@@ -1,0 +1,248 @@
+{%- assign menu = section.settings.menu -%}
+
+<div
+  class="site-header color-{{ section.settings.color_scheme }}{% if section.settings.sticky %} site-header--sticky{% endif %}"
+  data-site-header
+>
+  <div class="page-width site-header__inner">
+    {%- if menu.links.size > 0 -%}
+      <details class="menu-drawer" data-disclosure>
+        <summary class="icon-button menu-drawer__toggle">
+          <span class="menu-drawer__icon-open">{% render 'icon', name: 'menu' %}</span>
+          <span class="menu-drawer__icon-close">{% render 'icon', name: 'close' %}</span>
+          <span class="visually-hidden">{{ 'general.menu.toggle' | t }}</span>
+        </summary>
+        <nav class="menu-drawer__panel color-{{ section.settings.color_scheme }}" aria-label="{{ 'general.menu.label' | t }}">
+          <ul class="menu-drawer__list" role="list">
+            {%- for link in menu.links -%}
+              <li>
+                {%- if link.links != blank -%}
+                  <details class="menu-drawer__submenu">
+                    <summary class="menu-drawer__link">
+                      {{ link.title | escape }}
+                      {% render 'icon', name: 'chevron-down' %}
+                    </summary>
+                    <ul class="menu-drawer__sublist" role="list">
+                      <li><a href="{{ link.url }}" class="menu-drawer__link menu-drawer__link--small">{{ 'general.menu.view_all' | t: title: link.title }}</a></li>
+                      {%- for child in link.links -%}
+                        <li>
+                          {%- if child.links != blank -%}
+                            <details class="menu-drawer__submenu">
+                              <summary class="menu-drawer__link menu-drawer__link--small">
+                                {{ child.title | escape }}
+                                {% render 'icon', name: 'chevron-down' %}
+                              </summary>
+                              <ul class="menu-drawer__sublist" role="list">
+                                <li><a href="{{ child.url }}" class="menu-drawer__link menu-drawer__link--small">{{ 'general.menu.view_all' | t: title: child.title }}</a></li>
+                                {%- for grandchild in child.links -%}
+                                  <li>
+                                    <a
+                                      href="{{ grandchild.url }}"
+                                      class="menu-drawer__link menu-drawer__link--small"
+                                      {% if grandchild.current %}
+                                        aria-current="page"
+                                      {% endif %}
+                                    >
+                                      {{- grandchild.title | escape -}}
+                                    </a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            </details>
+                          {%- else -%}
+                            <a
+                              href="{{ child.url }}"
+                              class="menu-drawer__link menu-drawer__link--small"
+                              {% if child.current %}
+                                aria-current="page"
+                              {% endif %}
+                            >
+                              {{- child.title | escape -}}
+                            </a>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </details>
+                {%- else -%}
+                  <a
+                    href="{{ link.url }}"
+                    class="menu-drawer__link"
+                    {% if link.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{- link.title | escape -}}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      </details>
+    {%- endif -%}
+
+    <a href="{{ routes.root_url }}" class="logo site-header__logo">
+      {% render 'logo', eager: true %}
+    </a>
+
+    {%- if menu.links.size > 0 -%}
+      <nav class="header-menu" aria-label="{{ 'general.menu.label' | t }}">
+        <ul class="header-menu__list" role="list">
+          {%- for link in menu.links -%}
+            <li class="header-menu__item">
+              {%- if link.links != blank -%}
+                <details class="header-menu__dropdown" data-disclosure>
+                  <summary
+                    class="header-menu__link"
+                    {% if link.child_active or link.active %}
+                      data-active
+                    {% endif %}
+                  >
+                    {{ link.title | escape }}
+                    {% render 'icon', name: 'chevron-down' %}
+                  </summary>
+                  <ul class="header-menu__submenu color-{{ section.settings.color_scheme }}" role="list">
+                    <li><a href="{{ link.url }}" class="header-menu__sublink">{{ 'general.menu.view_all' | t: title: link.title }}</a></li>
+                    {%- for child in link.links -%}
+                      <li>
+                        <a
+                          href="{{ child.url }}"
+                          class="header-menu__sublink"
+                          {% if child.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{- child.title | escape -}}
+                        </a>
+                        {%- if child.links != blank -%}
+                          <ul class="header-menu__grandchildren" role="list">
+                            {%- for grandchild in child.links -%}
+                              <li>
+                                <a
+                                  href="{{ grandchild.url }}"
+                                  class="header-menu__sublink header-menu__sublink--small"
+                                  {% if grandchild.current %}
+                                    aria-current="page"
+                                  {% endif %}
+                                >
+                                  {{- grandchild.title | escape -}}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a
+                  href="{{ link.url }}"
+                  class="header-menu__link"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="site-header__icons">
+      {%- if section.settings.show_search -%}
+        <predictive-search class="search-modal" data-section-id="predictive-search">
+          <details data-disclosure>
+            <summary class="icon-button">
+              {% render 'icon', name: 'search' %}
+              <span class="visually-hidden">{{ 'general.search.open' | t }}</span>
+            </summary>
+            <div class="search-modal__panel color-{{ section.settings.color_scheme }}">
+              <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form">
+                <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'general.search.label' | t }}</label>
+                <input
+                  class="field__input search-modal__input"
+                  id="HeaderSearch-{{ section.id }}"
+                  type="search"
+                  name="q"
+                  value="{{ search.terms | escape }}"
+                  placeholder="{{ 'general.search.placeholder' | t }}"
+                  autocomplete="off"
+                  aria-describedby="PredictiveStatus-{{ section.id }}"
+                >
+                <input type="hidden" name="options[prefix]" value="last">
+                <button type="submit" class="icon-button">
+                  {% render 'icon', name: 'search' %}
+                  <span class="visually-hidden">{{ 'general.search.submit' | t }}</span>
+                </button>
+              </form>
+              <p id="PredictiveStatus-{{ section.id }}" class="visually-hidden" role="status" data-predictive-status></p>
+              <div id="PredictiveResults-{{ section.id }}" class="search-modal__results" data-predictive-results></div>
+            </div>
+          </details>
+        </predictive-search>
+      {%- endif -%}
+
+      {%- if shop.customer_accounts_enabled -%}
+        <shopify-account menu="{{ section.settings.customer_account_menu }}" class="site-header__account">
+          {% render 'icon', name: 'account' %}
+        </shopify-account>
+      {%- endif -%}
+
+      <a href="{{ routes.cart_url }}" class="icon-button site-header__cart">
+        {% render 'icon', name: 'cart' %}
+        <span class="visually-hidden">{{ 'general.cart.link' | t }}</span>
+        <span class="cart-count{% if cart.item_count == 0 %} cart-count--empty{% endif %}" data-cart-count>
+          <span aria-hidden="true">{{ cart.item_count }}</span>
+          <span class="visually-hidden">{{ 'general.cart.item_count' | t: count: cart.item_count }}</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.header",
+  "class": "section-site-header",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:settings.menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "customer_account_menu",
+      "label": "t:settings.customer_account_menu",
+      "default": "customer-account-main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "t:settings.sticky_header",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "t:settings.show_search",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

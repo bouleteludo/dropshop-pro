@@ -1,0 +1,80 @@
+<div class="main-blog section color-{{ section.settings.color_scheme }} section--padding-medium">
+  <div class="page-width">
+    <h1 class="h1 page-title">{{ blog.title | escape }}</h1>
+
+    {%- if blog.all_tags.size > 0 -%}
+      <nav class="blog-tags" aria-label="{{ 'blogs.tags_label' | t }}">
+        <ul class="blog-tags__list" role="list">
+          <li><a href="{{ blog.url }}" class="pill"{% if current_tags == blank %} aria-current="page"{% endif %}>{{ 'blogs.all_tags' | t }}</a></li>
+          {%- for tag in blog.all_tags -%}
+            <li>
+              <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="pill"{% if current_tags contains tag %} aria-current="page"{% endif %}>{{ tag | escape }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- paginate blog.articles by 9 -%}
+      {%- if blog.articles.size == 0 -%}
+        <div class="empty-state"><p class="h3">{{ 'blogs.empty' | t }}</p></div>
+      {%- else -%}
+        <ul class="article-grid" role="list">
+          {%- for article in blog.articles -%}
+            <li>
+              <article class="article-card">
+                {%- if article.image -%}
+                  <div class="article-card__media">
+                    {{
+                      article.image
+                      | image_url: width: 1100
+                      | image_tag:
+                        widths: '360, 550, 750, 1100',
+                        sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                        loading: 'lazy',
+                        alt: article.image.alt,
+                        class: 'article-card__image'
+                    }}
+                  </div>
+                {%- endif -%}
+                <div class="article-card__info">
+                  <p class="article-card__meta">
+                    {{- article.published_at | time_tag: format: 'date' -}}
+                    {%- if section.settings.show_author %} &middot; {{ article.author | escape }}{% endif -%}
+                  </p>
+                  <h2 class="h3 article-card__title"><a href="{{ article.url }}" class="article-card__link">{{ article.title | escape }}</a></h2>
+                  <div class="rte article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 30 }}</div>
+                </div>
+              </article>
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% render 'pagination', paginate: paginate %}
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.blog_posts",
+  "class": "section-main-blog",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:settings.show_author",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

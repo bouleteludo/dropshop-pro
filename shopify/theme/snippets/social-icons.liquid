@@ -1,0 +1,46 @@
+{%- doc -%}
+  Renders the social media links configured in theme settings.
+{%- enddoc -%}
+{%- liquid
+  assign networks = 'facebook,instagram,tiktok,pinterest,youtube,twitter,snapchat' | split: ','
+  assign has_links = false
+  for network in networks
+    assign setting_id = 'social_' | append: network | append: '_link'
+    if settings[setting_id] != blank
+      assign has_links = true
+    endif
+  endfor
+-%}
+{%- if has_links -%}
+  <ul class="social-icons" role="list">
+    {%- for network in networks -%}
+      {%- assign setting_id = 'social_' | append: network | append: '_link' -%}
+      {%- if settings[setting_id] != blank -%}
+        {%- assign label_key = 'general.social.' | append: network -%}
+        <li>
+          <a href="{{ settings[setting_id] }}" class="social-icons__link" rel="noopener" target="_blank">
+            <svg class="icon" aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              {%- case network -%}
+                {%- when 'facebook' -%}
+                  <path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4a21 21 0 0 0-2.3-.1c-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21Z"/>
+                {%- when 'instagram' -%}
+                  <path d="M12 7.2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Zm0 7.9a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2Zm5-8.1a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0ZM12 3.6c2.7 0 3 0 4.1.1 2.7.1 4 1.4 4.1 4.1.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c-.1 2.7-1.4 4-4.1 4.1-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-2.7-.1-4-1.4-4.1-4.1C3.7 15 3.6 14.7 3.6 12s0-3 .1-4.1c.1-2.7 1.4-4 4.1-4.1C8.9 3.7 9.3 3.6 12 3.6Z"/>
+                {%- when 'tiktok' -%}
+                  <path d="M16.6 3h-3v11.7a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1v-3a5.6 5.6 0 1 0 4.8 5.5V9.4a7 7 0 0 0 4 1.3v-3a4 4 0 0 1-4-4.7Z"/>
+                {%- when 'pinterest' -%}
+                  <path d="M12 3a9 9 0 0 0-3.3 17.4c-.1-.7-.1-1.8 0-2.6l1-4.4s-.3-.6-.3-1.4c0-1.3.8-2.3 1.7-2.3.8 0 1.2.6 1.2 1.3 0 .8-.5 2-.8 3.1-.2.9.5 1.7 1.4 1.7 1.7 0 3-1.8 3-4.4 0-2.3-1.6-3.9-4-3.9a4.1 4.1 0 0 0-4.3 4.1c0 .8.3 1.7.7 2.2l.1.3-.3 1c0 .2-.2.2-.4.1-1.2-.5-1.9-2.3-1.9-3.7 0-3 2.2-5.8 6.3-5.8 3.3 0 5.9 2.4 5.9 5.5 0 3.3-2.1 6-5 6-1 0-1.9-.5-2.2-1.1l-.6 2.3c-.2.8-.8 1.9-1.2 2.6A9 9 0 1 0 12 3Z"/>
+                {%- when 'youtube' -%}
+                  <path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8ZM10 15V9l5.2 3Z"/>
+                {%- when 'twitter' -%}
+                  <path d="M17.8 3.5h3l-6.6 7.5 7.8 10.3h-6.1l-4.8-6.2-5.5 6.2h-3l7-8L2 3.5h6.3l4.3 5.7Zm-1 16h1.6L7.2 5.2H5.4Z"/>
+                {%- when 'snapchat' -%}
+                  <path d="M12 3c2.6 0 4.6 2 4.6 4.6v2.2c.4.1.9 0 1.3-.2.5-.2 1 .4.6.8-.6.6-1.5.9-1.9 1.1.5 1.6 1.8 3 3.4 3.4.4.1.4.6 0 .8-.6.3-1.4.4-2 .5-.2.4-.1 1-.6 1-.7.1-1.5-.1-2.2.3-.9.5-1.7 1.5-3.2 1.5s-2.3-1-3.2-1.5c-.7-.4-1.5-.2-2.2-.3-.5 0-.4-.6-.6-1-.6-.1-1.4-.2-2-.5-.4-.2-.4-.7 0-.8 1.6-.4 2.9-1.8 3.4-3.4-.4-.2-1.3-.5-1.9-1.1-.4-.4.1-1 .6-.8.4.2.9.3 1.3.2V7.6C7.4 5 9.4 3 12 3Z"/>
+              {%- endcase -%}
+            </svg>
+            <span class="visually-hidden">{{ label_key | t }}</span>
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

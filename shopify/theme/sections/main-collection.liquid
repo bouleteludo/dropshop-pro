@@ -1,0 +1,126 @@
+<div class="main-collection section color-{{ section.settings.color_scheme }} section--padding-medium">
+  <div class="page-width">
+    <header class="collection-hero{% if section.settings.show_image and collection.image %} collection-hero--with-image{% endif %}">
+      <div class="collection-hero__text">
+        <h1 class="h1 collection-hero__title">{{ collection.title | escape }}</h1>
+        {%- if section.settings.show_description and collection.description != blank -%}
+          <div class="rte collection-hero__description">{{ collection.description }}</div>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_image and collection.image -%}
+        <div class="collection-hero__media">
+          {{
+            collection.image
+            | image_url: width: 1200
+            | image_tag:
+              widths: '375, 550, 750, 1000, 1200',
+              sizes: '(min-width: 990px) 40vw, 100vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: collection.image.alt,
+              class: 'collection-hero__image'
+          }}
+        </div>
+      {%- endif -%}
+    </header>
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      {% render 'facets',
+        results: collection,
+        section_id: section.id,
+        enable_filtering: section.settings.enable_filtering,
+        enable_sorting: section.settings.enable_sorting
+      %}
+
+      <div id="ProductGrid-{{ section.id }}" class="collection__products">
+        {%- if collection.products.size == 0 -%}
+          <div class="empty-state">
+            {%- if collection.filters != empty and collection.products_count == 0 and collection.all_products_count > 0 -%}
+              <p class="h3">{{ 'collections.no_matches' | t }}</p>
+              <a href="{{ collection.url }}" class="button button--secondary">{{ 'products.facets.clear_all' | t }}</a>
+            {%- else -%}
+              <p class="h3">{{ 'collections.empty' | t }}</p>
+              <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+            {%- endif -%}
+          </div>
+        {%- else -%}
+          <ul class="product-grid product-grid--{{ section.settings.columns }}" role="list">
+            {%- for product in collection.products -%}
+              {%- liquid
+                assign eager = false
+                if forloop.index <= 2
+                  assign eager = true
+                endif
+              -%}
+              <li>{% render 'product-card', product: product, eager: eager, heading_tag: 'h2' %}</li>
+            {%- endfor -%}
+          </ul>
+          {% render 'pagination', paginate: paginate %}
+        {%- endif -%}
+      </div>
+    {%- endpaginate -%}
+  </div>
+</div>
+
+<script src="{{ 'facets.js' | asset_url }}" type="module" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:names.product_grid",
+  "class": "section-main-collection",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "t:settings.show_collection_description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "t:settings.show_collection_image",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "t:settings.products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "t:settings.enable_filtering",
+      "info": "t:info.filtering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "t:settings.enable_sorting",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
