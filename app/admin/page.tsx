@@ -26,7 +26,7 @@ export default async function AdminHome() {
     ["Produits", `${activeProducts} actifs / ${products}`, "/admin/products"],
     ["Commandes", `${orders} au total`, "/admin/orders"],
     ["À traiter", `${paidOrders} commande(s) payée(s)`, "/admin/orders"],
-    ["Watchlist", `${candidates} opportunité(s)`, "/admin/research"],
+    ["Watchlist eBay", `${candidates} opportunité(s)`, "/admin/research/ebay"],
   ];
 
   return (
@@ -40,7 +40,7 @@ export default async function AdminHome() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/admin/themes" className="rounded-full bg-ember-500 px-5 py-2.5 text-sm font-semibold text-ink-950 hover:bg-ember-400">Changer le thème</Link>
             <Link href="/admin/seasons" className="rounded-full border border-white/10 px-5 py-2.5 text-sm text-bone-200 hover:border-ember-500/40 hover:text-ember-300">Calendrier saisons</Link>
-            <Link href="/admin/research" className="rounded-full border border-white/10 px-5 py-2.5 text-sm text-bone-200 hover:border-ember-500/40 hover:text-ember-300">Trouver des produits</Link>
+            <Link href="/admin/import" className="rounded-full border border-white/10 px-5 py-2.5 text-sm text-bone-200 hover:border-ember-500/40 hover:text-ember-300">Trouver des produits</Link>
           </div>
         </div>
         <div className="rounded-2xl border border-white/10 bg-ink-900 p-6">
@@ -64,10 +64,10 @@ export default async function AdminHome() {
       </section>
 
       <section className="mt-8 grid lg:grid-cols-3 gap-4">
-        <Link href="/admin/research" className="rounded-2xl border border-white/10 bg-ink-900 p-6 hover:border-ember-500/30">
-          <p className="text-xs uppercase tracking-[0.24em] text-ember-400">01 · Product Research</p>
-          <h2 className="font-display text-2xl text-bone-50 mt-2">Chercher avant d&apos;importer</h2>
-          <p className="text-sm text-bone-400 mt-3 leading-relaxed">eBay, marge, tendances et liens Google Trends réunis au même endroit.</p>
+        <Link href="/admin/import" className="rounded-2xl border border-white/10 bg-ink-900 p-6 hover:border-ember-500/30">
+          <p className="text-xs uppercase tracking-[0.24em] text-ember-400">01 · CJ Dropshipping</p>
+          <h2 className="font-display text-2xl text-bone-50 mt-2">Rechercher et importer depuis CJ</h2>
+          <p className="text-sm text-bone-400 mt-3 leading-relaxed">Photos CJ, conversion en euros et prix fournisseur majoré de 40 %, à vérifier avant import.</p>
         </Link>
         <Link href="/admin/seasons" className="rounded-2xl border border-white/10 bg-ink-900 p-6 hover:border-ember-500/30">
           <p className="text-xs uppercase tracking-[0.24em] text-ember-400">02 · Seasonal Engine</p>

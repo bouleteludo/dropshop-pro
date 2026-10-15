@@ -176,6 +176,7 @@ export async function getCjProductDetail(pid: string): Promise<CjProductDetail> 
 export type CjStockEntry = {
   vid: string;
   storageNum: number;
+  totalInventoryNum?: number;
   countryCode?: string;
 };
 

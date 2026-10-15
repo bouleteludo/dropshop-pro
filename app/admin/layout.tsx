@@ -8,14 +8,13 @@ export const metadata: Metadata = {
 
 const links = [
   ["/admin", "Vue générale"],
-  ["/admin/research", "Recherche produits"],
+  ["/admin/import", "Recherche CJ"],
   ["/admin/ebay", "Vente eBay"],
   ["/admin/themes", "Thèmes visuels"],
   ["/admin/seasons", "Calendrier saisons"],
   ["/admin/products", "Produits"],
   ["/admin/orders", "Commandes"],
   ["/admin/shopping", "Google Shopping"],
-  ["/admin/import", "Import CJ"],
   ["/admin/add", "Ajout manuel"],
 ] as const;
 

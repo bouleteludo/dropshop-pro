@@ -1,2 +1,5 @@
-import ResearchCenter from "@/components/admin/ResearchCenter";
-export default function ResearchPage() { return <ResearchCenter />; }
+import { redirect } from "next/navigation";
+
+export default function ResearchPage() {
+  redirect("/admin/import");
+}
