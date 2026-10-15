@@ -20,7 +20,6 @@ export default async function AdminHome() {
 
   const cjConfigured = Boolean(process.env.CJ_API_KEY);
   const stripeConfigured = Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET);
-  const ebayConfigured = Boolean(process.env.EBAY_CLIENT_ID && process.env.EBAY_CLIENT_SECRET);
 
   const cards = [
     ["Produits", `${activeProducts} actifs / ${products}`, "/admin/products"],
@@ -49,7 +48,6 @@ export default async function AdminHome() {
             <p className="flex justify-between gap-4"><span className="text-bone-400">CJ Dropshipping</span><span className="text-bone-50">{cjConfigured ? "configuré" : "clé à configurer"}</span></p>
             <p className="flex justify-between gap-4"><span className="text-bone-400">Stripe</span><span className="text-bone-50">{stripeConfigured ? "configuré" : "clés à configurer"}</span></p>
             <p className="flex justify-between gap-4"><span className="text-bone-400">Google Shopping</span><span className="text-bone-50">flux XML disponible</span></p>
-            <p className="flex justify-between gap-4"><span className="text-bone-400">eBay Research</span><span className="text-bone-50">{ebayConfigured ? "configuré" : "clés API à configurer"}</span></p>
           </div>
         </div>
       </section>
@@ -67,7 +65,7 @@ export default async function AdminHome() {
         <Link href="/admin/research" className="rounded-2xl border border-white/10 bg-ink-900 p-6 hover:border-ember-500/30">
           <p className="text-xs uppercase tracking-[0.24em] text-ember-400">01 · Product Research</p>
           <h2 className="font-display text-2xl text-bone-50 mt-2">Chercher avant d&apos;importer</h2>
-          <p className="text-sm text-bone-400 mt-3 leading-relaxed">eBay, marge, tendances et liens Google Trends réunis au même endroit.</p>
+          <p className="text-sm text-bone-400 mt-3 leading-relaxed">Catalogue CJdropshipping, watchlist et Google Trends réunis au même endroit.</p>
         </Link>
         <Link href="/admin/seasons" className="rounded-2xl border border-white/10 bg-ink-900 p-6 hover:border-ember-500/30">
           <p className="text-xs uppercase tracking-[0.24em] text-ember-400">02 · Seasonal Engine</p>

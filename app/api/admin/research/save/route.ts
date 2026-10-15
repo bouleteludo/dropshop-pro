@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
       url: typeof body.url === "string" ? body.url.slice(0, 2000) : undefined,
       image: typeof body.image === "string" ? body.image.slice(0, 2000) : undefined,
       externalId: typeof body.externalId === "string" ? body.externalId.slice(0, 200) : undefined,
+      notes: typeof body.notes === "string" ? body.notes.slice(0, 2000) : undefined,
       marketPrice: typeof body.marketPrice === "number" && Number.isFinite(body.marketPrice) ? body.marketPrice : undefined,
     });
     return NextResponse.json({ candidate });
