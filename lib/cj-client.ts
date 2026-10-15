@@ -37,6 +37,8 @@ async function fetchAccessToken(): Promise<string> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ apiKey: CJ_API_KEY }),
+    signal: AbortSignal.timeout(15_000),
+    cache: "no-store",
   });
 
   const body = (await res.json()) as CjEnvelope<AccessTokenData>;
@@ -63,6 +65,7 @@ async function getAccessToken(): Promise<string> {
 async function cjRequest<T>(
   path: string,
   options: { method?: string; query?: Record<string, string | number | undefined>; body?: unknown } = {},
+  retryAuthentication = true,
 ): Promise<T> {
   const token = await getAccessToken();
 
@@ -78,14 +81,16 @@ async function cjRequest<T>(
       "CJ-Access-Token": token,
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
+    signal: AbortSignal.timeout(20_000),
+    cache: "no-store",
   });
 
   const body = (await res.json()) as CjEnvelope<T>;
 
-  if (res.status === 401) {
+  if (res.status === 401 && retryAuthentication) {
     // Token likely expired server-side ahead of our local expiry — refresh once and retry.
     cachedToken = null;
-    return cjRequest<T>(path, options);
+    return cjRequest<T>(path, options, false);
   }
 
   if (!res.ok || !body.result) {
