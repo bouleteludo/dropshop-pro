@@ -1,5 +1,13 @@
 {
   "crons": [
-    { "path": "/api/cron/cj-sync", "schedule": "0 3 * * *" }
-  ]
+    {
+      "path": "/api/cron/cj-sync",
+      "schedule": "0 3 * * *"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "codex/cj-admin-import-40": false
+    }
+  }
 }
