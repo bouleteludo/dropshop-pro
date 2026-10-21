@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentSeason } from "@/lib/seasons";
 import { getActiveThemeId } from "@/lib/site-settings";
 import { THEMES } from "@/lib/theme-config";
+import { countMarginAlerts, loadUsdToEur } from "@/lib/margin";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,12 @@ export default async function AdminHome() {
     getCurrentSeason(),
     getActiveThemeId(),
   ]);
-
+  // Alertes de marge : produits CJ dont le prix de vente ne suit plus le prix fournisseur.
+  const [cjProducts, usdToEur] = await Promise.all([
+    prisma.product.findMany({ where: { cjPrice: { not: null } }, select: { price: true, cjPrice: true } }),
+    loadUsdToEur(),
+  ]);
+  const marginAlerts = usdToEur === null ? null : countMarginAlerts(cjProducts, usdToEur);
 
   const cjConfigured = Boolean(process.env.CJ_API_KEY);
   const stripeConfigured = Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET);
@@ -27,6 +33,11 @@ export default async function AdminHome() {
     ["Commandes", `${orders} au total`, "/admin/orders"],
     ["À traiter", `${paidOrders} commande(s) payée(s)`, "/admin/orders"],
     ["Watchlist eBay", `${candidates} opportunité(s)`, "/admin/research/ebay"],
+    [
+      "Produits à surveiller (marge)",
+      marginAlerts === null ? "taux USD/EUR indisponible" : marginAlerts === 0 ? "aucune alerte" : `${marginAlerts} alerte(s)`,
+      "/admin/products",
+    ],
   ];
 
   return (
@@ -54,11 +65,11 @@ export default async function AdminHome() {
         </div>
       </section>
 
-      <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
+      <section className="grid sm:grid-cols-2 xl:grid-cols-5 gap-4 mt-6">
         {cards.map(([label, value, href]) => (
           <Link key={label} href={href} className="rounded-2xl border border-white/10 bg-ink-900 p-5 hover:border-ember-500/30 transition-colors">
             <p className="text-sm text-bone-400">{label}</p>
-            <p className="text-xl font-medium text-bone-50 mt-2">{value}</p>
+            <p className={`text-xl font-medium mt-2 ${label.startsWith("Produits à surveiller") && marginAlerts ? "text-amber-300" : "text-bone-50"}`}>{value}</p>
           </Link>
         ))}
       </section>

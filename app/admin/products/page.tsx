@@ -2,11 +2,14 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { DeleteProductButton } from "@/components/DeleteProductButton";
 import { ProductThemeSelect } from "@/components/ProductThemeSelect";
+import { MARGIN_ALERT_LABELS, assessMargin, loadUsdToEur } from "@/lib/margin";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminProductsPage() {
   const products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
+  // Taux indisponible : la page s'affiche quand même, simplement sans marges.
+  const usdToEur = await loadUsdToEur();
 
   return (
     <main className="container py-10">
@@ -23,6 +26,12 @@ export default async function AdminProductsPage() {
         </Link>
       </div>
 
+      {usdToEur === null && (
+        <p className="mb-6 rounded-xl border border-amber-400/20 bg-amber-400/[0.04] px-4 py-3 text-sm text-bone-300">
+          Taux USD/EUR indisponible : les marges ne sont pas affichées pour le moment.
+        </p>
+      )}
+
       {products.length === 0 ? (
         <p className="text-bone-400">Aucun produit pour le moment.</p>
       ) : (
@@ -30,6 +39,7 @@ export default async function AdminProductsPage() {
           {products.map((product) => {
             const images = JSON.parse(product.images) as string[];
             const seasonTags = JSON.parse(product.seasonTags) as string[];
+            const margin = usdToEur === null ? null : assessMargin(product.price, product.cjPrice, usdToEur);
             return (
               <li
                 key={product.id}
@@ -47,6 +57,26 @@ export default async function AdminProductsPage() {
                     {product.price.toFixed(2)} € · Stock {product.stock}
                     {!product.active && " · masqué"}
                   </p>
+                  {margin && (
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                      {margin.computable ? (
+                        <span className="text-bone-400">
+                          Marge estimée {margin.marginBeforeShipping.toFixed(2)} €
+                          {margin.marginRate !== null && ` (${(margin.marginRate * 100).toFixed(0)} %)`} avant livraison
+                        </span>
+                      ) : (
+                        <span className="text-bone-400">Marge non calculable</span>
+                      )}
+                      {margin.alerts.map((alert) => (
+                        <span
+                          key={alert}
+                          className="rounded-full border border-amber-400/30 bg-amber-400/5 px-2 py-0.5 font-medium text-amber-300"
+                        >
+                          {MARGIN_ALERT_LABELS[alert]}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <ProductThemeSelect productId={product.id} seasonTags={seasonTags} />
                 <DeleteProductButton productId={product.id} productName={product.name} />
