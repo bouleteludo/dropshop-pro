@@ -192,23 +192,38 @@ export async function getCjVariantStock(vid: string): Promise<CjStockEntry[]> {
   return Array.isArray(entries) ? entries : [];
 }
 
+// Shape of POST /shopping/order/createOrderV2, checked against CJ's public docs
+// (https://developers.cjdropshipping.com/en/api/api2/api/shopping.html, section 1.1).
+// The address fields are flat `shipping*` keys, not a nested object, and logisticName +
+// fromCountryCode are mandatory — CJ rejects the order without them.
 export type CjOrderPayload = {
+  // Our own order id: lets CJ and us find the same order again.
   orderNumber: string;
-  shippingAddress: {
-    name: string;
-    countryCode: string;
-    province: string;
-    city: string;
-    address: string;
-    zip: string;
-    phone: string;
-  };
-  products: { vid: string; quantity: number }[];
+  shippingCustomerName: string;
+  shippingCountryCode: string; // two-letter ISO code
+  shippingCountry: string;
+  shippingProvince: string;
+  shippingCity: string;
+  shippingAddress: string;
+  shippingAddress2?: string;
+  shippingZip: string;
+  shippingPhone: string;
+  logisticName: string; // from freightCalculate
+  fromCountryCode: string; // CJ warehouse country the goods ship from
+  // 1 = page payment (deprecated), 2 = pay from CJ balance, 3 = create the order only.
+  payType: 1 | 2 | 3;
+  // CJ checks vid and sku against each other when both are given.
+  products: { vid: string; sku?: string; quantity: number }[];
 };
+
+// Create the order at CJ without paying it: the owner pays from the CJ dashboard.
+export const CJ_PAY_TYPE_CREATE_ONLY = 3;
 
 export type CjOrderResult = {
   orderId: string;
-  cjOrderNum: string;
+  orderNumber?: string;
+  shipmentOrderId?: string;
+  orderStatus?: string;
 };
 
 export async function createCjOrder(payload: CjOrderPayload): Promise<CjOrderResult> {
@@ -216,4 +231,24 @@ export async function createCjOrder(payload: CjOrderPayload): Promise<CjOrderRes
     method: "POST",
     body: payload,
   });
+}
+
+export type CjFreightOption = {
+  logisticName: string;
+  logisticPrice: number | string; // USD
+  logisticAging?: string;
+};
+
+// Simple freight quote (section 1.1 of CJ's logistics docs): the shipping methods CJ
+// offers for these variants between two countries, with their price in USD.
+export async function calculateCjFreight(params: {
+  startCountryCode: string;
+  endCountryCode: string;
+  products: { vid: string; quantity: number }[];
+}): Promise<CjFreightOption[]> {
+  const options = await cjRequest<CjFreightOption[]>("/logistic/freightCalculate", {
+    method: "POST",
+    body: params,
+  });
+  return Array.isArray(options) ? options : [];
 }
