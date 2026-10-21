@@ -205,3 +205,180 @@ test("toSafeJsonLd ne laisse aucun '<' (pas de sortie de la balise script) et re
   assert.equal(out.toLowerCase().includes("</script"), false);
   assert.deepEqual(JSON.parse(out), data);
 });
+
+// ---------- routes (Prisma et réseau remplacés par des doubles, aucun appel réel) ----------
+
+type Call = { args: unknown[] };
+type Doubles = {
+  calls: { findUnique: Call[]; create: Call[]; update: Call[]; fetch: string[] };
+  existing: unknown; activeTheme: string | null; updateError: { code: string } | null;
+};
+
+const today = new Date().toISOString().slice(0, 10);
+const AUTH = { authorization: `Basic ${btoa("admin:test-admin-password")}`, "content-type": "application/json" };
+const CJ_GUARD = { pid: "pid-1", expectedSaleEur: 11.2, expectedSku: "SKU-1" };
+const FRENCH = {
+  name: "Masque squelette lumineux", description: "Un masque qui brille dans le noir.\nParfait pour Halloween.",
+  category: "masques", seasonTags: ["halloween"], active: false,
+};
+
+async function withRoutes(run: (ctx: Doubles & {
+  post: (body: unknown, headers?: Record<string, string>) => Promise<Response>;
+  patch: (body: unknown, headers?: Record<string, string>) => Promise<Response>;
+}) => Promise<void>, init: Partial<Pick<Doubles, "existing" | "activeTheme" | "updateError">> = {}) {
+  const previousEnv = { admin: process.env.ADMIN_PASSWORD, cj: process.env.CJ_API_KEY };
+  process.env.ADMIN_PASSWORD = "test-admin-password";
+  process.env.CJ_API_KEY = "test-only-not-a-real-key";
+  const { NextRequest } = await import("next/server");
+  const importRoute = await import("../app/api/cj/import/route");
+  const productRoute = await import("../app/api/products/[id]/route");
+  const { prisma } = await import("../lib/prisma");
+  const ctx: Doubles = { calls: { findUnique: [], create: [], update: [], fetch: [] }, existing: null, activeTheme: "halloween", updateError: null, ...init };
+  const original = {
+    findUnique: prisma.product.findUnique, create: prisma.product.create, update: prisma.product.update,
+    setting: prisma.storeSetting.findUnique, fetch: globalThis.fetch,
+  };
+  prisma.product.findUnique = (async (...args: unknown[]) => { ctx.calls.findUnique.push({ args }); return ctx.existing; }) as unknown as typeof original.findUnique;
+  prisma.product.create = (async (...args: unknown[]) => { ctx.calls.create.push({ args }); return { id: "new-product", ...(args[0] as { data: object }).data }; }) as unknown as typeof original.create;
+  prisma.product.update = (async (...args: unknown[]) => {
+    ctx.calls.update.push({ args });
+    if (ctx.updateError) throw Object.assign(new Error("Record not found"), ctx.updateError);
+    return { id: "prod-1", ...(args[0] as { data: object }).data };
+  }) as unknown as typeof original.update;
+  prisma.storeSetting.findUnique = (async () => (ctx.activeTheme ? { value: ctx.activeTheme } : null)) as unknown as typeof original.setting;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    ctx.calls.fetch.push(url);
+    if (url.includes("ecb.europa.eu")) return new Response(`<Envelope><Cube><Cube time="${today}"><Cube currency="USD" rate="1.25"/></Cube></Cube></Envelope>`);
+    const data = url.includes("getAccessToken")
+      ? { accessToken: "test-only-token", accessTokenExpiryDate: "2099-01-01" }
+      : url.includes("/stock/")
+        ? [{ vid: "variant-1", storageNum: 99, totalInventoryNum: 7, countryCode: "PL" }]
+        : {
+          pid: "pid-1", productNameEn: "Skeleton mask", description: "<p>English only</p>", categoryName: "Party Masks",
+          productImageSet: ["https://example.com/gallery.jpg"],
+          variants: [{ vid: "variant-1", variantSku: "SKU-1", variantSellPrice: "10.00", variantImage: "https://example.com/variant.jpg" }],
+        };
+    return Response.json({ result: true, data });
+  };
+  const request = (url: string, method: string, body: unknown, headers: Record<string, string>) =>
+    new NextRequest(url, { method, headers, body: typeof body === "string" ? body : JSON.stringify(body) });
+  try {
+    await run({
+      ...ctx, calls: ctx.calls,
+      post: (body, headers = AUTH) => importRoute.POST(request("http://localhost/api/cj/import", "POST", body, headers)),
+      patch: (body, headers = AUTH) => productRoute.PATCH(request("http://localhost/api/products/prod-1", "PATCH", body, headers), { params: Promise.resolve({ id: "prod-1" }) }),
+    });
+  } finally {
+    prisma.product.findUnique = original.findUnique;
+    prisma.product.create = original.create;
+    prisma.product.update = original.update;
+    prisma.storeSetting.findUnique = original.setting;
+    globalThis.fetch = original.fetch;
+    if (previousEnv.admin === undefined) delete process.env.ADMIN_PASSWORD; else process.env.ADMIN_PASSWORD = previousEnv.admin;
+    if (previousEnv.cj === undefined) delete process.env.CJ_API_KEY; else process.env.CJ_API_KEY = previousEnv.cj;
+  }
+}
+
+test("PATCH produit exige l'authentification admin avant toute écriture", async () => {
+  await withRoutes(async (ctx) => {
+    assert.equal((await ctx.patch({ name: "Masque" }, { "content-type": "application/json" })).status, 401);
+    assert.equal((await ctx.patch({ name: "Masque" }, { ...AUTH, authorization: `Basic ${btoa("admin:mauvais")}` })).status, 401);
+    assert.equal(ctx.calls.update.length, 0);
+  });
+});
+
+test("PATCH produit refuse en 400 les corps invalides sans rien écrire", async () => {
+  await withRoutes(async (ctx) => {
+    for (const body of [{}, null, [], "pas du json {", { stock: 5 }, { price: -1 }, { price: "12" }, { category: "Party Masks" }, { name: "<b>x</b>" }, { description: "a".repeat(5001) }]) {
+      const res = await ctx.patch(body);
+      assert.equal(res.status, 400, JSON.stringify(body));
+      assert.equal(typeof (await res.json()).error, "string");
+    }
+    assert.equal(ctx.calls.update.length, 0);
+  });
+});
+
+test("PATCH produit enregistre nom, description, catégorie, prix, saisons et visibilité", async () => {
+  await withRoutes(async (ctx) => {
+    const res = await ctx.patch({ ...FRENCH, price: 12.349 });
+    assert.equal(res.status, 200);
+    assert.equal(ctx.calls.update.length, 1);
+    assert.deepEqual(ctx.calls.update[0].args[0], {
+      where: { id: "prod-1" },
+      data: { ...FRENCH, price: 12.35, seasonTags: JSON.stringify(["halloween"]) },
+    });
+    assert.equal((await res.json()).product.name, FRENCH.name);
+  });
+});
+
+test("PATCH produit garde le comportement historique pour active et seasonTags seuls", async () => {
+  await withRoutes(async (ctx) => {
+    assert.equal((await ctx.patch({ active: true })).status, 200);
+    assert.equal((await ctx.patch({ seasonTags: SEASON_SLUGS })).status, 200);
+    assert.deepEqual(ctx.calls.update.map((call) => (call.args[0] as { data: unknown }).data), [
+      { active: true }, { seasonTags: JSON.stringify(SEASON_SLUGS) },
+    ]);
+  });
+});
+
+test("PATCH produit répond 404 pour un produit inexistant", async () => {
+  await withRoutes(async (ctx) => {
+    assert.equal((await ctx.patch({ name: "Masque" })).status, 404);
+  }, { updateError: { code: "P2025" } });
+});
+
+test("import CJ : champs optionnels invalides refusés en 400 avant tout appel base ou réseau", async () => {
+  await withRoutes(async (ctx) => {
+    for (const extra of [{ category: "Party Masks" }, { name: "" }, { description: "<script>alert(1)</script>" }, { seasonTags: ["christmas"] }, { active: "non" }]) {
+      assert.equal((await ctx.post({ ...CJ_GUARD, ...extra })).status, 400, JSON.stringify(extra));
+    }
+    assert.equal(ctx.calls.findUnique.length + ctx.calls.create.length + ctx.calls.fetch.length, 0);
+  });
+});
+
+test("import CJ : crée le produit avec nom, description et catégorie français, saison choisie et masqué", async () => {
+  await withRoutes(async (ctx) => {
+    const res = await ctx.post({ ...CJ_GUARD, ...FRENCH, seasonTags: ["noel"] });
+    assert.equal(res.status, 201);
+    assert.equal(ctx.calls.create.length, 1);
+    const { data } = ctx.calls.create[0].args[0] as { data: Record<string, unknown> };
+    assert.equal(data.name, FRENCH.name);
+    assert.equal(data.description, FRENCH.description);
+    assert.equal(data.category, "masques");
+    assert.equal(data.seasonTags, JSON.stringify(["noel"]));
+    assert.equal(data.active, false);
+    assert.match(String(data.slug), /^masque-squelette-lumineux-[a-z0-9]+$/); // slug issu du nom français
+    // Les garde-fous et les données CJ ne changent pas : prix, SKU, stock, photos.
+    assert.equal(data.price, 11.2);
+    assert.equal(data.sku, "SKU-1");
+    assert.equal(data.cjProductId, "pid-1");
+    assert.equal(data.stock, 7);
+    assert.deepEqual(JSON.parse(String(data.images)), ["https://example.com/variant.jpg", "https://example.com/gallery.jpg"]);
+  });
+});
+
+test("import CJ sans champ optionnel : comportement actuel (texte CJ, thème actif, produit visible)", async () => {
+  await withRoutes(async (ctx) => {
+    assert.equal((await ctx.post(CJ_GUARD)).status, 201);
+    const { data } = ctx.calls.create[0].args[0] as { data: Record<string, unknown> };
+    assert.equal(data.name, "Skeleton mask");
+    assert.equal(data.description, "<p>English only</p>");
+    assert.equal(data.category, "Party Masks");
+    assert.equal(data.seasonTags, JSON.stringify(["noel"]));
+    assert.equal(data.active, true);
+  }, { activeTheme: "christmas" });
+});
+
+test("import CJ : les garde-fous (prix, SKU, déjà importé, champs requis) s'appliquent aussi avec des champs français", async () => {
+  await withRoutes(async (ctx) => {
+    assert.equal((await ctx.post({ ...CJ_GUARD, ...FRENCH, expectedSaleEur: 9.99 })).status, 409);
+    assert.equal((await ctx.post({ ...CJ_GUARD, ...FRENCH, expectedSku: "AUTRE-SKU" })).status, 409);
+    assert.equal((await ctx.post({ pid: "pid-1", ...FRENCH, expectedSaleEur: 11.2 })).status, 400);
+    assert.equal(ctx.calls.create.length, 0);
+  });
+  await withRoutes(async (ctx) => {
+    assert.equal((await ctx.post({ ...CJ_GUARD, ...FRENCH })).status, 409);
+    assert.equal(ctx.calls.create.length, 0);
+  }, { existing: { id: "deja-importe" } });
+});
