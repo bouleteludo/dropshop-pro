@@ -382,3 +382,41 @@ test("import CJ : les garde-fous (prix, SKU, déjà importé, champs requis) s'a
     assert.equal(ctx.calls.create.length, 0);
   }, { existing: { id: "deja-importe" } });
 });
+
+// ---------- vitrine : un texte ne doit jamais devenir du HTML ou du script ----------
+
+test("la fiche produit n'exécute ni ne laisse sortir de HTML/script, même si la base contient du HTML hostile", async () => {
+  const hostile = "</script><script>window.pwned=1</script><img src=x onerror=alert(1)>";
+  const { prisma } = await import("../lib/prisma");
+  const original = {
+    findFirst: prisma.product.findFirst, findMany: prisma.product.findMany,
+    setting: prisma.storeSetting.findUnique, season: prisma.season.findUnique,
+  };
+  prisma.product.findFirst = (async () => ({
+    id: "p1", slug: "hostile", sku: "SKU-X", name: `Masque ${hostile}`, description: `Description ${hostile}`,
+    images: JSON.stringify(["https://example.com/a.jpg"]), video: null, price: 12.5, stock: 3, category: "masques",
+  })) as unknown as typeof original.findFirst;
+  prisma.product.findMany = (async () => []) as unknown as typeof original.findMany;
+  prisma.storeSetting.findUnique = (async () => ({ value: "halloween" })) as unknown as typeof original.setting;
+  prisma.season.findUnique = (async () => null) as unknown as typeof original.season;
+  try {
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { default: ProductPage } = await import("../app/products/[slug]/page");
+    const html = renderToStaticMarkup(await ProductPage({ params: Promise.resolve({ slug: "hostile" }) }));
+    // Seuls nos deux blocs JSON-LD sont des balises <script> ; le texte hostile n'en crée aucune.
+    assert.equal((html.match(/<script/gi) ?? []).length, 2);
+    assert.equal((html.match(/<\/script/gi) ?? []).length, 2);
+    assert.equal(html.includes("<img src=x"), false);
+    // Le texte saisi s'affiche en clair (échappé), et le JSON-LD relu contient toujours le texte exact.
+    assert.ok(html.includes("&lt;img src=x onerror=alert(1)&gt;"));
+    const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+    assert.equal(blocks.length, 2);
+    assert.equal(blocks[0].name, `Masque ${hostile}`);
+    assert.equal(blocks[0].description, `Description ${hostile}`);
+  } finally {
+    prisma.product.findFirst = original.findFirst;
+    prisma.product.findMany = original.findMany;
+    prisma.storeSetting.findUnique = original.setting;
+    prisma.season.findUnique = original.season;
+  }
+});
