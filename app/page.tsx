@@ -11,7 +11,7 @@ import { CATEGORIES, matchesCategory } from "@/lib/categories";
 import { parseProductImages } from "@/lib/product-images";
 import { productMatchesSeason, getSeasonBySlug } from "@/lib/seasons";
 import { getActiveThemeId } from "@/lib/site-settings";
-import { THEMES } from "@/lib/theme-config";
+import { THEMES, formatArticleCount } from "@/lib/theme-config";
 
 export const dynamic = "force-dynamic";
 
@@ -27,9 +27,10 @@ export default async function HomePage() {
   const heroProduct = products.find((p) => p.stock > 0) ?? products[0];
   const heroHref = heroProduct ? `/products/${heroProduct.slug ?? heroProduct.id}` : "#collection";
   const heroImages = heroProduct ? parseProductImages(heroProduct.images) : [];
+  const totalLabel = formatArticleCount(products.length);
   const categoryCounts = CATEGORIES.map((category) => ({
     category,
-    count: products.filter((product) => matchesCategory(product, category)).length,
+    label: formatArticleCount(products.filter((product) => matchesCategory(product, category)).length),
   }));
 
   const websiteJsonLd = {
@@ -96,13 +97,13 @@ export default async function HomePage() {
             <p className="text-xs tracking-[0.3em] uppercase text-ember-400 mb-2">Navigation</p>
             <h2 id="categories-title" className="font-display text-3xl sm:text-4xl text-bone-50">Choisir son univers</h2>
           </div>
-          <span className="hidden sm:block text-xs text-bone-400">{products.length} article{products.length > 1 ? "s" : ""}</span>
+          {totalLabel && <span className="hidden sm:block text-xs text-bone-400">{totalLabel}</span>}
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {categoryCounts.map(({ category, count }) => (
+          {categoryCounts.map(({ category, label }) => (
             <Link key={category.slug} href={`/categorie/${category.slug}`} className="rounded-2xl border border-white/10 bg-ink-900/70 px-4 py-4 hover:border-ember-500/30 hover:bg-ink-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ember-300">
               <span className="text-sm text-bone-50">{category.label}</span>
-              <span className="block text-xs text-bone-400 mt-1">{count} article{count > 1 ? "s" : ""}</span>
+              {label && <span className="block text-xs text-bone-400 mt-1">{label}</span>}
             </Link>
           ))}
         </div>
@@ -114,7 +115,7 @@ export default async function HomePage() {
             <p className="text-xs tracking-[0.3em] uppercase text-ember-400 mb-2">{theme.collectionEyebrow}</p>
             <h2 id="collection-title" className="font-display text-3xl sm:text-4xl text-bone-50">{theme.collectionTitle}</h2>
           </div>
-          <span className="hidden sm:inline text-xs text-bone-400">{products.length} article{products.length > 1 ? "s" : ""}</span>
+          {totalLabel && <span className="hidden sm:inline text-xs text-bone-400">{totalLabel}</span>}
         </div>
         {products.length === 0 ? (
           <div className="rounded-2xl border border-white/10 bg-ink-900 p-12 text-center"><p className="text-bone-400">Nouvelles pièces bientôt disponibles.</p></div>
