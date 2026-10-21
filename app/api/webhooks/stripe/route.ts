@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { notifyOwnerOfPaidOrder } from "@/lib/notify";
 
 // Stripe needs the raw request body to verify the webhook signature — Next.js
 // route handlers must opt out of any body parsing/caching for that to work.
@@ -67,8 +68,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Commande invalide : produit manquant" }, { status: 400 });
     }
 
+    let created: { id: string; total: number };
     try {
-      await prisma.$transaction(async (tx) => {
+      created = await prisma.$transaction(async (tx) => {
         for (const item of orderItems) {
           const updated = await tx.product.updateMany({
             where: { id: item.productId, active: true, stock: { gte: item.quantity } },
@@ -79,7 +81,7 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        await tx.order.create({
+        return tx.order.create({
           data: {
             customerName: session.customer_details?.name ?? "Client",
             customerEmail: session.customer_details?.email ?? "",
@@ -98,6 +100,23 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true });
       }
       return NextResponse.json({ error: (error as Error).message }, { status: 409 });
+    }
+
+    // Tell the owner a sale came in (only when OWNER_NOTIFY_EMAIL and RESEND_API_KEY are
+    // set). The order is already saved: whatever goes wrong with the e-mail must neither
+    // fail the webhook (Stripe would retry) nor touch the order.
+    try {
+      await notifyOwnerOfPaidOrder({
+        id: created.id,
+        total: created.total,
+        items: orderItems.map((item) => ({
+          name: products.find((p) => p.id === item.productId)?.name ?? "Produit",
+          quantity: item.quantity,
+        })),
+      });
+    } catch (error) {
+      // Message only: no order, customer or address data in the logs.
+      console.error("[notify] e-mail au propriétaire non envoyé :", (error as Error).message);
     }
   }
 
