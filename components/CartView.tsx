@@ -3,12 +3,16 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart-store";
+import { STORE, getShipping } from "@/lib/store-config";
 
 export function CartView() {
   const { items, setQuantity, remove, total } = useCart();
   const [mounted, setMounted] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const subtotal = total();
+  const shipping = getShipping(subtotal);
+  const remainingForFree = Math.max(0, STORE.freeShippingThreshold - subtotal);
 
   useEffect(() => setMounted(true), []);
 
@@ -114,7 +118,7 @@ export function CartView() {
           </div>
           <div className="flex justify-between">
             <dt>Livraison</dt>
-            <dd>Calculée à l&apos;étape suivante</dd>
+            <dd>{shipping === 0 ? "Offerte" : `${shipping.toFixed(2)} €`}</dd>
           </div>
         </dl>
         <div className="flex justify-between text-bone-50 font-medium border-t border-white/5 pt-4 mb-6">
@@ -135,8 +139,9 @@ export function CartView() {
           {checkingOut ? "Redirection…" : "Passer commande"}
         </button>
         <p className="mt-3 text-xs text-bone-400 text-center">
-          Paiement sécurisé · Livraison suivie · Retours sous 14 jours
+          {remainingForFree > 0 ? `Plus que ${remainingForFree.toFixed(2)} € pour la livraison offerte.` : "Livraison offerte sur cette commande."}
         </p>
+        <p className="mt-2 text-[11px] text-bone-500 text-center">Paiement Stripe sécurisé · conditions de rétractation disponibles avant commande</p>
       </aside>
     </div>
   );

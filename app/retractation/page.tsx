@@ -1,47 +1,15 @@
 import type { Metadata } from "next";
-
-export const metadata: Metadata = { title: "Droit de rétractation" };
-
-function env(key: string, fallback = "À compléter") {
-  return process.env[key] ?? fallback;
-}
-
+import { STORE } from "@/lib/store-config";
+export const metadata: Metadata = { title: "Rétractation", robots: { index: false, follow: true } };
 export default function RetractationPage() {
-  const contactEmail = env("NEXT_PUBLIC_CONTACT_EMAIL");
-
-  return (
-    <main className="container max-w-3xl py-12 sm:py-16">
-      <h1 className="font-display text-3xl text-bone-50 mb-8">Droit de rétractation</h1>
-      <div className="prose prose-invert prose-headings:font-display prose-headings:text-bone-50 prose-p:text-bone-200/80 max-w-none">
-        <p>
-          Pour toute commande passée à distance, vous disposez d&apos;un délai légal de 14 jours à compter de
-          la réception du produit pour exercer votre droit de rétractation, sans avoir à justifier de
-          motif.
-        </p>
-
-        <h2>Comment exercer votre droit</h2>
-        <p>
-          Envoyez-nous une déclaration claire de votre décision de vous rétracter par email à{" "}
-          {contactEmail}, avant l&apos;expiration du délai de 14 jours.
-        </p>
-
-        <h2>Retour et remboursement</h2>
-        <p>
-          Une fois votre rétractation reçue, vous disposez de 14 jours pour nous retourner le produit. Le
-          remboursement (prix du produit) intervient dans les 14 jours suivant la réception du retour ou
-          la preuve d&apos;expédition, selon la première de ces dates.
-        </p>
-
-        <h2>Frais de retour</h2>
-        <p>Les frais de retour sont à la charge du client, sauf mention contraire indiquée sur la commande.</p>
-
-        <h2>Exceptions</h2>
-        <p>
-          Le droit de rétractation ne s&apos;applique pas aux produits personnalisés, descellés (pour des
-          raisons d&apos;hygiène) après livraison, ou confectionnés selon les spécifications du client,
-          conformément à l&apos;article L.221-28 du Code de la consommation.
-        </p>
-      </div>
-    </main>
-  );
+  return <main className="container max-w-3xl py-12 sm:py-16 prose prose-invert">
+    <h1>Droit de rétractation</h1>
+    <p>Pour les ventes à distance aux consommateurs, le délai légal est en principe de 14 jours à compter de la réception du bien, sous réserve des exceptions prévues par la loi.</p>
+    <h2>Comment exercer votre droit</h2>
+    <p>Envoyez une déclaration claire de votre décision de vous rétracter à {STORE.contactEmail} avant l&apos;expiration du délai. Le formulaire légal peut également être utilisé.</p>
+    <h2>Retour et remboursement</h2>
+    <p>Les modalités et l&apos;adresse de retour doivent être précisées par BOO SHOP avant toute commande. Les remboursements sont effectués selon les règles légales applicables.</p>
+    <h2>À compléter avant mise en ligne</h2>
+    <ul><li>Adresse réelle de retour</li><li>Qui supporte les frais de retour</li><li>Exceptions éventuelles applicables à certains produits</li><li>Formulaire type de rétractation</li></ul>
+  </main>;
 }

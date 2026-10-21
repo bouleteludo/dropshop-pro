@@ -176,8 +176,16 @@ export async function getCjProductDetail(pid: string): Promise<CjProductDetail> 
 export type CjStockEntry = {
   vid: string;
   storageNum: number;
+  totalInventoryNum?: number;
   countryCode?: string;
 };
+
+// CJ's confirmed EU warehouse locations (Poland, Germany, Italy) as of 2026,
+// plus the handful of other EU countries it's known to stock in occasionally.
+// Stock in one of these ships in ~3-7 days and skips China-parcel customs fees
+// (bulk-cleared ahead of time), vs 15-25 days + ~5€/order in new 2026 customs
+// fees for stock shipped directly from China. See CJ's own 2026 customs guidance.
+export const EU_WAREHOUSE_COUNTRY_CODES = ["PL", "DE", "IT", "ES", "FR", "CZ", "NL", "BE"];
 
 export async function getCjVariantStock(vid: string): Promise<CjStockEntry[]> {
   const entries = await cjRequest<CjStockEntry[]>("/product/stock/queryByVid", { query: { vid } });

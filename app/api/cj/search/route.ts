@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { searchCjProducts } from "@/lib/cj-client";
 
 export async function GET(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const { searchParams } = new URL(req.url);
   const keyword = searchParams.get("keyword") ?? undefined;
   const pageNum = Math.max(1, Number(searchParams.get("pageNum") ?? "1"));

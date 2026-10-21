@@ -5,43 +5,32 @@ export type CategoryDef = {
   keywords: string[];
 };
 
-// Small curated taxonomy, matched against the free-text `category`/name/description
-// fields rather than relying on CJ's raw category names (inconsistent, sometimes
-// in English or Chinese) or requiring manual tagging on every import.
 export const CATEGORIES: CategoryDef[] = [
   {
     slug: "masques",
     label: "Masques",
-    description: "Masques d'horreur et de fête pour une soirée Halloween réussie.",
+    description: "Masques et accessoires de caractère pour les soirées et événements de saison.",
     keywords: ["masque", "mask"],
   },
   {
     slug: "decoration",
     label: "Décoration",
-    description: "Décorations pour transformer votre intérieur ou extérieur le temps d'une saison.",
+    description: "Décorations et petits détails pour transformer un intérieur ou un extérieur selon la saison.",
     keywords: [
-      "décoration",
-      "decoration",
-      "déco",
-      "lanterne",
-      "guirlande",
-      "ornement",
-      "toile d'araignée",
-      "citrouille",
-      "squelette",
-      "bougie",
+      "décoration", "decoration", "déco", "lanterne", "guirlande", "ornement", "citrouille", "squelette", "bougie",
+      "sapin", "renne", "coeur", "printemps", "plage", "barbecue",
     ],
   },
   {
     slug: "costumes",
     label: "Costumes",
-    description: "Costumes et déguisements pour petits et grands.",
-    keywords: ["costume", "déguisement", "cape", "robe"],
+    description: "Costumes et déguisements pour les fêtes, soirées et rendez-vous saisonniers.",
+    keywords: ["costume", "déguisement", "cape", "robe", "tenue"],
   },
   {
     slug: "accessoires",
     label: "Accessoires",
-    description: "Bijoux, chapeaux et petits accessoires pour compléter votre look.",
+    description: "Petits accessoires pour compléter une tenue ou une ambiance sans alourdir le look.",
     keywords: ["accessoire", "bijou", "chapeau", "perruque", "gant", "bracelet", "collier"],
   },
 ];

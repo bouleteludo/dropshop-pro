@@ -3,7 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/ProductCard";
+import { parseProductImages } from "@/lib/product-images";
 import { CATEGORIES, getCategory, matchesCategory } from "@/lib/categories";
+import { getThemeBanner } from "@/lib/theme-banner";
+import { productMatchesSeason, getSeasonBySlug } from "@/lib/seasons";
+import { getActiveThemeId } from "@/lib/site-settings";
+import { THEMES } from "@/lib/theme-config";
 
 export const dynamic = "force-dynamic";
 
@@ -29,12 +34,18 @@ export default async function CategoryPage({ params }: Props) {
   const category = getCategory(slug);
   if (!category) notFound();
 
-  const products = await prisma.product.findMany({
-    where: { active: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const [products, activeTheme] = await Promise.all([
+    prisma.product.findMany({ where: { active: true }, orderBy: { createdAt: "desc" } }),
+    getActiveThemeId(),
+  ]);
+  const season = await getSeasonBySlug(THEMES[activeTheme].seasonSlug);
+  const seasonal = products.filter((p) => productMatchesSeason(p, season));
+  const matched = seasonal.filter((p) => matchesCategory(p, category));
 
-  const matched = products.filter((p) => matchesCategory(p, category));
+  // Prefer a banner made for this exact category, fall back to a generic
+  // "browsing" banner for the theme, then no image at all.
+  const bannerSrc =
+    (await getThemeBanner(`categories/${category.slug}.png`)) ?? (await getThemeBanner("pages/category.png"));
 
   return (
     <main className="container py-10 sm:py-14">
@@ -42,11 +53,19 @@ export default async function CategoryPage({ params }: Props) {
         ← Retour à la collection
       </Link>
 
-      <div className="mt-6 mb-10 sm:mb-14">
-        <p className="text-xs tracking-[0.3em] uppercase text-ember-400 mb-2">Catégorie</p>
-        <h1 className="font-display text-3xl sm:text-4xl text-bone-50 mb-3">{category.label}</h1>
-        <p className="text-bone-200/80 max-w-xl">{category.description}</p>
-      </div>
+      {bannerSrc ? (
+        <div className="mt-6 mb-10 sm:mb-14 rounded-3xl overflow-hidden border border-white/10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={bannerSrc} alt="" className="w-full h-auto" />
+          <h1 className="sr-only">{category.label} — {category.description}</h1>
+        </div>
+      ) : (
+        <div className="mt-6 mb-10 sm:mb-14">
+          <p className="text-xs tracking-[0.3em] uppercase text-ember-400 mb-2">Catégorie</p>
+          <h1 className="font-display text-3xl sm:text-4xl text-bone-50 mb-3">{category.label}</h1>
+          <p className="text-bone-200/80 max-w-xl">{category.description}</p>
+        </div>
+      )}
 
       <ul className="flex flex-wrap gap-2 mb-10">
         {CATEGORIES.map((c) => (
@@ -77,7 +96,7 @@ export default async function CategoryPage({ params }: Props) {
                 slug={product.slug ?? product.id}
                 name={product.name}
                 price={product.price}
-                images={JSON.parse(product.images) as string[]}
+                images={parseProductImages(product.images)}
                 stock={product.stock}
               />
             </li>

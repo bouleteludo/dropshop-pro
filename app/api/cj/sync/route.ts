@@ -1,10 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { getCjProductDetail, getCjVariantStock } from "@/lib/cj-client";
 import { prisma } from "@/lib/prisma";
 
 // Refreshes price and stock for every product that was imported from CJ.
 // Intended to be called on a schedule (cron) once deployed.
-export async function POST() {
+export async function POST(req: NextRequest) {
+  const denied = requireAdmin(req);
+  if (denied) return denied;
   const products = await prisma.product.findMany({ where: { cjProductId: { not: null } } });
 
   const results: { sku: string; ok: boolean; error?: string }[] = [];

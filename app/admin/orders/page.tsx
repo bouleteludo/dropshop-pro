@@ -4,73 +4,12 @@ import { OrderStatusSelect } from "@/components/OrderStatusSelect";
 
 export const dynamic = "force-dynamic";
 
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: "En attente",
-  PAID: "Payée",
-  SENT_TO_CJ: "Envoyée à CJ",
-  FULFILLED: "Expédiée",
-  CANCELLED: "Annulée",
-};
-
-export default async function AdminOrdersPage() {
-  const orders = await prisma.order.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { items: { include: { product: true } } },
-  });
-
+export default async function OrdersPage() {
+  const orders = await prisma.order.findMany({ include: { items: { include: { product: true } } }, orderBy: { createdAt: "desc" }, take: 100 });
   return (
-    <main className="container py-10">
-      <h1 className="font-display text-2xl sm:text-3xl text-bone-50 mb-2">Commandes</h1>
-      <p className="text-sm text-bone-400 mb-6">
-        {orders.length === 0
-          ? "Aucune commande pour le moment."
-          : `${orders.length} commande${orders.length > 1 ? "s" : ""}.`}
-      </p>
-      <div className="flex gap-4 mb-8 text-sm">
-        <Link href="/admin/products" className="text-ember-400 hover:text-ember-300 transition-colors">
-          Gérer les produits →
-        </Link>
-      </div>
-
-      {orders.length === 0 ? (
-        <p className="text-bone-400">
-          Les commandes apparaîtront ici automatiquement dès qu&apos;un paiement sera confirmé par Stripe.
-        </p>
-      ) : (
-        <ul className="flex flex-col gap-4">
-          {orders.map((order) => (
-            <li key={order.id} className="bg-ink-900 border border-white/10 rounded-xl p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
-                <div>
-                  <p className="text-bone-50 font-medium">{order.customerName || "Client"}</p>
-                  <p className="text-sm text-bone-400">{order.customerEmail}</p>
-                  {order.address && <p className="text-sm text-bone-400 mt-1">{order.address}</p>}
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <p className="text-ember-400 font-medium">{order.total.toFixed(2)} €</p>
-                  <OrderStatusSelect orderId={order.id} status={order.status} />
-                </div>
-              </div>
-
-              <ul className="text-sm text-bone-200/80 border-t border-white/5 pt-3 flex flex-col gap-1">
-                {order.items.map((item) => (
-                  <li key={item.id} className="flex justify-between">
-                    <span>
-                      {item.quantity} × {item.product?.name ?? "Produit supprimé"}
-                    </span>
-                    <span>{(item.unitPrice * item.quantity).toFixed(2)} €</span>
-                  </li>
-                ))}
-              </ul>
-
-              <p className="text-xs text-bone-400 mt-3">
-                {new Date(order.createdAt).toLocaleString("fr-FR")} · Statut actuel :{" "}
-                {STATUS_LABEL[order.status] ?? order.status}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+    <main>
+      <div className="flex items-end justify-between mb-6"><div><p className="text-sm text-bone-400">Les dernières commandes Stripe sont regroupées ici avec leur état de fulfillment.</p></div><Link href="/admin" className="text-xs text-bone-400 hover:text-ember-300">← Dashboard</Link></div>
+      {orders.length === 0 ? <div className="rounded-2xl border border-white/10 bg-ink-900 p-8 text-center text-bone-400">Aucune commande.</div> : <div className="space-y-3">{orders.map((order) => <article key={order.id} className="rounded-2xl border border-white/10 bg-ink-900 p-5"><div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4"><div><p className="font-mono text-xs text-bone-400">{order.id}</p><h2 className="text-bone-50 font-medium mt-1">{order.customerName}</h2><p className="text-sm text-bone-400">{order.customerEmail}</p><p className="text-xs text-bone-400 mt-2">{new Date(order.createdAt).toLocaleString("fr-FR")}</p></div><div className="text-left md:text-right"><p className="text-lg text-ember-300">{order.total.toFixed(2)} €</p><div className="mt-2"><OrderStatusSelect orderId={order.id} status={order.status} /></div></div></div><div className="mt-4 border-t border-white/5 pt-4 grid sm:grid-cols-2 gap-3">{order.items.map((item) => <div key={item.id} className="rounded-xl bg-ink-800 p-3 text-sm"><p className="text-bone-50">{item.product.name}</p><p className="text-bone-400 mt-1">{item.quantity} × {item.unitPrice.toFixed(2)} €</p></div>)}</div>{order.cjOrderId && <p className="text-xs text-bone-400 mt-4">CJ : {order.cjOrderId}</p>}</article>)}</div>}
     </main>
   );
 }

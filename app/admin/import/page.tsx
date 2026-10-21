@@ -5,8 +5,16 @@ import Link from "next/link";
 import type { CjProductSummary } from "@/lib/cj-client";
 
 const PAGE_SIZE = 24;
+type ImportQuote = {
+  name: string; sku: string; variant: string; images: string[]; stock: number;
+  pricing: { supplierUsd: number; supplierEur: number; saleEur: number };
+  exchange: { date: string; usdToEur: number };
+};
 
 export default function ImportPage() {
+  const [quotes, setQuotes] = useState<Record<string, ImportQuote>>({});
+  const [previewPid, setPreviewPid] = useState<string | null>(null);
+  const [searched, setSearched] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [results, setResults] = useState<CjProductSummary[]>([]);
   const [pageNum, setPageNum] = useState(1);
@@ -16,6 +24,8 @@ export default function ImportPage() {
   const [importingPid, setImportingPid] = useState<string | null>(null);
   const [importedPids, setImportedPids] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [checkingPid, setCheckingPid] = useState<string | null>(null);
+  const [warehouseInfo, setWarehouseInfo] = useState<Record<string, { countries: string[]; hasEuStock: boolean }>>({});
 
   async function runSearch(nextPage: number, append: boolean) {
     const res = await fetch(
@@ -26,6 +36,7 @@ export default function ImportPage() {
     setResults((prev) => (append ? [...prev, ...(data.list ?? [])] : data.list ?? []));
     setTotal(data.total ?? 0);
     setPageNum(nextPage);
+    setSearched(true);
   }
 
   async function handleSearch(e: React.FormEvent) {
@@ -56,14 +67,43 @@ export default function ImportPage() {
 
   const hasMore = results.length < total;
 
+  async function handleCheckWarehouse(pid: string) {
+    setCheckingPid(pid);
+    setError(null);
+    try {
+      const res = await fetch(`/api/cj/warehouses?pid=${encodeURIComponent(pid)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Vérification échouée");
+      setWarehouseInfo((prev) => ({ ...prev, [pid]: { countries: data.countries ?? [], hasEuStock: !!data.hasEuStock } }));
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setCheckingPid(null);
+    }
+  }
+
+  async function handlePreview(pid: string) {
+    setPreviewPid(pid);
+    setError(null);
+    try {
+      const res = await fetch(`/api/cj/import?pid=${encodeURIComponent(pid)}`, { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Aperçu indisponible");
+      setQuotes((previous) => ({ ...previous, [pid]: data.quote }));
+    } catch (error) { setError((error as Error).message); }
+    finally { setPreviewPid(null); }
+  }
+
   async function handleImport(pid: string) {
+    const quote = quotes[pid];
+    if (!quote) return;
     setImportingPid(pid);
     setError(null);
     try {
       const res = await fetch("/api/cj/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pid }),
+        body: JSON.stringify({ pid, expectedSaleEur: quote.pricing.saleEur, expectedSku: quote.sku }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Import échoué");
@@ -81,8 +121,8 @@ export default function ImportPage() {
         Importer depuis CJ Dropshipping
       </h1>
       <p className="text-sm text-bone-400 mb-2">
-        Recherchez un produit, importez-le en un clic. Le prix de vente est calculé automatiquement
-        à partir du prix fournisseur.
+        Recherchez dans le catalogue CJ, vérifiez les photos et le prix, puis confirmez l’import.
+        Prix de vente = prix CJ converti en euros × 1,40. Hors transport, taxes et frais de paiement.
       </p>
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
         <Link href="/admin/add" className="text-ember-400 hover:text-ember-300 transition-colors">
@@ -91,16 +131,14 @@ export default function ImportPage() {
         <Link href="/admin/products" className="text-ember-400 hover:text-ember-300 transition-colors">
           Gérer / supprimer des produits →
         </Link>
-        <Link href="/admin/orders" className="text-ember-400 hover:text-ember-300 transition-colors">
-          Voir les commandes →
-        </Link>
       </div>
       <div className="mb-6" />
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-8">
         <input
           className="bg-ink-900 border border-white/10 rounded-full px-4 py-2.5 flex-1 text-bone-50 placeholder:text-bone-400 focus:outline-none focus:border-ember-500 transition-colors"
-          placeholder="Mot-clé (ex : déco squelette, masque, lanterne…)"
+          placeholder="Mot-clé CJ (ex : halloween mask, pumpkin, skeleton…)"
+          aria-label="Rechercher un produit CJ"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
@@ -114,7 +152,7 @@ export default function ImportPage() {
       </form>
 
       {error && (
-        <p className="text-red-400 mb-6 text-sm rounded-lg border border-red-400/30 bg-red-400/5 px-4 py-3">
+        <p role="alert" className="text-red-400 mb-6 text-sm rounded-lg border border-red-400/30 bg-red-400/5 px-4 py-3">
           {error}
         </p>
       )}
@@ -123,6 +161,8 @@ export default function ImportPage() {
         <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {results.map((product) => {
             const done = importedPids.has(product.pid);
+            const quote = quotes[product.pid];
+            const warehouse = warehouseInfo[product.pid];
             return (
               <li key={product.pid} className="bg-ink-900 border border-white/10 rounded-xl overflow-hidden flex flex-col">
                 <div className="relative aspect-square bg-ink-800">
@@ -141,12 +181,46 @@ export default function ImportPage() {
                     {product.productNameEn ?? product.productName}
                   </p>
                   <p className="text-xs text-bone-400">Fournisseur : {product.sellPrice} $</p>
+
+                  {warehouse ? (
+                    <p className={`text-xs font-medium ${warehouse.hasEuStock ? "text-green-400" : "text-amber-400"}`}>
+                      {warehouse.hasEuStock
+                        ? `🇪🇺 Stock UE (${warehouse.countries.join(", ")}) — 3-7j, pas de surtaxe douane`
+                        : warehouse.countries.length > 0
+                          ? `🐌 Stock hors UE (${warehouse.countries.join(", ")}) — 15-25j, +~5€ douane`
+                          : "Stock inconnu"}
+                    </p>
+                  ) : (
+                    <button
+                      onClick={() => handleCheckWarehouse(product.pid)}
+                      disabled={checkingPid === product.pid}
+                      className="text-xs text-bone-400 hover:text-ember-300 underline underline-offset-2 disabled:opacity-50 text-left"
+                    >
+                      {checkingPid === product.pid ? "Vérification…" : "Vérifier l'entrepôt (UE vs Chine)"}
+                    </button>
+                  )}
+
+                  {quote && (
+                    <div className="rounded-lg border border-white/10 p-3 text-xs space-y-2" aria-live="polite">
+                      <p>Variante importée : {quote.variant}</p>
+                      <p>CJ : {quote.pricing.supplierUsd.toFixed(2)} USD · {quote.pricing.supplierEur.toFixed(2)} €</p>
+                      <p>Taux BCE du {quote.exchange.date} · 1 USD = {quote.exchange.usdToEur.toFixed(4)} €</p>
+                      <p className="font-semibold text-ember-300">Vente (+40 %) : {quote.pricing.saleEur.toFixed(2)} €</p>
+                      <p>{quote.images.length} photo(s) · stock CJ : {quote.stock}</p>
+                      <p>Le prix concerne la première variante CJ, pas toutes les tailles et couleurs.</p>
+                      <div className="flex gap-1 overflow-x-auto">{quote.images.map((src) => (
+                        <img key={src} src={src} alt="Photo de la variante CJ" loading="lazy" className="h-12 w-12 shrink-0 object-contain rounded" />
+                      ))}</div>
+                      <button type="button" onClick={() => handlePreview(product.pid)} disabled={previewPid !== null || importingPid !== null} className="underline disabled:opacity-50">Actualiser l’aperçu</button>
+                    </div>
+                  )}
                   <button
-                    onClick={() => handleImport(product.pid)}
-                    disabled={importingPid === product.pid || done}
+                    type="button"
+                    onClick={() => quote ? handleImport(product.pid) : handlePreview(product.pid)}
+                    disabled={importingPid !== null || previewPid !== null || done}
                     className="mt-auto bg-eclipse-500 hover:bg-eclipse-500/80 text-bone-50 font-semibold px-3 py-2 rounded-lg text-sm disabled:opacity-50 transition-colors"
                   >
-                    {done ? "Importé ✓" : importingPid === product.pid ? "Import…" : "Importer"}
+                    {done ? "Importé ✓" : importingPid === product.pid ? "Import…" : previewPid === product.pid ? "Vérification…" : quote ? `Confirmer à ${quote.pricing.saleEur.toFixed(2)} €` : "Photos et prix +40 %"}
                   </button>
                 </div>
               </li>
@@ -155,6 +229,7 @@ export default function ImportPage() {
         </ul>
       )}
 
+      {searched && results.length === 0 && !loading && !error && <p role="status" className="text-sm text-bone-400">Aucun résultat CJ. Essaie un mot-clé en anglais.</p>}
       {hasMore && (
         <div className="flex justify-center mt-8">
           <button
