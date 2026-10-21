@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { CATEGORIES, matchesCategory } from "@/lib/categories";
 import { STORE } from "@/lib/store-config";
 import { parseProductImages } from "@/lib/product-images";
+import { toSafeJsonLd } from "@/lib/product-input";
 import { getThemeBanner } from "@/lib/theme-banner";
 import { productMatchesSeason, getSeasonBySlug } from "@/lib/seasons";
 import { getActiveThemeId } from "@/lib/site-settings";
@@ -102,9 +103,9 @@ export default async function ProductPage({ params }: Props) {
   return (
     <main className="container py-10 sm:py-14">
       {/* eslint-disable-next-line react/no-danger */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toSafeJsonLd(jsonLd) }} />
       {/* eslint-disable-next-line react/no-danger */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toSafeJsonLd(breadcrumbJsonLd) }} />
 
       <Link href="/#collection" className="text-sm text-bone-400 hover:text-ember-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ember-300 rounded-sm">
         ← Retour à la collection
