@@ -36,7 +36,7 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     collectionEyebrow: "La collection Halloween",
     collectionTitle: "Pièces sélectionnées",
     footerDescription:
-      "Une sélection Halloween choisie pour son impact visuel, son potentiel cadeau et sa capacité à se vendre en vidéo.",
+      "Décorations, masques, costumes et accessoires pour Halloween, avec le prix et la disponibilité indiqués sur chaque fiche produit.",
   },
   christmas: {
     id: "christmas",
@@ -54,7 +54,7 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     collectionEyebrow: "Sous le sapin",
     collectionTitle: "La sélection de Noël",
     footerDescription:
-      "Une boutique de Noël vivante et élégante, pensée autour du cadeau, de la découverte produit et d’une expérience saisonnière forte.",
+      "Décorations et idées de cadeaux pour les fêtes de fin d’année, avec le prix et la disponibilité indiqués sur chaque fiche produit.",
   },
   valentine: {
     id: "valentine",
@@ -72,7 +72,7 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     collectionEyebrow: "À offrir",
     collectionTitle: "La sélection Saint-Valentin",
     footerDescription:
-      "Une édition Saint-Valentin élégante et chaleureuse, pensée autour du cadeau, de l’émotion et d’une expérience visuelle premium.",
+      "Des idées de cadeaux et de petites attentions pour la Saint-Valentin, avec le prix et la disponibilité indiqués sur chaque fiche produit.",
   },
   easter: {
     id: "easter",
@@ -90,7 +90,7 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     collectionEyebrow: "Sélection printanière",
     collectionTitle: "La collection de Pâques",
     footerDescription:
-      "Une édition de Pâques lumineuse et élégante, pensée autour du cadeau, de la décoration et d’un univers printanier premium.",
+      "Décorations et idées de cadeaux pour Pâques et le printemps, avec le prix et la disponibilité indiqués sur chaque fiche produit.",
   },
   summer: {
     id: "summer",
@@ -108,10 +108,17 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     collectionEyebrow: "Les essentiels d’été",
     collectionTitle: "La collection estivale",
     footerDescription:
-      "Une édition été lumineuse et premium, pensée autour de la découverte produit, de la chaleur de saison et d’un univers visuel solaire.",
+      "Une sélection d’articles pour l’été, avec le prix et la disponibilité indiqués sur chaque fiche produit.",
   },
 };
 
 export function isThemeId(value: unknown): value is ThemeId {
   return typeof value === "string" && (THEME_IDS as readonly string[]).includes(value);
+}
+
+// Libellé du compteur d'articles ("1 article", "2 articles"). Renvoie null à 0
+// (ou pour une valeur invalide) : mieux vaut ne rien afficher que "0 article".
+export function formatArticleCount(count: number): string | null {
+  if (!Number.isInteger(count) || count <= 0) return null;
+  return `${count} article${count > 1 ? "s" : ""}`;
 }
