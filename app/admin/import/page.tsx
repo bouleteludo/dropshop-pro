@@ -222,7 +222,12 @@ export default function ImportPage() {
                       <div className="space-y-2">
                         <p className="font-semibold text-bone-100">Entrepôts disponibles (priorité au stock local)</p>
                         {quote.warehouses.map((w) => <label key={w.countryCode} className="flex gap-2 items-start">
-                          <input type="radio" name={`origin-${product.pid}`} checked={quote.recommendedOrigin === w.countryCode} disabled={!w.shippingOptions.length} onChange={() => setQuotes((prev) => ({ ...prev, [product.pid]: { ...quote, recommendedOrigin: w.countryCode, pricing: { ...quote.pricing, deliveryUsd: w.shippingOptions[0]?.totalPostageFee ?? w.shippingOptions[0]?.logisticPrice ?? 0, landedCostEur: (quote.pricing.supplierUsd + (w.shippingOptions[0]?.totalPostageFee ?? w.shippingOptions[0]?.logisticPrice ?? 0)) * quote.exchange.usdToEur, saleEur: Math.ceil(((quote.pricing.supplierUsd + (w.shippingOptions[0]?.totalPostageFee ?? w.shippingOptions[0]?.logisticPrice ?? 0)) * quote.exchange.usdToEur / 0.6) * 100 - 1e-9) / 100, grossProfitEur: 0, grossMarginPercent: 40 } } }))} />
+                          <input type="radio" name={`origin-${product.pid}`} checked={quote.recommendedOrigin === w.countryCode} disabled={!w.shippingOptions.length} onChange={() => setQuotes((prev) => {
+                            const deliveryUsd = Number(w.shippingOptions[0]?.totalPostageFee ?? w.shippingOptions[0]?.logisticPrice ?? 0);
+                            const landedCostEur = (quote.pricing.supplierUsd + deliveryUsd) * quote.exchange.usdToEur;
+                            const saleEur = Math.ceil((landedCostEur / 0.6) * 100 - 1e-9) / 100;
+                            return { ...prev, [product.pid]: { ...quote, recommendedOrigin: w.countryCode, stock: w.stock, pricing: { ...quote.pricing, deliveryUsd, landedCostEur, saleEur, grossProfitEur: saleEur - landedCostEur, grossMarginPercent: (saleEur - landedCostEur) / saleEur * 100 } } };
+                          })} />
                           <span>{w.area} ({w.countryCode}) · total {w.stock} · entrepôt CJ {w.cjStock} · usine {w.factoryStock}
                             {w.shippingOptions.length ? <span className="block text-bone-400">{w.shippingOptions[0].logisticName} · {Number(w.shippingOptions[0].totalPostageFee ?? w.shippingOptions[0].logisticPrice).toFixed(2)} USD · {w.shippingOptions[0].logisticAging ?? "délai non fourni"}</span> : <span className="block text-amber-300">Pas de tarif transport confirmé</span>}
                           </span>
