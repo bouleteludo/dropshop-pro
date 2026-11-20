@@ -13,7 +13,7 @@ const MARKUP_MULTIPLIER = Number(process.env.CJ_MARKUP_MULTIPLIER ?? "2.8");
 const MIN_PRICE = 9.9;
 
 export async function POST(req: NextRequest) {
-  const { pid } = (await req.json()) as { pid?: string };
+  const { pid, vid, origin, destination, shippingCostUsd, shippingCarrier, shippingDays, stock } = (await req.json()) as { pid?: string; vid?: string; origin?: string; destination?: string; shippingCostUsd?: number; shippingCarrier?: string; shippingDays?: string; stock?: number };
   if (!pid) {
     return NextResponse.json({ error: "Missing pid" }, { status: 400 });
   }
@@ -32,15 +32,15 @@ export async function POST(req: NextRequest) {
       where: { cjProductId: pid },
       create: {
         cjProductId: pid,
-        sku: firstVariant?.variantSku ?? pid,
+        sku: selectedVariant.variantSku ?? pid,
         slug,
         name: detail.productNameEn ?? detail.productName,
         description: detail.description ?? "",
         images: JSON.stringify(detail.productImageSet ?? []),
         video: detail.video,
-        price: Math.max(MIN_PRICE, Math.round(cjPrice * MARKUP_MULTIPLIER * 100) / 100),
+        price: Math.max(MIN_PRICE, Math.round(landedCostEur * MARKUP_MULTIPLIER * 100) / 100),
         cjPrice,
-        stock: 0,
+        stock: Math.max(0, Number(stock ?? 0)),\n        cjVariantId: selectedVariant.vid,\n        warehouseOrigin: origin,\n        destinationCountry: destination,\n        shippingCostUsd,\n        shippingCarrier,\n        shippingDays,
         category: detail.categoryName,
         sourceUrl: `https://cjdropshipping.com/product/${pid}.html`,
         lastSyncedAt: new Date(),
