@@ -177,6 +177,9 @@ export type CjStockEntry = {
   vid: string;
   storageNum: number;
   totalInventoryNum?: number;
+  cjInventoryNum?: number;
+  factoryInventoryNum?: number;
+  areaEn?: string;
   countryCode?: string;
 };
 
@@ -190,6 +193,34 @@ export const EU_WAREHOUSE_COUNTRY_CODES = ["PL", "DE", "IT", "ES", "FR", "CZ", "
 export async function getCjVariantStock(vid: string): Promise<CjStockEntry[]> {
   const entries = await cjRequest<CjStockEntry[]>("/product/stock/queryByVid", { query: { vid } });
   return Array.isArray(entries) ? entries : [];
+}
+
+export type CjFreightOption = {
+  logisticName: string;
+  logisticPrice: number;
+  logisticAging?: string;
+  taxesFee?: number;
+  clearanceOperationFee?: number;
+  totalPostageFee?: number;
+};
+
+export async function calculateCjFreight(input: {
+  vid: string;
+  fromCountryCode: string;
+  toCountryCode: string;
+  quantity?: number;
+  zip?: string;
+}): Promise<CjFreightOption[]> {
+  const data = await cjRequest<CjFreightOption[]>("/logistic/freightCalculate", {
+    method: "POST",
+    body: {
+      startCountryCode: input.fromCountryCode,
+      endCountryCode: input.toCountryCode,
+      products: [{ vid: input.vid, quantity: input.quantity ?? 1 }],
+      ...(input.zip ? { zip: input.zip } : {}),
+    },
+  });
+  return Array.isArray(data) ? data.filter((option) => Number.isFinite(Number(option.logisticPrice))) : [];
 }
 
 export type CjOrderPayload = {
