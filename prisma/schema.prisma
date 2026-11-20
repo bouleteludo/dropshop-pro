@@ -21,7 +21,15 @@ model Product {
   images        String // JSON-encoded array of image URLs
   video         String? // product video URL from CJ, when available
   price         Float // sale price shown to customers (in shop currency)
-  cjPrice       Float? // last known CJ supply price, used to track margin
+  cjPrice       Float? // last known CJ supply price in USD
+  cjVariantId   String?
+  warehouseOrigin String?
+  destinationCountry String?
+  shippingCostUsd Float?
+  shippingCarrier String?
+  shippingDays String?
+  warehouseStock Int @default(0)
+  factoryStock Int @default(0)
   stock         Int      @default(0)
   category      String?
   sourceUrl     String? // link to the product on CJ, for reference
