@@ -1,5 +1,6 @@
 import {
   calculateCjFreight, getCjProductDetail, getCjVariantStock,
+  type CjFreightOption,
 } from "@/lib/cj-client";
 import { getCjExchangeRate, quoteCjLandedPrice } from "@/lib/cj-pricing";
 
@@ -40,7 +41,7 @@ export async function prepareCjImport(pid: string, destination = "FR", zip?: str
   // Quote the three best origins only, in priority order, to limit CJ API point use and rate-limit pressure.
   const warehouses = [];
   for (const row of stockRows.slice(0, 3)) {
-    let shippingOptions = [];
+    let shippingOptions: CjFreightOption[] = [];
     try {
       shippingOptions = await calculateCjFreight({
         vid: variant.vid, fromCountryCode: row.countryCode,
