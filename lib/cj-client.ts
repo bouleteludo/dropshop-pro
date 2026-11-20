@@ -201,6 +201,7 @@ export type CjFreightOption = {
   logisticAging?: string;
   taxesFee?: number;
   clearanceOperationFee?: number;
+  tariff?: number;
   totalPostageFee?: number;
 };
 
