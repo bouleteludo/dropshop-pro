@@ -5,9 +5,12 @@ import Link from "next/link";
 import type { CjProductSummary } from "@/lib/cj-client";
 
 const PAGE_SIZE = 24;
+type Freight = { logisticName: string; logisticPrice: number; logisticAging?: string; totalPostageFee?: number };
+type WarehouseQuote = { countryCode: string; area: string; stock: number; cjStock: number; factoryStock: number; stockType: string; shippingOptions: Freight[] };
 type ImportQuote = {
-  name: string; sku: string; variant: string; images: string[]; stock: number;
-  pricing: { supplierUsd: number; supplierEur: number; saleEur: number };
+  name: string; sku: string; vid: string; variant: string; images: string[]; stock: number;
+  destination: string; recommendedOrigin: string; warehouses: WarehouseQuote[];
+  pricing: { supplierUsd: number; deliveryUsd: number; landedCostEur: number; saleEur: number; grossProfitEur: number; grossMarginPercent: number };
   exchange: { date: string; usdToEur: number };
 };
 
@@ -26,6 +29,8 @@ export default function ImportPage() {
   const [error, setError] = useState<string | null>(null);
   const [checkingPid, setCheckingPid] = useState<string | null>(null);
   const [warehouseInfo, setWarehouseInfo] = useState<Record<string, { countries: string[]; hasEuStock: boolean }>>({});
+  const [destination, setDestination] = useState("FR");
+  const [zip, setZip] = useState("");
 
   async function runSearch(nextPage: number, append: boolean) {
     const res = await fetch(
@@ -86,7 +91,9 @@ export default function ImportPage() {
     setPreviewPid(pid);
     setError(null);
     try {
-      const res = await fetch(`/api/cj/import?pid=${encodeURIComponent(pid)}`, { cache: "no-store" });
+      const params = new URLSearchParams({ pid, destination });
+      if (zip.trim()) params.set("zip", zip.trim());
+      const res = await fetch(`/api/cj/import?${params.toString()}`, { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Aperçu indisponible");
       setQuotes((previous) => ({ ...previous, [pid]: data.quote }));
@@ -103,7 +110,7 @@ export default function ImportPage() {
       const res = await fetch("/api/cj/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pid, expectedSaleEur: quote.pricing.saleEur, expectedSku: quote.sku }),
+        body: JSON.stringify({ pid, expectedSaleEur: quote.pricing.saleEur, expectedSku: quote.sku, origin: quote.recommendedOrigin, destination, zip: zip.trim() || undefined }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Import échoué");
@@ -121,8 +128,7 @@ export default function ImportPage() {
         Importer depuis CJ Dropshipping
       </h1>
       <p className="text-sm text-bone-400 mb-2">
-        Recherchez dans le catalogue CJ, vérifiez les photos et le prix, puis confirmez l’import.
-        Prix de vente = prix CJ converti en euros × 1,40. Hors transport, taxes et frais de paiement.
+        Recherche CJ, stock par entrepôt et livraison vers le pays choisi. Le prix inclut le transport CJ et vise 40 % de marge brute sur le coût rendu.
       </p>
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
         <Link href="/admin/add" className="text-ember-400 hover:text-ember-300 transition-colors">
@@ -132,7 +138,16 @@ export default function ImportPage() {
           Gérer / supprimer des produits →
         </Link>
       </div>
-      <div className="mb-6" />
+      <section className="grid sm:grid-cols-2 gap-3 mb-6 rounded-xl border border-white/10 bg-ink-900 p-4">
+        <label className="text-xs text-bone-300">Pays de livraison
+          <select value={destination} onChange={(e) => { setDestination(e.target.value); setQuotes({}); }} className="mt-1 block w-full rounded-lg bg-ink-800 border border-white/10 px-3 py-2 text-sm text-bone-50">
+            <option value="FR">France</option><option value="BE">Belgique</option><option value="DE">Allemagne</option><option value="ES">Espagne</option><option value="IT">Italie</option><option value="NL">Pays-Bas</option><option value="GB">Royaume-Uni</option><option value="US">États-Unis</option><option value="CA">Canada</option><option value="AU">Australie</option>
+          </select>
+        </label>
+        <label className="text-xs text-bone-300">Code postal (facultatif)
+          <input value={zip} onChange={(e) => { setZip(e.target.value); setQuotes({}); }} placeholder="Ex. 75001" className="mt-1 block w-full rounded-lg bg-ink-800 border border-white/10 px-3 py-2 text-sm text-bone-50" />
+        </label>
+      </section>
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-8">
         <input
@@ -202,12 +217,22 @@ export default function ImportPage() {
 
                   {quote && (
                     <div className="rounded-lg border border-white/10 p-3 text-xs space-y-2" aria-live="polite">
-                      <p>Variante importée : {quote.variant}</p>
-                      <p>CJ : {quote.pricing.supplierUsd.toFixed(2)} USD · {quote.pricing.supplierEur.toFixed(2)} €</p>
-                      <p>Taux BCE du {quote.exchange.date} · 1 USD = {quote.exchange.usdToEur.toFixed(4)} €</p>
-                      <p className="font-semibold text-ember-300">Vente (+40 %) : {quote.pricing.saleEur.toFixed(2)} €</p>
-                      <p>{quote.images.length} photo(s) · stock CJ : {quote.stock}</p>
-                      <p>Le prix concerne la première variante CJ, pas toutes les tailles et couleurs.</p>
+                      <p>Variante CJ : {quote.variant}</p>
+                      <p>Destination : {destination} · taux BCE du {quote.exchange.date} · 1 USD = {quote.exchange.usdToEur.toFixed(4)} €</p>
+                      <div className="space-y-2">
+                        <p className="font-semibold text-bone-100">Entrepôts disponibles (priorité au stock local)</p>
+                        {quote.warehouses.map((w) => <label key={w.countryCode} className="flex gap-2 items-start">
+                          <input type="radio" name={`origin-${product.pid}`} checked={quote.recommendedOrigin === w.countryCode} disabled={!w.shippingOptions.length} onChange={() => setQuotes((prev) => ({ ...prev, [product.pid]: { ...quote, recommendedOrigin: w.countryCode, pricing: { ...quote.pricing, deliveryUsd: w.shippingOptions[0]?.totalPostageFee ?? w.shippingOptions[0]?.logisticPrice ?? 0, landedCostEur: (quote.pricing.supplierUsd + (w.shippingOptions[0]?.totalPostageFee ?? w.shippingOptions[0]?.logisticPrice ?? 0)) * quote.exchange.usdToEur, saleEur: Math.ceil(((quote.pricing.supplierUsd + (w.shippingOptions[0]?.totalPostageFee ?? w.shippingOptions[0]?.logisticPrice ?? 0)) * quote.exchange.usdToEur / 0.6) * 100 - 1e-9) / 100, grossProfitEur: 0, grossMarginPercent: 40 } } }))} />
+                          <span>{w.area} ({w.countryCode}) · total {w.stock} · entrepôt CJ {w.cjStock} · usine {w.factoryStock}
+                            {w.shippingOptions.length ? <span className="block text-bone-400">{w.shippingOptions[0].logisticName} · {Number(w.shippingOptions[0].totalPostageFee ?? w.shippingOptions[0].logisticPrice).toFixed(2)} USD · {w.shippingOptions[0].logisticAging ?? "délai non fourni"}</span> : <span className="block text-amber-300">Pas de tarif transport confirmé</span>}
+                          </span>
+                        </label>)}
+                      </div>
+                      <p>Produit : {quote.pricing.supplierUsd.toFixed(2)} USD · Livraison : {quote.pricing.deliveryUsd.toFixed(2)} USD</p>
+                      <p>Coût rendu : {quote.pricing.landedCostEur.toFixed(2)} €</p>
+                      <p className="font-semibold text-ember-300">Prix de vente (marge cible 40 %) : {quote.pricing.saleEur.toFixed(2)} €</p>
+                      <p>Bénéfice brut estimé : {quote.pricing.grossProfitEur.toFixed(2)} € · marge : {quote.pricing.grossMarginPercent.toFixed(1)} %</p>
+                      <p>{quote.images.length} photo(s) · stock de l’entrepôt choisi : {quote.stock}</p>
                       <div className="flex gap-1 overflow-x-auto">{quote.images.map((src) => (
                         <img key={src} src={src} alt="Photo de la variante CJ" loading="lazy" className="h-12 w-12 shrink-0 object-contain rounded" />
                       ))}</div>
