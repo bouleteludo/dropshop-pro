@@ -9,11 +9,11 @@ const MIN_PRICE = 9.9;
 export async function POST(req: NextRequest) {
   const input = await req.json() as {
     pid?: string; vid?: string; origin?: string; destination?: string;
-    shippingCostUsd?: number; shippingCarrier?: string; shippingDays?: string; stock?: number;
+    shippingCostUsd?: number; shippingCarrier?: string; shippingDays?: string; stock?: number; warehouseStock?: number; factoryStock?: number;
   };
   if (!input.pid || !input.vid || !input.origin || !input.destination ||
       !Number.isFinite(input.shippingCostUsd) || Number(input.shippingCostUsd) < 0 ||
-      !Number.isFinite(input.stock) || Number(input.stock) < 0) {
+      !Number.isFinite(input.stock) || Number(input.stock) < 0 || !Number.isFinite(input.warehouseStock) || Number(input.warehouseStock) < 0 || !Number.isFinite(input.factoryStock) || Number(input.factoryStock) < 0) {
     return NextResponse.json({ error: "Sélection de variante, stock ou devis transport invalide. Refaire la vérification CJ." }, { status: 400 });
   }
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         price: salePrice, cjPrice, cjVariantId: selectedVariant.vid,
         warehouseOrigin: input.origin, destinationCountry: input.destination,
         shippingCostUsd: Number(input.shippingCostUsd), shippingCarrier: input.shippingCarrier,
-        shippingDays: input.shippingDays, stock: Math.floor(Number(input.stock)),
+        shippingDays: input.shippingDays, stock: Math.floor(Number(input.stock)),\n        warehouseStock: Math.floor(Number(input.warehouseStock)), factoryStock: Math.floor(Number(input.factoryStock)),
         category: detail.categoryName, sourceUrl: `https://cjdropshipping.com/product/${input.pid}.html`,
         lastSyncedAt: new Date(),
       },
