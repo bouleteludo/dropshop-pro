@@ -6,7 +6,7 @@ import type { CjProductSummary } from "@/lib/cj-client";
 
 const PAGE_SIZE = 24;
 type Freight = { logisticName: string; logisticPrice: number; logisticAging?: string; totalPostageFee?: number; taxesFee?: number; clearanceOperationFee?: number };
-type Warehouse = { countryCode: string; stock: number; stockType: "LOCAL" | "CHINA" | "FOREIGN"; shippingOptions: Freight[] };
+type Warehouse = { countryCode: string; stock: number; warehouseStock: number; factoryStock: number; stockType: "LOCAL" | "WAREHOUSE" | "FACTORY"; shippingOptions: Freight[] };
 type Variant = { vid: string; sku: string; name: string; supplierPriceUsd: number; image?: string; warehouses: Warehouse[] };
 type Preview = { product: { pid: string; name: string; images: string[] }; destination: string; exchangeRate: number; exchangeRateDate: string; variants: Variant[] };
 
@@ -78,7 +78,7 @@ export default function ImportPage() {
       const res = await fetch("/api/cj/import", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
         pid, vid: variant.vid, origin: warehouse.countryCode, destination: preview.destination,
         shippingCostUsd: Number(freight.totalPostageFee ?? freight.logisticPrice),
-        shippingCarrier: freight.logisticName, shippingDays: freight.logisticAging, stock: warehouse.stock,
+        shippingCarrier: freight.logisticName, shippingDays: freight.logisticAging, stock: warehouse.stock, warehouseStock: warehouse.warehouseStock, factoryStock: warehouse.factoryStock,
       }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Import échoué");
@@ -146,7 +146,7 @@ export default function ImportPage() {
                 <div className="mt-2 space-y-2">
                   {v.warehouses.map((w) => <label key={w.countryCode} className="flex gap-2 items-start text-xs text-bone-300">
                     <input type="radio" name={`warehouse-${product.pid}-${v.vid}`} checked={choice?.vid === v.vid && choice?.origin === w.countryCode} disabled={w.stock <= 0} onChange={() => setChoices((old) => ({ ...old, [product.pid]: { vid: v.vid, origin: w.countryCode } }))} />
-                    <span><strong>{originLabel(w.countryCode, preview.destination)}</strong> · {w.stock} en stock
+                    <span><strong>{originLabel(w.countryCode, preview.destination)}</strong> · {w.stock} disponibles · {w.warehouseStock} en entrepôt CJ · {w.factoryStock} en usine
                       {w.shippingOptions.length ? w.shippingOptions.map((o) => <span key={o.logisticName} className="block text-bone-400">{o.logisticName} · {(o.totalPostageFee ?? o.logisticPrice).toFixed(2)} USD · {o.logisticAging ?? "Délai non fourni"}</span>) : <span className="block text-amber-300">Tarif de livraison indisponible</span>}
                     </span>
                   </label>)}
@@ -158,7 +158,7 @@ export default function ImportPage() {
                 <p className="text-bone-300">Produit : {(variant.supplierPriceUsd * preview.exchangeRate).toFixed(2)} €</p>
                 <p className="text-bone-300">Livraison : {(Number(freight.totalPostageFee ?? freight.logisticPrice) * preview.exchangeRate).toFixed(2)} €</p>
                 <p className="text-bone-50 font-semibold">Coût rendu estimé : {((variant.supplierPriceUsd + Number(freight.totalPostageFee ?? freight.logisticPrice)) * preview.exchangeRate).toFixed(2)} €</p>
-                <p className="text-xs text-bone-400 mt-1">Stock affiché : {warehouse.stock} · Origine : {originLabel(warehouse.countryCode, preview.destination)} · {freight.logisticName} · {freight.logisticAging ?? "Délai non communiqué"}</p>
+                <p className="text-xs text-bone-400 mt-1">Stock affiché : {warehouse.stock} · Origine : {originLabel(warehouse.countryCode, preview.destination)} · {warehouse.warehouseStock > 0 ? "stock entrepôt CJ" : "stock usine/fournisseur (pas entrepôt local)"} · {freight.logisticName} · {freight.logisticAging ?? "Délai non communiqué"}</p>
                 <p className="text-xs text-amber-300 mt-2">Le prix de vente final est calculé à l’import à partir du coût produit + transport. Le tarif peut changer avant commande.</p>
               </div>}
               <button onClick={() => handleImport(product.pid)} disabled={importingPid === product.pid || importedPids.has(product.pid) || !freight} className="bg-ember-500 text-ink-950 font-semibold px-4 py-2.5 rounded-full text-sm disabled:opacity-50">
