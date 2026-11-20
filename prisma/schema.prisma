@@ -28,7 +28,7 @@ model Product {
   shippingCostUsd Float?
   shippingCarrier String?
   shippingDays String?
-  stock         Int      @default(0)
+  stock         Int      @default(0)\n  warehouseStock Int     @default(0)\n  factoryStock   Int     @default(0)
   category      String?
   sourceUrl     String? // link to the product on CJ, for reference
   active        Boolean  @default(true)
