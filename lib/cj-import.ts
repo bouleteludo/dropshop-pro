@@ -1,6 +1,5 @@
 import {
   calculateCjFreight, getCjProductDetail, getCjVariantStock,
-  EU_WAREHOUSE_COUNTRY_CODES,
 } from "@/lib/cj-client";
 import { getCjExchangeRate, quoteCjLandedPrice } from "@/lib/cj-pricing";
 
@@ -50,11 +49,17 @@ export async function prepareCjImport(pid: string, destination = "FR", zip?: str
     } catch {
       shippingOptions = [];
     }
+    const normalizedShippingOptions = shippingOptions.map((option) => ({
+      ...option,
+      totalPostageFee: Number.isFinite(Number(option.totalPostageFee))
+        ? Number(option.totalPostageFee)
+        : Number(option.logisticPrice) + Number(option.taxesFee ?? 0) + Number(option.clearanceOperationFee ?? 0) + Number(option.tariff ?? 0),
+    }));
     warehouses.push({
       ...row,
       stockType: row.cjStock > 0 ? "WAREHOUSE" : "FACTORY",
       priority: warehousePriority(row.countryCode, destination, row.cjStock),
-      shippingOptions,
+      shippingOptions: normalizedShippingOptions,
     });
   }
 
