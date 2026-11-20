@@ -16,13 +16,14 @@ export async function POST(req: NextRequest) {
     if (!product.cjProductId) continue;
     try {
       const detail = await getCjProductDetail(product.cjProductId);
-      const firstVariant = detail.variants[0];
-      const cjPrice = Number(detail.sellPrice ?? firstVariant?.variantSellPrice ?? 0);
+      const selectedVariant = detail.variants.find((variant) => variant.vid === product.cjVariantId) ?? detail.variants[0];
+      const cjPrice = Number(selectedVariant?.variantSellPrice ?? detail.sellPrice ?? 0);
 
       let stock = 0;
-      if (firstVariant?.vid) {
-        const stockEntries = await getCjVariantStock(firstVariant.vid);
-        stock = stockEntries.reduce((sum, entry) => sum + entry.storageNum, 0);
+      if (selectedVariant?.vid) {
+        const stockEntries = await getCjVariantStock(selectedVariant.vid);
+        const selectedWarehouse = stockEntries.find((entry) => entry.countryCode === product.warehouseOrigin);
+        stock = selectedWarehouse ? Number(selectedWarehouse.totalInventoryNum ?? selectedWarehouse.storageNum ?? 0) : 0;
       }
 
       await prisma.product.update({
