@@ -209,3 +209,65 @@ export async function createCjOrder(payload: CjOrderPayload): Promise<CjOrderRes
     body: payload,
   });
 }
+
+
+export type CjWarehouseInventory = {
+  countryCode: string;
+  totalInventory: number;
+  cjInventory: number;
+  factoryInventory: number;
+  verifiedWarehouse?: number;
+};
+
+export type CjProductInventory = {
+  inventories: Array<{
+    areaEn?: string;
+    countryCode: string;
+    totalInventoryNum?: number;
+    cjInventoryNum?: number;
+    factoryInventoryNum?: number;
+  }>;
+  variantInventories: Array<{
+    vid: string;
+    inventory: CjWarehouseInventory[];
+  }>;
+};
+
+export async function getCjProductInventory(pid: string): Promise<CjProductInventory> {
+  const data = await cjRequest<CjProductInventory>(" /product/stock/getInventoryByPid".trim(), {
+    query: { pid },
+  });
+  return {
+    inventories: Array.isArray(data?.inventories) ? data.inventories : [],
+    variantInventories: Array.isArray(data?.variantInventories) ? data.variantInventories : [],
+  };
+}
+
+export type CjFreightOption = {
+  logisticName: string;
+  logisticPrice: number;
+  logisticPriceCn?: number;
+  logisticAging?: string;
+  taxesFee?: number;
+  clearanceOperationFee?: number;
+  totalPostageFee?: number;
+};
+
+export async function calculateCjFreight(input: {
+  vid: string;
+  fromCountryCode: string;
+  toCountryCode: string;
+  quantity?: number;
+  zip?: string;
+}): Promise<CjFreightOption[]> {
+  const data = await cjRequest<CjFreightOption[]>("/logistic/freightCalculate", {
+    method: "POST",
+    body: {
+      startCountryCode: input.fromCountryCode,
+      endCountryCode: input.toCountryCode,
+      products: [{ vid: input.vid, quantity: input.quantity ?? 1 }],
+      ...(input.zip ? { zip: input.zip } : {}),
+    },
+  });
+  return Array.isArray(data) ? data.filter((option) => Number.isFinite(Number(option.logisticPrice))) : [];
+}
