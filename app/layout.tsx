@@ -7,6 +7,9 @@ import { THEMES } from "@/lib/theme-config";
 import { getThemeBanner } from "@/lib/theme-banner";
 import "./globals.css";
 
+// The active theme can change in the admin after a deployment.
+export const dynamic = "force-dynamic";
+
 const cinzel = Cinzel({ weight: ["500", "600", "700"], subsets: ["latin"], variable: "--font-display", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://boo-shop.vercel.app";
