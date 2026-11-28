@@ -16,18 +16,25 @@ export async function POST(req: NextRequest) {
     if (!product.cjProductId) continue;
     try {
       const detail = await getCjProductDetail(product.cjProductId);
-      const firstVariant = detail.variants[0];
-      const cjPrice = Number(detail.sellPrice ?? firstVariant?.variantSellPrice ?? 0);
+      const selectedVariant = detail.variants.find((variant) => variant.vid === product.cjVariantId) ?? detail.variants[0];
+      const cjPrice = Number(selectedVariant?.variantSellPrice ?? detail.sellPrice ?? 0);
 
       let stock = 0;
-      if (firstVariant?.vid) {
-        const stockEntries = await getCjVariantStock(firstVariant.vid);
-        stock = stockEntries.reduce((sum, entry) => sum + entry.storageNum, 0);
+      let warehouseStock = 0;
+      let factoryStock = 0;
+      if (selectedVariant?.vid) {
+        const stockEntries = await getCjVariantStock(selectedVariant.vid);
+        const selectedWarehouse = stockEntries.find((entry) => entry.countryCode === product.warehouseOrigin);
+        if (selectedWarehouse) {
+          stock = Number(selectedWarehouse.totalInventoryNum ?? selectedWarehouse.storageNum ?? 0);
+          warehouseStock = Number(selectedWarehouse.cjInventoryNum ?? 0);
+          factoryStock = Number(selectedWarehouse.factoryInventoryNum ?? Math.max(0, stock - warehouseStock));
+        }
       }
 
       await prisma.product.update({
         where: { id: product.id },
-        data: { cjPrice, stock, lastSyncedAt: new Date() },
+        data: { cjPrice, stock, warehouseStock, factoryStock, lastSyncedAt: new Date() },
       });
       results.push({ sku: product.sku, ok: true });
     } catch (error) {

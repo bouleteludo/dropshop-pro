@@ -30,6 +30,23 @@ export function quoteCjPrice(priceUsd: unknown, usdToEur: number) {
   return { supplierUsd, supplierEur, saleEur, markupPercent: 40 };
 }
 
+// 40% gross margin means profit / sale price = 0.40, not a 40% markup.
+export function quoteCjLandedPrice(productUsd: unknown, shippingUsd: unknown, usdToEur: number) {
+  const supplierUsd = positivePrice(productUsd);
+  const deliveryUsd = typeof shippingUsd === "number" && Number.isFinite(shippingUsd) && shippingUsd >= 0
+    ? shippingUsd
+    : Number.NaN;
+  if (!Number.isFinite(deliveryUsd)) throw new Error("Tarif de livraison CJ invalide.");
+  const rate = positivePrice(usdToEur);
+  const landedCostEur = (supplierUsd + deliveryUsd) * rate;
+  const saleEur = Math.ceil((landedCostEur / 0.60) * 100 - 1e-9) / 100;
+  return {
+    supplierUsd, deliveryUsd, landedCostEur, saleEur,
+    grossProfitEur: saleEur - landedCostEur,
+    grossMarginPercent: (saleEur - landedCostEur) / saleEur * 100,
+  };
+}
+
 export async function getCjExchangeRate() {
   const response = await fetch("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml", {
     next: { revalidate: 3600 },
